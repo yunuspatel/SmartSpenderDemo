@@ -8,8 +8,8 @@
 	<title>Dashboard</title>
 	
 	<!-- Favicon -->
-	<link rel="shortcut icon" href="favicon.ico">
-	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="logo2.png">
+	<link rel="icon" href="logo2.png" type="image/x-icon">
 	
 	<!-- Morris Charts CSS -->
 <!--     <link href="vendors/bower_components/morris.js/morris.css" rel="stylesheet" type="text/css"/> -->

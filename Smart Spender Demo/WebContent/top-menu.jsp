@@ -5,7 +5,7 @@
 		<div class="nav-header pull-left">
 			<div class="logo-wrap">
 				<a href="index-2.html"> <img class="brand-img"
-					src="img/logo.png" alt="brand" /> <span class="brand-text">Smart
+					src="img/logo1.png" alt="brand" /> <span class="brand-text">Smart
 						Spender</span>
 				</a>
 			</div>
