@@ -102,8 +102,7 @@ public class UserMasterController extends HttpServlet {
 		int otpValue = Integer.parseInt(request.getParameter("value"));
 		HttpSession session = request.getSession();
 		int otp = (int) session.getAttribute("otpValue");
-		System.out.println(otp);
-		System.out.println(otpValue);
+		
 		if (otp == otpValue) {
 			Object userObj = session.getAttribute("userForgotFLag");
 			if (userObj!=null) {
@@ -153,7 +152,6 @@ public class UserMasterController extends HttpServlet {
 
 			Random random = new Random();
 			int otp = random.nextInt(999999);
-			System.out.println(otp);
 			session.setAttribute("otpValue", otp);
 
 			// Send OPT Code
