@@ -52,4 +52,36 @@ public class UserMasterDao {
 		list=dbOperation.session.createQuery("from UserVo where userId=" + userVo.getUserId() + " and isDeleted=0").list();
 		return list;
 	}
+	
+	public void updateUser(UserVo userVo)
+	{
+		dbOperation.update(userVo);
+	}
+	
+	public boolean checkUserExists(UserVo userVo)
+	{
+		dbOperation.transaction=dbOperation.session.beginTransaction();
+		list=dbOperation.session.createQuery("from UserVo where userMobile="+userVo.getUserMobile()).list();
+		if(list.isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean checkUserForForgot(UserVo userVo)
+	{
+		dbOperation.transaction=dbOperation.session.beginTransaction();
+		list=dbOperation.session.createQuery("from UserVo where userMobile="+userVo.getUserMobile()+" and userEmail='"+userVo.getUserEmail()+"'").list();
+		if(list.isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+	
+	public UserVo getForgotUserDeatils(UserVo userVo)
+	{
+		dbOperation.transaction=dbOperation.session.beginTransaction();
+		list=dbOperation.session.createQuery("from UserVo where userMobile="+userVo.getUserMobile()+" and userEmail='"+userVo.getUserEmail()+"'").list();
+		return list.get(0);
+	}
 }

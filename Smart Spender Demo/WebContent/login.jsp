@@ -10,12 +10,26 @@
 
 <!-- Favicon -->
 <link rel="shortcut icon" href="favicon.ico">
-<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="img/logo2.png" type="image/x-icon">
 
 <!-- Custom CSS -->
 <link href="dist/css/style.css" rel="stylesheet" type="text/css">
+<script type="text/javascript">
+	function checkMsg()
+	{
+		<% Object msg=session.getAttribute("userExists");
+			if(msg!=null)
+			{
+				String userMsg=(String)session.getAttribute("userMsg");
+			%>
+				alert("<%= userMsg %>");
+			<%
+			}
+		%>
+	}
+</script>
 </head>
-<body>
+<body onload="checkMsg()">
 	<!--Preloader-->
 	<div class="preloader-it">
 		<div class="la-anim-1"></div>
@@ -25,8 +39,8 @@
 	<div class="wrapper pa-0">
 		<header class="sp-header">
 			<div class="sp-logo-wrap pull-left">
-				<a href="login.html"> <img class="brand-img mr-10"
-					src="img/logo.png" alt="brand" /> <span class="brand-text">Smart
+				<a href="login.jsp"> <img class="brand-img mr-10"
+					src="img/logo1.png" alt="brand" /> <span class="brand-text">Smart
 						Spender</span>
 				</a>
 			</div>
@@ -59,7 +73,7 @@
 											<div class="form-group">
 												<label class="control-label mb-10" for="userEmail">Email
 													address</label> <input type="email" class="form-control"
-													required="" id="userEmail" name="userEmail"
+													required="" autofocus="true" autocomplete="false" id="userEmail" name="userEmail"
 													placeholder="Enter Email">
 											</div>
 											<div class="form-group">
@@ -69,7 +83,7 @@
 													href="forgot-password.jsp">forgot password ?</a>
 												<div class="clearfix"></div>
 												<input type="password" class="form-control" required=""
-													id="userPassword" name="userPassword"
+													id="userPassword" autocomplete="false" name="userPassword"
 													placeholder="Enter password">
 											</div>
 

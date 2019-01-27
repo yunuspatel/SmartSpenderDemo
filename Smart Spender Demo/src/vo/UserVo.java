@@ -36,6 +36,17 @@ public class UserVo {
 	
 	@Column(name="user_is_deleted",length=5)
 	String isDeleted;
+	
+	@Column(name="user_confirmed",length=6)
+	boolean isConfirmed;
+
+	public boolean isConfirmed() {
+		return isConfirmed;
+	}
+
+	public void setConfirmed(boolean isConfirmed) {
+		this.isConfirmed = isConfirmed;
+	}
 
 	public int getUserId() {
 		return userId;
