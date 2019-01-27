@@ -22,7 +22,10 @@ import vo.Way2SmsPost;
 @WebServlet("/UserMasterController")
 public class UserMasterController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	private final String apiKey = "J9J5E9UILDG7RNI36ZDEPMZUJ8P4VQZC";
+	private final String secretKey = "1X6EG9LRITX1755Y";
+	private final String useType = "stage";
+	private final String senderId = "SPENDR";
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -80,13 +83,9 @@ public class UserMasterController extends HttpServlet {
 
 			// Send OPT Code
 			Way2SmsPost smsPost = new Way2SmsPost();
-			String apiKey = "J9J5E9UILDG7RNI36ZDEPMZUJ8P4VQZC";
-			String secretKey = "1X6EG9LRITX1755Y";
-			String useType = "stage";
 			String phone = userVo.getUserMobile();
 			String message = "Your OTP for Smart-Spender Forgot Password is:- " + otp
 					+ ". Enter OTP to complete your forgot password request.";
-			String senderId = "SPENDR";
 			smsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
 
 			response.sendRedirect("opt-verification.jsp");
@@ -156,13 +155,9 @@ public class UserMasterController extends HttpServlet {
 
 			// Send OPT Code
 			Way2SmsPost smsPost = new Way2SmsPost();
-			String apiKey = "J9J5E9UILDG7RNI36ZDEPMZUJ8P4VQZC";
-			String secretKey = "1X6EG9LRITX1755Y";
-			String useType = "stage";
 			String phone = userVo.getUserMobile();
 			String message = "Your OTP for Smart-Spender account verification is:- " + otp
 					+ ". Enter OTP to complete your user registration request.";
-			String senderId = "SPENDR";
 			smsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
 
 			response.sendRedirect("opt-verification.jsp");
