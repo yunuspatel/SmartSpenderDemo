@@ -18,7 +18,7 @@
 	function checkData()
 	{
 		var userMobile = document.getElementById('userMobile').value;
-		if(userMobile.length<10 && userMobile.length>10)
+		if(userMobile.length<10 || userMobile.length>10)
 		{
 			alert('Enter Proper Mobile Number');
 			return false;
@@ -70,12 +70,12 @@
 											<div class="form-group">
 												<label class="control-label mb-10" for="userEmail">Email
 													address</label> <input type="email" class="form-control"
-													required="" id="userEmail" autofocus="true" autocomplete="false" name="userEmail" placeholder="Enter email">
+													required="" id="userEmail" autofocus="true" autocomplete="off" name="userEmail" placeholder="Enter email">
 											</div>
 											<div class="form-group">
 												<label class="control-label mb-10" for="userMobile">Mobile
 													Number</label> <input type="number" class="form-control" required=""
-													id="userMobile" autocomplete="false" name="userMobile" placeholder="Enter Mobile Number">
+													id="userMobile" autocomplete="off" name="userMobile" placeholder="Enter Mobile Number">
 											</div>
 											<div class="form-group text-center">
 												<button type="submit" class="btn btn-info btn-rounded">Reset</button>

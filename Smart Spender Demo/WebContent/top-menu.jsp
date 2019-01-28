@@ -4,7 +4,7 @@
 	<div class="mobile-only-brand pull-left">
 		<div class="nav-header pull-left">
 			<div class="logo-wrap">
-				<a href="index-2.html"> <img class="brand-img"
+				<a href="home.jsp"> <img class="brand-img"
 					src="img/logo1.png" alt="brand" /> <span class="brand-text">Smart
 						Spender</span>
 				</a>
@@ -147,18 +147,16 @@
 				</ul></li>
 			<li class="dropdown auth-drp"><a href="#"
 				class="dropdown-toggle pr-0" data-toggle="dropdown"><img
-					src="img/user1.png" alt="user_auth"
+					src="${ sessionScope.user.userImage }" alt="user_auth"
 					class="user-auth-img img-circle" /><span class="user-online-status"></span></a>
 				<ul class="dropdown-menu user-auth-dropdown"
 					data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
-					<li><a href="profile.html"><i class="zmdi zmdi-account"></i><span>Profile</span></a>
-					</li>
 					<li><a href="#"><i class="zmdi zmdi-card"></i><span>my
 								balance</span></a></li>
-					<li><a href="#"><i class="zmdi zmdi-settings"></i><span>Settings</span></a>
+					<li><a href="user-settings.jsp"><i class="zmdi zmdi-settings"></i><span>Settings</span></a>
 					</li>
 					<li class="divider"></li>
-					<li><a href="#"><i class="zmdi zmdi-power"></i><span>Log
+					<li><a href="user-logout.jsp"><i class="zmdi zmdi-power"></i><span>Log
 								Out</span></a></li>
 				</ul></li>
 		</ul>

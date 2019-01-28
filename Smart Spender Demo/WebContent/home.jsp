@@ -1,15 +1,24 @@
+<%@page import="dao.UserMasterDao"%>
+<%@page import="vo.UserVo"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html lang="en">
+<%
+	UserVo userVo=(UserVo)session.getAttribute("user");
+	if(userVo==null)
+	{
+		response.sendRedirect("login.jsp");
+	}
+%>
 <head>
     <meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<title>Dashboard</title>
 	
 	<!-- Favicon -->
-	<link rel="shortcut icon" href="logo2.png">
-	<link rel="icon" href="logo2.png" type="image/x-icon">
+	<link rel="shortcut icon" href="img/logo2.png">
+	<link rel="icon" href="img/logo2.png" type="image/x-icon">
 	
 	<!-- Morris Charts CSS -->
 <!--     <link href="vendors/bower_components/morris.js/morris.css" rel="stylesheet" type="text/css"/> -->
@@ -21,6 +30,8 @@
 		
 	<!-- Custom CSS -->
 	<link href="dist/css/style.css" rel="stylesheet" type="text/css">
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> -->
+	
 </head>
 
 <body>

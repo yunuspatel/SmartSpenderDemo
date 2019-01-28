@@ -3,6 +3,7 @@ package controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import javax.servlet.ServletException;
@@ -12,7 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import dao.TrackingMasterDao;
 import dao.UserMasterDao;
+import vo.TrackingVo;
 import vo.UserVo;
 import vo.Way2SmsPost;
 
@@ -22,10 +25,12 @@ import vo.Way2SmsPost;
 @WebServlet("/UserMasterController")
 public class UserMasterController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+
 	private final String apiKey = "J9J5E9UILDG7RNI36ZDEPMZUJ8P4VQZC";
 	private final String secretKey = "1X6EG9LRITX1755Y";
 	private final String useType = "stage";
 	private final String senderId = "SPENDR";
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -48,12 +53,78 @@ public class UserMasterController extends HttpServlet {
 		if (flag.equals("signup")) {
 			registerUser(request, response);
 		} else if (flag.equals("login")) {
-
+			loginUser(request, response);
 		} else if (flag.equals("verifyOtp")) {
 			verifyOtp(request, response);
 		} else if (flag.equals("forgot-password")) {
 			forgotPassword(request, response);
+		} else if (flag.equals("change-password")) {
+			changePassword(request,response);
 		}
+	}
+	
+	private void loginUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		String userEmail=request.getParameter("userEmail");
+		String userPassword=request.getParameter("userPassword");
+		
+		UserVo userVo=new UserVo();
+		userVo.setUserEmail(userEmail);
+		userVo.setUserPassword(userPassword);
+		
+		UserMasterDao userMasterDao=new UserMasterDao();
+		List<UserVo> userList=userMasterDao.loginUser(userVo);
+		
+		HttpSession session=request.getSession();
+		if(userList.isEmpty())
+		{
+			session.setAttribute("userExists", true);
+			session.setAttribute("userMsg", "Email or Password is incorrect.");
+			response.sendRedirect("login.jsp");
+		}
+		else {
+			userVo=userList.get(0);
+			if(userVo.getIsActive().equals("0"))
+			{
+				userVo.setIsActive("1");
+				UserMasterDao masterDao=new UserMasterDao();
+				masterDao.updateUser(userVo);
+				
+				TrackingVo trackingVo=new TrackingVo();
+				trackingVo.setBrowserName(request.getHeader("user-agent"));
+				trackingVo.setHostName(request.getRemoteHost());
+				trackingVo.setIpAddress(request.getRemoteAddr());
+				trackingVo.setLoginDateTime(new Date().toString());
+				trackingVo.setPortNumber("" + request.getRemotePort());
+				trackingVo.setUserName(userVo.getUserName());
+				trackingVo.setUserVo(userVo);
+				
+				TrackingMasterDao trackingMasterDao=new TrackingMasterDao();
+				trackingMasterDao.addTrack(trackingVo);
+				
+				session.setAttribute("user", userVo);
+				response.sendRedirect("home.jsp");
+			}else {
+				session.setAttribute("user", userVo);
+				session.setAttribute("userExists", true);
+				session.setAttribute("userMsg", "This account is already logged in from another source. If it wasn't you, please change your password and review account activity after changing your password");
+				session.setAttribute("choice", "Do you want to logout?");
+				response.sendRedirect("login.jsp");
+			}
+		}
+	}
+
+	private void changePassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		String userPassword = request.getParameter("userPassword");
+		HttpSession session=request.getSession();
+		UserVo userVo=(UserVo)session.getAttribute("userForgot");
+		
+		UserMasterDao userMasterDao=new  UserMasterDao();
+		userVo.setUserPassword(userPassword);
+		userMasterDao.updateUser(userVo);
+		
+		response.sendRedirect("login.jsp");
 	}
 
 	private void forgotPassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -78,7 +149,6 @@ public class UserMasterController extends HttpServlet {
 
 			Random random = new Random();
 			int otp = random.nextInt(999999);
-			System.out.println(otp);
 			session.setAttribute("otpValue", otp);
 
 			// Send OPT Code
@@ -88,7 +158,7 @@ public class UserMasterController extends HttpServlet {
 					+ ". Enter OTP to complete your forgot password request.";
 			smsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
 
-			response.sendRedirect("opt-verification.jsp");
+			response.sendRedirect("otp-verification.jsp");
 		} else {
 			session.setAttribute("userExists", true);
 			session.setAttribute("userMsg", "No such user exists with provided email and mobile number");
@@ -101,10 +171,10 @@ public class UserMasterController extends HttpServlet {
 		int otpValue = Integer.parseInt(request.getParameter("value"));
 		HttpSession session = request.getSession();
 		int otp = (int) session.getAttribute("otpValue");
-		
+
 		if (otp == otpValue) {
 			Object userObj = session.getAttribute("userForgotFLag");
-			if (userObj!=null) {
+			if (userObj != null) {
 				response.getWriter().println("Correct");
 
 			} else {
@@ -138,6 +208,9 @@ public class UserMasterController extends HttpServlet {
 		userVo.setUserName(userName);
 		userVo.setUserPassword(userPassword);
 		userVo.setConfirmed(false);
+		userVo.setUserCity("");
+		userVo.setUserPinCode("");
+		userVo.setUserImage("img/empty_user_icon.jpg");
 
 		UserMasterDao masterDao = new UserMasterDao();
 		boolean userExisits = masterDao.checkUserExists(userVo);
@@ -160,7 +233,7 @@ public class UserMasterController extends HttpServlet {
 					+ ". Enter OTP to complete your user registration request.";
 			smsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
 
-			response.sendRedirect("opt-verification.jsp");
+			response.sendRedirect("otp-verification.jsp");
 		} else {
 			HttpSession session = request.getSession();
 			session.setAttribute("userExists", true);
@@ -178,5 +251,4 @@ public class UserMasterController extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-
 }

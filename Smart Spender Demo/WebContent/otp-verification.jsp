@@ -1,13 +1,21 @@
 <!DOCTYPE html>
+<%@page import="vo.UserVo"%>
 <html lang="en">
 <head>
+<%
+	UserVo userVo=(UserVo)session.getAttribute("user");
+	if(userVo==null)
+	{
+		response.sendRedirect("login.jsp");
+	}
+%>
 <meta charset="UTF-8" />
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Sign Up-Smart Spender</title>
 
 <!-- Favicon -->
-<link rel="shortcut icon" href="favicon.ico">
+<link rel="shortcut icon" href="img/logo2.png">
 <link rel="icon" href="img/logo2.png" type="image/x-icon">
 
 <!-- Custom CSS -->
@@ -57,8 +65,7 @@
 		}
 	}
 </script>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
 	$(window).on('load', function() {
 		$('#responsive-modal').modal('show');

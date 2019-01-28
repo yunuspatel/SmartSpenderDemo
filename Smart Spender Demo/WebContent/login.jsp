@@ -1,3 +1,5 @@
+<%@page import="dao.UserMasterDao"%>
+<%@page import="vo.UserVo"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -9,7 +11,7 @@
 <title>Login-Smart Spender</title>
 
 <!-- Favicon -->
-<link rel="shortcut icon" href="favicon.ico">
+<link rel="shortcut icon" href="img/logo2.png">
 <link rel="icon" href="img/logo2.png" type="image/x-icon">
 
 <!-- Custom CSS -->
@@ -17,15 +19,38 @@
 <script type="text/javascript">
 	function checkMsg()
 	{
-		<% Object msg=session.getAttribute("userExists");
-			if(msg!=null)
-			{
-				String userMsg=(String)session.getAttribute("userMsg");
+		<%Object msg = session.getAttribute("userExists");
+			if (msg != null) {
+				String userMsg = (String) session.getAttribute("userMsg");%>
+				alert("<%=userMsg%>");
+			<%}
+			Object choice=session.getAttribute("choice");
+			if(choice!=null)
+			{ %>
+				var userChoice = confirm("<%= choice.toString() %>");
+				if(userChoice == true)
+				{
+					<%
+						UserVo userVo=(UserVo)session.getAttribute("user");
+						userVo.setIsActive("0");
+						UserMasterDao userMasterDao=new UserMasterDao();
+						userMasterDao.updateUser(userVo);
+						session.invalidate();
+					%>
+				}
+		<%	}
 			%>
-				alert("<%= userMsg %>");
-			<%
-			}
-		%>
+	}
+
+	function checkDataFill() {
+		var userEmail = document.getElementById('userEmail').value;
+		var userPassword = document.getElementById('userPassword').value;
+
+		if (userEmail != "" && userPassword != "") {
+			document.getElementById('sbmt').disabled = false;
+		} else {
+			document.getElementById('sbmt').disabled = true;
+		}
 	}
 </script>
 </head>
@@ -68,12 +93,14 @@
 											details below</h6>
 									</div>
 									<div class="form-wrap">
-										<form name="frm" method="post" action="<%= request.getContextPath() %>/UserMasterController">
+										<form name="frm" method="post"
+											action="<%=request.getContextPath()%>/UserMasterController">
 											<input type=hidden name="flag" value="login">
 											<div class="form-group">
 												<label class="control-label mb-10" for="userEmail">Email
 													address</label> <input type="email" class="form-control"
-													required="" autofocus="true" autocomplete="false" id="userEmail" name="userEmail"
+													required="" autofocus="true" autocomplete="off"
+													id="userEmail" onkeyup="checkDataFill()" name="userEmail"
 													placeholder="Enter Email">
 											</div>
 											<div class="form-group">
@@ -83,20 +110,20 @@
 													href="forgot-password.jsp">forgot password ?</a>
 												<div class="clearfix"></div>
 												<input type="password" class="form-control" required=""
-													id="userPassword" autocomplete="false" name="userPassword"
-													placeholder="Enter password">
+													id="userPassword" autocomplete="off" name="userPassword"
+													onkeyup="checkDataFill()" placeholder="Enter password">
 											</div>
 
-											<div class="form-group">
+											<!-- <div class="form-group">
 												<div class="checkbox checkbox-primary pr-10 pull-left">
 													<input id="checkbox_2" required="" type="checkbox">
 													<label for="checkbox_2"> Keep me logged in</label>
 												</div>
 												<div class="clearfix"></div>
-											</div>
+											</div> -->
 											<div class="form-group text-center">
-												<button type="submit" class="btn btn-info btn-rounded">sign
-													in</button>
+												<input type="submit" class="btn btn-info btn-rounded"
+													disabled="true" value="Sign in" id="sbmt">
 											</div>
 										</form>
 									</div>

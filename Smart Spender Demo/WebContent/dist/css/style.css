@@ -5997,14 +5997,14 @@ a.compose-mail {
 .profile-box .profile-cover-pic {
   position: relative;
   min-height: 197px;
-  background-image: url("img/gallery/mock6.html"); }
+}
   .profile-box .profile-cover-pic .profile-image-overlay {
     position: absolute;
     height: 100%;
     width: 100%;
     left: 0;
     top: 0;
-    background: #212121;
+    background: #fcf7f7;
     opacity: .4; }
   .profile-box .profile-cover-pic .fileupload.btn, .profile-box .profile-cover-pic .wizard > .actions a.fileupload, .wizard > .actions .profile-box .profile-cover-pic a.fileupload, .profile-box .profile-cover-pic .dt-buttons .fileupload.dt-button, .dt-buttons .profile-box .profile-cover-pic .fileupload.dt-button, .profile-box .profile-cover-pic .tablesaw-sortable th.tablesaw-sortable-head button.fileupload, .tablesaw-sortable th.tablesaw-sortable-head .profile-box .profile-cover-pic button.fileupload, .profile-box .profile-cover-pic .sweet-alert button.fileupload, .sweet-alert .profile-box .profile-cover-pic button.fileupload, .profile-box .profile-cover-pic .owl-theme .owl-nav .fileupload[class*="owl-"], .owl-theme .owl-nav .profile-box .profile-cover-pic .fileupload[class*="owl-"], .profile-box .profile-cover-pic button.fileupload.fc-agendaDay-button.fc-state-default.fc-corner-right,
   .profile-box .profile-cover-pic button.fileupload.fc-month-button.fc-state-default.fc-corner-left,

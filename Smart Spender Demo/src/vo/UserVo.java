@@ -39,6 +39,39 @@ public class UserVo {
 	
 	@Column(name="user_confirmed",length=6)
 	boolean isConfirmed;
+	
+	@Column(name="user_city",length=20)
+	String userCity;
+	
+	@Column(name="user_pincode",length=10)
+	String userPinCode;
+	
+	@Column(name="user_image",length=50)
+	String userImage;
+
+	public String getUserCity() {
+		return userCity;
+	}
+
+	public void setUserCity(String userCity) {
+		this.userCity = userCity;
+	}
+
+	public String getUserPinCode() {
+		return userPinCode;
+	}
+
+	public void setUserPinCode(String userPinCode) {
+		this.userPinCode = userPinCode;
+	}
+
+	public String getUserImage() {
+		return userImage;
+	}
+
+	public void setUserImage(String userImage) {
+		this.userImage = userImage;
+	}
 
 	public boolean isConfirmed() {
 		return isConfirmed;

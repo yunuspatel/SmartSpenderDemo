@@ -7,7 +7,7 @@
 <title>Sign Up-Smart Spender</title>
 
 <!-- Favicon -->
-<link rel="shortcut icon" href="favicon.ico">
+<link rel="shortcut icon" href="img/logo2.png">
 <link rel="icon" href="img/logo2.png" type="image/x-icon">
 
 <!-- Custom CSS -->
