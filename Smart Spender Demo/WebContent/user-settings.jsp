@@ -9,6 +9,12 @@
 	if (userVo == null) {
 		response.sendRedirect("login.jsp");
 	}
+	String userMale = "", userFemale = "";
+	if (userVo.getUserGender().equals("Male")) {
+		userMale = "checked";
+	} else if (userVo.getUserGender().equals("Female")) {
+		userFemale = "checked";
+	}
 %>
 <head>
 <meta charset="UTF-8" />
@@ -39,9 +45,49 @@
 
 <!-- Custom CSS -->
 <link href="dist/css/style.css" rel="stylesheet" type="text/css">
+<script type="text/javascript">
+	function upload() {
+		var imgVal = document.getElementById('frmImg');
+		imgVal.submit();
+	}
+	
+	function checkMessage()
+	{
+		<%Object object = session.getAttribute("userMsg");
+			Object imageObject = session.getAttribute("imageChanged");
+			if (object != null) {%>
+				alert("<%=object.toString()%>");
+			<%session.removeAttribute("userMsg");
+			}
+			if (imageObject != null) {%>
+					location.realod(true);
+				<%session.removeAttribute("imageChanged");
+			}%>
+	}
+	
+	function checkPassword()
+	{
+		var userPassword = document.getElementById('userPassword').value;
+		if(${ sessionScope.user.userPassword} == userPassword)
+		{
+			return true;
+		}
+		alert("Wrong Password");
+		return false;
+	}
+	
+	function confirmDeleteAction()
+	{
+		var userValue = confirm("Are you sure you want to delete your account?");
+		if(userValue == true)
+		{
+			return true;
+		}
+		return false;
+	}
+</script>
 </head>
-
-<body>
+<body onload="checkMessage()">
 	<!--Preloader-->
 	<div class="preloader-it">
 		<div class="la-anim-1"></div>
@@ -83,22 +129,28 @@
 										<div class="profile-cover-pic"></div>
 										<div class="profile-info text-center">
 											<div class="profile-img-wrap">
-												<img class="inline-block mb-10" src="${ sessionScope.user.userImage }"
-													alt="user" />
+												<img class="inline-block mb-10"
+													src="${ sessionScope.user.userImage }" alt="user" />
 												<div class="fileupload btn btn-default">
-													<span class="btn-text">edit</span> <input class="upload"
-														type="file">
+													<span class="btn-text">edit</span>
+													<form name="frmImg" id="frmImg" method="post"
+														enctype="multipart/form-data"
+														action="<%=request.getContextPath()%>/UserMasterController?flag=uploadProfileImage">
+														<input id="profileImage" name="profileImage"
+															class="upload" type="file" onchange="upload()">
+													</form>
 												</div>
 											</div>
-											<h5 class="block mt-10 mb-5 weight-500 capitalize-font txt-danger">${ sessionScope.user.userName }</h5>
+											<h5
+												class="block mt-10 mb-5 weight-500 capitalize-font txt-danger">${ sessionScope.user.userName }</h5>
 											<h6 class="block capitalize-font pb-20">${ sessionScope.user.userCity }</h6>
 										</div>
 										<div>
 											<button
 												class="btn btn-default btn-block btn-outline btn-anim mt-30"
 												data-toggle="modal" data-target="#myModal">
-												<i class="fa fa-pencil"></i><span class="btn-text">edit
-													profile</span>
+												<i class="fa fa-pencil"></i><span class="btn-text">Edit
+													Profile</span>
 											</button>
 											<div id="myModal" class="modal fade in" tabindex="-1"
 												role="dialog" aria-labelledby="myModalLabel"
@@ -107,7 +159,7 @@
 													<div class="modal-content">
 														<div class="modal-header">
 															<button type="button" class="close" data-dismiss="modal"
-																aria-hidden="true">×</button>
+																aria-hidden="true">x</button>
 															<h5 class="modal-title" id="myModalLabel">Edit
 																Profile</h5>
 														</div>
@@ -120,83 +172,122 @@
 																			<div class="panel-body pa-0">
 																				<div class="col-sm-12 col-xs-12">
 																					<div class="form-wrap">
-																						<form action="#">
+																						<form method="post" name="frmUpdate"
+																							onsubmit="return checkPassword()"
+																							action="<%=request.getContextPath()%>/UserMasterController">
+																							<input type="hidden" name="flag"
+																								value="userUpdate">
 																							<div class="form-body overflow-hide">
 																								<div class="form-group">
 																									<label class="control-label mb-10"
-																										for="exampleInputuname_1">Name</label>
+																										for="userName">Name</label>
 																									<div class="input-group">
 																										<div class="input-group-addon">
 																											<i class="icon-user"></i>
 																										</div>
-																										<input type="text" class="form-control"
-																											id="exampleInputuname_1"
-																											placeholder="willard bryant">
+																										<input type="text" autocomplete="off"
+																											required="" class="form-control"
+																											id="userName" name="userName"
+																											value="${ sessionScope.user.userName }"
+																											placeholder="User Name">
 																									</div>
 																								</div>
 																								<div class="form-group">
 																									<label class="control-label mb-10"
-																										for="exampleInputEmail_1">Email
-																										address</label>
+																										for="userEmail">Email address</label>
 																									<div class="input-group">
 																										<div class="input-group-addon">
 																											<i class="icon-envelope-open"></i>
 																										</div>
-																										<input type="email" class="form-control"
-																											id="exampleInputEmail_1"
+																										<input type="email" autocomplete="off"
+																											required="" class="form-control"
+																											id="userEmail" name="userEmail"
+																											value="${ sessionScope.user.userEmail }"
 																											placeholder="xyz@gmail.com">
 																									</div>
 																								</div>
 																								<div class="form-group">
 																									<label class="control-label mb-10"
-																										for="exampleInputContact_1">Contact
-																										number</label>
+																										for="userMobile">Contact number</label>
 																									<div class="input-group">
 																										<div class="input-group-addon">
 																											<i class="icon-phone"></i>
 																										</div>
-																										<input type="email" class="form-control"
-																											id="exampleInputContact_1"
+																										<input type="number" autocomplete="off"
+																											required="" class="form-control"
+																											id="userMobile" name="userMobile"
+																											value="${ sessionScope.user.userMobile }"
 																											placeholder="+102 9388333">
-																									</div>
-																								</div>
-																								<div class="form-group">
-																									<label class="control-label mb-10"
-																										for="exampleInputpwd_1">Password</label>
-																									<div class="input-group">
-																										<div class="input-group-addon">
-																											<i class="icon-lock"></i>
-																										</div>
-																										<input type="password" class="form-control"
-																											id="exampleInputpwd_1"
-																											placeholder="Enter pwd" value="password">
 																									</div>
 																								</div>
 																								<div class="form-group">
 																									<label class="control-label mb-10">Gender</label>
 																									<div>
 																										<div class="radio">
-																											<input type="radio" name="radio1"
-																												id="radio_1" value="option1" checked="">
-																											<label for="radio_1"> M </label>
-																										</div>
-																										<div class="radio">
-																											<input type="radio" name="radio1"
-																												id="radio_2" value="option2"> <label
-																												for="radio_2"> F </label>
+																											<input type="radio" name="userGender"
+																												id="userMale" value="Male" <%=userMale%>>
+																											<label for="userMale"> Male </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input
+																												type="radio" name="userGender"
+																												id="userFemale" value="Female"
+																												<%=userFemale%>><label
+																												for="userFemale"> Female </label>
 																										</div>
 																									</div>
 																								</div>
 																								<div class="form-group">
-																									<label class="control-label mb-10">Country</label>
-																									<select class="form-control"
-																										data-placeholder="Choose a Category"
-																										tabindex="1">
-																										<option value="Category 1">USA</option>
-																										<option value="Category 2">Austrailia</option>
-																										<option value="Category 3">India</option>
-																										<option value="Category 4">UK</option>
-																									</select>
+																									<label class="control-label mb-10"
+																										for="userCity">City</label>
+																									<div class="input-group">
+																										<div class="input-group-addon">
+																											<i class="ti-direction"></i>
+																										</div>
+																										<input type="text" required=""
+																											autocomplete="off" class="form-control"
+																											id="userCity" name="userCity"
+																											value="${ sessionScope.user.userCity }"
+																											placeholder="Enter Current City">
+																									</div>
+																								</div>
+																								<div class="form-group">
+																									<label class="control-label mb-10"
+																										for="userPincode">Pincode</label>
+																									<div class="input-group">
+																										<div class="input-group-addon">
+																											<i class="ti-target"></i>
+																										</div>
+																										<input type="text" required=""
+																											autocomplete="off" class="form-control"
+																											id="userPincode" name="userPincode"
+																											value="${ sessionScope.user.userPinCode }"
+																											placeholder="Enter PinCode">
+																									</div>
+																								</div>
+																								<div class="form-group">
+																									<label class="control-label mb-10"
+																										for="userDob">Date of Birth</label>
+																									<div class="input-group">
+																										<div class="input-group-addon">
+																											<i class="ti-gift"></i>
+																										</div>
+																										<input type="date" required=""
+																											autocomplete="off" class="form-control"
+																											id="userDob" name="userDob"
+																											value="${ sessionScope.user.userDob }"
+																											placeholder="Enter Date of Birth">
+																									</div>
+																								</div>
+																								<div class="form-group">
+																									<label class="control-label mb-10"
+																										for="userPassword">Enter Password</label>
+																									<div class="input-group">
+																										<div class="input-group-addon">
+																											<i class="icon-lock"></i>
+																										</div>
+																										<input type="password" required=""
+																											autocomplete="off" class="form-control"
+																											id="userPassword" name="userPassword"
+																											placeholder="Enter Current Password to Confirm Changes">
+																									</div>
 																								</div>
 																							</div>
 																							<div class="form-actions mt-10">
@@ -212,14 +303,6 @@
 																	</div>
 																</div>
 															</div>
-														</div>
-														<div class="modal-footer">
-															<button type="button"
-																class="btn btn-success waves-effect"
-																data-dismiss="modal">Save</button>
-															<button type="button"
-																class="btn btn-default waves-effect"
-																data-dismiss="modal">Cancel</button>
 														</div>
 													</div>
 													<!-- /.modal-content -->
@@ -244,7 +327,8 @@
 												href="#profile_8" aria-expanded="false"><span>Profile</span></a></li>
 											<li role="presentation" class="next"><a
 												aria-expanded="true" data-toggle="tab" role="tab"
-												id="follo_tab_8" href="#follo_8"><span>Change Password</span></a></li>
+												id="follo_tab_8" href="#follo_8"><span>Change
+														Password</span></a></li>
 											<li role="presentation" class=""><a data-toggle="tab"
 												id="photos_tab_8" role="tab" href="#photos_8"
 												aria-expanded="false"><span>Data Export</span></a></li>
@@ -252,108 +336,167 @@
 										<div class="tab-content" id="myTabContent_8">
 											<div id="profile_8" class="tab-pane fade active in"
 												role="tabpanel">
-												<div class="col-md-12">
-													<div class="pt-20">
-														<div class="streamline user-activity">
-															<div class="sl-item">
-																<a href="javascript:void(0)">
-																	<div class="sl-avatar avatar avatar-sm avatar-circle">
-																		<img class="img-responsive img-circle"
-																			src="img/user.png" alt="avatar" />
+												<div class="row row-lg">
+													<div class="col-sm-1"></div>
+													<div class="col-md-5">
+														<div class="pt-20">
+															<div class="form-group">
+																<label class="control-label mb-10" for="userName">Name</label>
+																<div class="input-group">
+																	<div class="input-group-addon">
+																		<i class="icon-user"></i>
 																	</div>
-																	<div class="sl-content">
-																		<p class="inline-block">
-																			<span
-																				class="capitalize-font txt-success mr-5 weight-500">Clay
-																				Masse</span><span>invited to join the meeting in the
-																				conference room at 9.45 am</span>
-																		</p>
-																		<span class="block txt-grey font-12 capitalize-font">3
-																			Min</span>
-																	</div>
-																</a>
+																	<input type="text" readonly="true" autocomplete="off"
+																		required="" class="form-control" id="userName"
+																		name="userName"
+																		value="${ sessionScope.user.userName }"
+																		placeholder="User Name">
+																</div>
 															</div>
-
-															<div class="sl-item">
-																<a href="javascript:void(0)">
-																	<div class="sl-avatar avatar avatar-sm avatar-circle">
-																		<img class="img-responsive img-circle"
-																			src="img/user1.png" alt="avatar" />
+														</div>
+													</div>
+													<div class="col-md-5">
+														<div class="pt-20">
+															<div class="form-group">
+																<label class="control-label mb-10" for="userEmail">Email
+																	address</label>
+																<div class="input-group">
+																	<div class="input-group-addon">
+																		<i class="icon-envelope-open"></i>
 																	</div>
-																	<div class="sl-content">
-																		<p class="inline-block">
-																			<span
-																				class="capitalize-font txt-success mr-5 weight-500">Evie
-																				Ono</span><span>added three new photos in the
-																				library</span>
-																		</p>
-																		<div class="activity-thumbnail">
-																			<img src="img/thumb-1.jpg" alt="thumbnail" /> <img
-																				src="img/thumb-2.jpg" alt="thumbnail" /> <img
-																				src="img/thumb-3.jpg" alt="thumbnail" />
-																		</div>
-																		<span class="block txt-grey font-12 capitalize-font">8
-																			Min</span>
-																	</div>
-																</a>
-															</div>
-
-															<div class="sl-item">
-																<a href="javascript:void(0)">
-																	<div class="sl-avatar avatar avatar-sm avatar-circle">
-																		<img class="img-responsive img-circle"
-																			src="img/user2.png" alt="avatar" />
-																	</div>
-																	<div class="sl-content">
-																		<p class="inline-block">
-																			<span
-																				class="capitalize-font txt-success mr-5 weight-500">madalyn
-																				rascon</span><span>assigned a new task</span>
-																		</p>
-																		<span class="block txt-grey font-12 capitalize-font">28
-																			Min</span>
-																	</div>
-																</a>
-															</div>
-
-															<div class="sl-item">
-																<a href="javascript:void(0)">
-																	<div class="sl-avatar avatar avatar-sm avatar-circle">
-																		<img class="img-responsive img-circle"
-																			src="img/user3.png" alt="avatar" />
-																	</div>
-																	<div class="sl-content">
-																		<p class="inline-block">
-																			<span
-																				class="capitalize-font txt-success mr-5 weight-500">Ezequiel
-																				Merideth</span><span>completed project wireframes</span>
-																		</p>
-																		<span class="block txt-grey font-12 capitalize-font">yesterday</span>
-																	</div>
-																</a>
-															</div>
-
-															<div class="sl-item">
-																<a href="javascript:void(0)">
-																	<div class="sl-avatar avatar avatar-sm avatar-circle">
-																		<img class="img-responsive img-circle"
-																			src="img/user4.png" alt="avatar" />
-																	</div>
-																	<div class="sl-content">
-																		<p class="inline-block">
-																			<span
-																				class="capitalize-font txt-success mr-5 weight-500">jonnie
-																				metoyer</span><span>created a group 'Hencework' in
-																				the discussion forum</span>
-																		</p>
-																		<span class="block txt-grey font-12 capitalize-font">18
-																			feb</span>
-																	</div>
-																</a>
+																	<input type="email" readonly="true" autocomplete="off"
+																		required="" class="form-control" id="userEmail"
+																		name="userEmail"
+																		value="${ sessionScope.user.userEmail }"
+																		placeholder="xyz@gmail.com">
+																</div>
 															</div>
 														</div>
 													</div>
 												</div>
+												<div class="row row-lg">
+													<div class="col-sm-1"></div>
+													<div class="col-md-5">
+														<div class="pt-20">
+															<div class="form-group">
+																<label class="control-label mb-10" for="userMobile">Contact
+																	number</label>
+																<div class="input-group">
+																	<div class="input-group-addon">
+																		<i class="icon-phone"></i>
+																	</div>
+																	<input type="number" readonly="true" autocomplete="off"
+																		required="" class="form-control" id="userMobile"
+																		name="userMobile"
+																		value="${ sessionScope.user.userMobile }"
+																		placeholder="+102 9388333">
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-5">
+														<div class="pt-20">
+															<div class="form-group">
+																<label class="control-label mb-10" for="userGender">Gender</label>
+																<div class="input-group">
+																	<div class="input-group-addon">
+																		<i class="ti-tag"></i>
+																	</div>
+																	<input type="text" readonly="true" autocomplete="off"
+																		required="" class="form-control" id="userGender"
+																		name="userGender"
+																		value="${ sessionScope.user.userGender }"
+																		placeholder="Select Gender from Edit Profile">
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="row row-lg">
+													<div class="col-sm-1"></div>
+													<div class="col-md-5">
+														<div class="pt-20">
+															<div class="form-group">
+																<label class="control-label mb-10" for="userCity">City</label>
+																<div class="input-group">
+																	<div class="input-group-addon">
+																		<i class="ti-direction"></i>
+																	</div>
+																	<input type="text" readonly="true" required=""
+																		autocomplete="off" class="form-control" id="userCity"
+																		name="userCity"
+																		value="${ sessionScope.user.userCity }"
+																		placeholder="Enter Current City from Edit Profile">
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-5">
+														<div class="pt-20">
+															<div class="form-group">
+																<label class="control-label mb-10" for="userPincode">Pincode</label>
+																<div class="input-group">
+																	<div class="input-group-addon">
+																		<i class="ti-target"></i>
+																	</div>
+																	<input type="text" readonly="true" required=""
+																		autocomplete="off" class="form-control"
+																		id="userPincode" name="userPincode"
+																		value="${ sessionScope.user.userPinCode }"
+																		placeholder="Enter PinCode from Edit Profile">
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="row row-lg">
+													<div class="col-sm-1"></div>
+													<div class="col-md-5">
+														<div class="pt-20">
+															<div class="form-group">
+																<label class="control-label mb-10" for="userDob">Date
+																	of Birth</label>
+																<div class="input-group">
+																	<div class="input-group-addon">
+																		<i class="ti-gift"></i>
+																	</div>
+																	<input type="text" readonly="true" autocomplete="off"
+																		class="form-control" id="userDob" name="userDob"
+																		value="${ sessionScope.user.userDob }"
+																		placeholder="Enter Date of Birth from Edit Profile">
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-5">
+														<div class="pt-20">
+															<div class="form-group">
+																<label class="control-label mb-10" for="userCreationDate">Account Created On</label>
+																<div class="input-group">
+																	<div class="input-group-addon">
+																		<i class="ti-calendar"></i>
+																	</div>
+																	<input type="text" readonly="true" autocomplete="off"
+																		class="form-control" id="userCreationDate" name="userCreationDate"
+																		value="${ sessionScope.user.userCreationDate }"
+																		placeholder="Enter Date of Birth from Edit Profile">
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="row row-lg">&nbsp;</div>
+												<div class="row row-lg">
+													<div class="col-md-5"></div>
+													<div class="col=md-7">
+													<form name="frmDelete" method="post" onsubmit="return confirmDeleteAction()" action="<%= request.getContextPath() %>/UserMasterController">
+														<input type="hidden" name="flag" value="deleteUser">
+														<input type="hidden" name="userId" value="${ sessionScope.user.userId }">
+														<input type="submit" name="userDelete" class="btn btn-danger btn-rounded" value="Delete Account">
+													</form>
+													</div>
+												</div>
+												<div class="row row-lg">&nbsp;</div>
 											</div>
 
 											<div id="follo_8" class="tab-pane fade" role="tabpanel">
@@ -550,7 +693,7 @@
 							</div>
 						</div>
 					</div>
-					
+
 				</div>
 				<!-- /Row -->
 

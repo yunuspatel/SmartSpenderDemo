@@ -23,7 +23,10 @@
 			if (msg != null) {
 				String userMsg = (String) session.getAttribute("userMsg");%>
 				alert("<%=userMsg%>");
-			<%}
+			<%
+				session.removeAttribute("userMsg");
+				session.removeAttribute("userExists");
+				}
 			Object choice=session.getAttribute("choice");
 			if(choice!=null)
 			{ %>

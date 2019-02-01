@@ -53,7 +53,7 @@ public class Way2SmsPost {
 			bufferedReader.close();
 
 		} catch (Exception ex) {
-			System.out.println("Exception at:");
+			System.out.println("Exception at:"+ex.getMessage());
 		}
 		return content.toString();
 	}

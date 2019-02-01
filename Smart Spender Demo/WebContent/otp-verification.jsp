@@ -53,6 +53,8 @@
 						window.location.href = 'login.jsp';
 					}else if(val.includes("Correct")){
 						window.location.href = 'change-password.jsp';
+					}else if(val.includes("MobileChange")){
+						window.location.href = 'update-contact.jsp';
 					}
 					else{
 						alert("Wrong OTP entered");

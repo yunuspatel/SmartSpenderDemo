@@ -48,6 +48,28 @@ public class UserVo {
 	
 	@Column(name="user_image",length=50)
 	String userImage;
+	
+	@Column(name="user_gender",length=7)
+	String userGender;
+	
+	@Column(name="user_dob",length=20)
+	String userDob;
+
+	public String getUserDob() {
+		return userDob;
+	}
+
+	public void setUserDob(String userDob) {
+		this.userDob = userDob;
+	}
+
+	public String getUserGender() {
+		return userGender;
+	}
+
+	public void setUserGender(String userGender) {
+		this.userGender = userGender;
+	}
 
 	public String getUserCity() {
 		return userCity;

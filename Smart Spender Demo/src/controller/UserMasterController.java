@@ -1,8 +1,11 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -12,6 +15,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import dao.TrackingMasterDao;
 import dao.UserMasterDao;
@@ -59,38 +67,187 @@ public class UserMasterController extends HttpServlet {
 		} else if (flag.equals("forgot-password")) {
 			forgotPassword(request, response);
 		} else if (flag.equals("change-password")) {
-			changePassword(request,response);
+			changePassword(request, response);
+		} else if (flag.equals("uploadProfileImage")) {
+			uploadProfileImage(request, response);
+		} else if (flag.equals("userUpdate")) {
+			userUpdate(request, response);
+		} else if(flag.equals("deleteUser")) {
+			deleteUser(request,response);
 		}
 	}
-	
-	private void loginUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+	private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// TODO Auto-generated method stub
-		String userEmail=request.getParameter("userEmail");
-		String userPassword=request.getParameter("userPassword");
-		
-		UserVo userVo=new UserVo();
-		userVo.setUserEmail(userEmail);
-		userVo.setUserPassword(userPassword);
-		
-		UserMasterDao userMasterDao=new UserMasterDao();
-		List<UserVo> userList=userMasterDao.loginUser(userVo);
+		String userId = request.getParameter("userId");
 		
 		HttpSession session=request.getSession();
-		if(userList.isEmpty())
+		UserVo userVo=(UserVo)session.getAttribute("user");
+		
+		if(Integer.parseInt(userId) == userVo.getUserId())
 		{
+			userVo.setIsDeleted("1");
+			UserMasterDao userMasterDao=new UserMasterDao();
+			userMasterDao.updateUser(userVo);
+		}
+		
+		response.sendRedirect("user-logout.jsp");
+	}
+
+	private void userUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		HttpSession session = request.getSession();
+		UserVo userVo = (UserVo) session.getAttribute("user");
+
+		String userName = request.getParameter("userName");
+		String userEmail = request.getParameter("userEmail");
+		String userMobile = request.getParameter("userMobile");
+		String userGender = request.getParameter("userGender");
+		String userCity = request.getParameter("userCity");
+		String userPincode = request.getParameter("userPincode");
+		String userDob=request.getParameter("userDob");
+		
+		if (userVo.getUserMobile().equals(userMobile)) {
+			userVo.setUserName(userName);
+			userVo.setUserEmail(userEmail);
+			userVo.setUserMobile(userMobile);
+			userVo.setUserGender(userGender);
+			userVo.setUserCity(userCity);
+			userVo.setUserPinCode(userPincode);
+			userVo.setUserDob(userDob);
+			
+			UserMasterDao userMasterDao = new UserMasterDao();
+			userMasterDao.updateUser(userVo);
+
+			session.setAttribute("user", userVo);
+			session.setAttribute("userMsg", "Profile Details successfully updated");
+			response.sendRedirect("user-settings.jsp");
+		}else {
+			userVo.setUserName(userName);
+			userVo.setUserEmail(userEmail);
+			userVo.setUserMobile(userMobile);
+			userVo.setUserGender(userGender);
+			userVo.setUserCity(userCity);
+			userVo.setUserPinCode(userPincode);
+			userVo.setUserDob(userDob);
+			
+			session.setAttribute("user", userVo);
+			session.setAttribute("mobileChange", true);
+			
+			Random random = new Random();
+			int otp = random.nextInt(999999);
+			session.setAttribute("otpValue", otp);
+			System.out.println(otp);
+			// Send OPT Code
+			Way2SmsPost smsPost = new Way2SmsPost();
+			String phone = userVo.getUserMobile();
+			String message = "Your OTP for Smart-Spender Mobile Number Updation is:- " + otp
+					+ ". Enter OTP to complete your update request.";
+			smsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
+
+			response.sendRedirect("otp-verification.jsp");
+		}
+	}
+
+	private void uploadProfileImage(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+
+		// String rootPath = System.getProperty("catalina.home");
+		// to store image in user project directory use System.getProperty("user.dir");
+		/*
+		 * File currentDirFile = new File("."); String helper =
+		 * currentDirFile.getAbsolutePath(); String currentDir = helper.substring(0,
+		 * helper.length() - currentDirFile.getCanonicalPath().length());
+		 * System.out.println(currentDir);
+		 */
+
+		String relativePath = "/img/profile";
+		String rootPath = getServletContext().getRealPath(relativePath);
+		System.out.println(rootPath);
+		File file = new File(rootPath);
+		if (!file.exists()) {
+			file.mkdirs();
+			System.out.println("File Directory created to be used for storing files");
+		}
+
+		if (!ServletFileUpload.isMultipartContent(request)) {
+			throw new ServletException("Content type is not multipart/form-data");
+		}
+
+		PrintWriter out = response.getWriter();
+		DiskFileItemFactory fileFactory = new DiskFileItemFactory();
+		fileFactory.setRepository(file);
+		ServletFileUpload uploader = new ServletFileUpload(fileFactory);
+		HttpSession session = request.getSession();
+		UserVo userVo = (UserVo) session.getAttribute("user");
+
+		try {
+			List<FileItem> fileItemsList = uploader.parseRequest(request);
+			Iterator<FileItem> fileItemsIterator = fileItemsList.iterator();
+			while (fileItemsIterator.hasNext()) {
+				FileItem fileItem = fileItemsIterator.next();
+				System.out.println("FieldName=" + fileItem.getFieldName());
+				System.out.println("FileName=" + fileItem.getName());
+				System.out.println("ContentType=" + fileItem.getContentType());
+				System.out.println("Size in bytes=" + fileItem.getSize());
+
+				File uploadFile = new File(file + File.separator + userVo.getUserName() + ".jpg");
+				String fileName = fileItem.getName();
+				if (fileName.contains(".jpg") || fileName.contains(".jpeg") || fileName.contains(".png")
+						|| fileName.contains(".JPG") || fileName.contains(".JPEG") || fileName.contains(".PNG")) {
+					if (fileItem.getSize() >= 1048576) {
+						session.setAttribute("userMsg", "Can only upload image upto 1 MB");
+					} else {
+						if (uploadFile.exists()) {
+							uploadFile.delete();
+						}
+						System.out.println("Absolute Path at server=" + file.getAbsolutePath());
+						fileItem.write(uploadFile);
+						userVo.setUserImage("img/profile/" + userVo.getUserName() + ".jpg");
+						UserMasterDao userMasterDao = new UserMasterDao();
+						userMasterDao.updateUser(userVo);
+						session.setAttribute("imageChanged", true);
+					}
+				} else {
+					session.setAttribute("userMsg", "Can only upload jpeg files");
+				}
+			}
+		} catch (FileUploadException e) {
+			out.write("Exception in uploading file. FIleUpload");
+		} catch (Exception e) {
+			out.write("Exception in uploading file.");
+		}
+		session.setAttribute("user", userVo);
+		session.setAttribute("imageChanged", true);
+		response.sendRedirect("user-settings.jsp");
+	}
+
+	private void loginUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		String userEmail = request.getParameter("userEmail");
+		String userPassword = request.getParameter("userPassword");
+
+		UserVo userVo = new UserVo();
+		userVo.setUserEmail(userEmail);
+		userVo.setUserPassword(userPassword);
+
+		UserMasterDao userMasterDao = new UserMasterDao();
+		List<UserVo> userList = userMasterDao.loginUser(userVo);
+
+		HttpSession session = request.getSession();
+		if (userList.isEmpty()) {
 			session.setAttribute("userExists", true);
 			session.setAttribute("userMsg", "Email or Password is incorrect.");
 			response.sendRedirect("login.jsp");
-		}
-		else {
-			userVo=userList.get(0);
-			if(userVo.getIsActive().equals("0"))
-			{
+		} else {
+			userVo = userList.get(0);
+			if (userVo.getIsActive().equals("0")) {
 				userVo.setIsActive("1");
-				UserMasterDao masterDao=new UserMasterDao();
+				UserMasterDao masterDao = new UserMasterDao();
 				masterDao.updateUser(userVo);
-				
-				TrackingVo trackingVo=new TrackingVo();
+
+				TrackingVo trackingVo = new TrackingVo();
 				trackingVo.setBrowserName(request.getHeader("user-agent"));
 				trackingVo.setHostName(request.getRemoteHost());
 				trackingVo.setIpAddress(request.getRemoteAddr());
@@ -98,16 +255,17 @@ public class UserMasterController extends HttpServlet {
 				trackingVo.setPortNumber("" + request.getRemotePort());
 				trackingVo.setUserName(userVo.getUserName());
 				trackingVo.setUserVo(userVo);
-				
-				TrackingMasterDao trackingMasterDao=new TrackingMasterDao();
+
+				TrackingMasterDao trackingMasterDao = new TrackingMasterDao();
 				trackingMasterDao.addTrack(trackingVo);
-				
+
 				session.setAttribute("user", userVo);
 				response.sendRedirect("home.jsp");
-			}else {
+			} else {
 				session.setAttribute("user", userVo);
 				session.setAttribute("userExists", true);
-				session.setAttribute("userMsg", "This account is already logged in from another source. If it wasn't you, please change your password and review account activity after changing your password");
+				session.setAttribute("userMsg",
+						"This account is already logged in from another source. If it wasn't you, please change your password and review account activity after changing your password");
 				session.setAttribute("choice", "Do you want to logout?");
 				response.sendRedirect("login.jsp");
 			}
@@ -117,13 +275,13 @@ public class UserMasterController extends HttpServlet {
 	private void changePassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// TODO Auto-generated method stub
 		String userPassword = request.getParameter("userPassword");
-		HttpSession session=request.getSession();
-		UserVo userVo=(UserVo)session.getAttribute("userForgot");
-		
-		UserMasterDao userMasterDao=new  UserMasterDao();
+		HttpSession session = request.getSession();
+		UserVo userVo = (UserVo) session.getAttribute("userForgot");
+
+		UserMasterDao userMasterDao = new UserMasterDao();
 		userVo.setUserPassword(userPassword);
 		userMasterDao.updateUser(userVo);
-		
+
 		response.sendRedirect("login.jsp");
 	}
 
@@ -174,10 +332,13 @@ public class UserMasterController extends HttpServlet {
 
 		if (otp == otpValue) {
 			Object userObj = session.getAttribute("userForgotFLag");
+			Object mobileChange=session.getAttribute("mobileChange");
 			if (userObj != null) {
 				response.getWriter().println("Correct");
-
-			} else {
+			}else if(mobileChange!=null) {
+				response.getWriter().println("MobileChange");
+			}
+			else {
 				UserVo userVo = (UserVo) session.getAttribute("user");
 				UserMasterDao userMasterDao = new UserMasterDao();
 
@@ -210,7 +371,9 @@ public class UserMasterController extends HttpServlet {
 		userVo.setConfirmed(false);
 		userVo.setUserCity("");
 		userVo.setUserPinCode("");
-		userVo.setUserImage("img/empty_user_icon.jpg");
+		userVo.setUserImage("img/profile/empty_user_icon.jpg");
+		userVo.setUserGender("abc");
+		userVo.setUserDob("");
 
 		UserMasterDao masterDao = new UserMasterDao();
 		boolean userExisits = masterDao.checkUserExists(userVo);
