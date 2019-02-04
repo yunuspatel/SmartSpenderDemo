@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,7 +50,29 @@ public class CategoryController extends HttpServlet {
 			}else if(forCategory.equals("expense")) {
 				addExpenseCategory(request,response);
 			}
+		}else if(flag.equals("getSubCategory")) {
+			getSubCategories(request,response);
 		}
+	}
+
+	private void getSubCategories(HttpServletRequest request, HttpServletResponse response) throws ServletException,IOException
+	{
+		String value=request.getParameter("value");
+		CategoryMasterDao categoryMasterDao=new CategoryMasterDao();
+		HttpSession session=request.getSession();
+		UserVo userVo=(UserVo)session.getAttribute("user");
+		
+		List<CategoryVo> subCategoryList = categoryMasterDao.getSubCategoryBasedOnName(value, "income", userVo);
+		CategoryVo categoryVo=subCategoryList.get(0);
+		Set<SubCategoriesVo> subCategoriesVos = categoryVo.getSubCategories();
+		
+		PrintWriter out=response.getWriter();
+		
+		out.println("<subcategory>");
+		for(SubCategoriesVo subCategoriesVo : subCategoriesVos) {
+			out.println("<subcategoryname>"+subCategoriesVo.getSubCategoryName()+"</subcategoryname>");
+		}
+		out.println("</subcategory>");
 	}
 
 	private void addExpenseCategory(HttpServletRequest request, HttpServletResponse response) throws IOException 
