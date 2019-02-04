@@ -15,11 +15,9 @@
 <link href="dist/css/style.css" rel="stylesheet" type="text/css">
 </head>
 <script type="text/javascript">
-	function checkData()
-	{
+	function checkData() {
 		var userMobile = document.getElementById('userMobile').value;
-		if(userMobile.length<10 || userMobile.length>10)
-		{
+		if (userMobile.length<10 || userMobile.length>10) {
 			alert('Enter Proper Mobile Number');
 			return false;
 		}
@@ -61,21 +59,36 @@
 										<h3 class="text-center txt-dark mb-10">Forgot your
 											password</h3>
 										<h6 class="text-center txt-grey nonecase-font">Enter the
-											email and mobile number you use for Smart Spender, and we will help you create
-											a new password.</h6>
+											email and mobile number you use for Smart Spender, and we
+											will help you create a new password.</h6>
 									</div>
 									<div class="form-wrap">
-										<form method="post" onsubmit="return checkData()" action="<%= request.getContextPath() %>/UserMasterController">
+										<form method="post" onsubmit="return checkData()"
+											action="<%=request.getContextPath()%>/UserMasterController">
 											<input type="hidden" name="flag" value="forgot-password">
 											<div class="form-group">
 												<label class="control-label mb-10" for="userEmail">Email
-													address</label> <input type="email" class="form-control"
-													required="" id="userEmail" autofocus="true" autocomplete="off" name="userEmail" placeholder="Enter email">
+													address</label>
+												<div class="input-group">
+													<div class="input-group-addon">
+														<i class="icon-envelope-open"></i>
+													</div>
+													<input type="email" class="form-control" required=""
+														id="userEmail" autofocus="true" autocomplete="off"
+														name="userEmail" placeholder="Enter email">
+												</div>
 											</div>
 											<div class="form-group">
 												<label class="control-label mb-10" for="userMobile">Mobile
-													Number</label> <input type="number" class="form-control" required=""
-													id="userMobile" autocomplete="off" name="userMobile" placeholder="Enter Mobile Number">
+													Number</label>
+												<div class="input-group">
+													<div class="input-group-addon">
+														<i class="icon-phone"></i>
+													</div>
+													<input type="number" class="form-control" required=""
+														id="userMobile" autocomplete="off" name="userMobile"
+														placeholder="Enter Mobile Number">
+												</div>
 											</div>
 											<div class="form-group text-center">
 												<button type="submit" class="btn btn-info btn-rounded">Reset</button>

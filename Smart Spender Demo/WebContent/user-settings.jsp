@@ -85,6 +85,27 @@
 		}
 		return false;
 	}
+	
+	function confirmCheckPassword()
+	{
+		var userCurrentPassword = document.getElementById('userCurrentPassword').value;
+		var userPassword = document.getElementById('userNewPassword').value;
+		var confirmPassword = document.getElementById('confirmNewPassword').value;
+		
+		if(${ sessionScope.user.userPassword } == userCurrentPassword)
+		{
+			if(userPassword == confirmPassword)
+			{
+				return true;
+			}else{
+				alert("Enter both new passwords same");
+				return false;
+			}
+		}else{
+			alert("Incorrect current password");
+			return false;
+		}
+	}
 </script>
 </head>
 <body onload="checkMessage()">
@@ -327,7 +348,7 @@
 												href="#profile_8" aria-expanded="false"><span>Profile</span></a></li>
 											<li role="presentation" class="next"><a
 												aria-expanded="true" data-toggle="tab" role="tab"
-												id="follo_tab_8" href="#follo_8"><span>Change
+												id="follo_tab_8" href="#change_password"><span>Change
 														Password</span></a></li>
 											<li role="presentation" class=""><a data-toggle="tab"
 												id="photos_tab_8" role="tab" href="#photos_8"
@@ -471,13 +492,15 @@
 													<div class="col-md-5">
 														<div class="pt-20">
 															<div class="form-group">
-																<label class="control-label mb-10" for="userCreationDate">Account Created On</label>
+																<label class="control-label mb-10"
+																	for="userCreationDate">Account Created On</label>
 																<div class="input-group">
 																	<div class="input-group-addon">
 																		<i class="ti-calendar"></i>
 																	</div>
 																	<input type="text" readonly="true" autocomplete="off"
-																		class="form-control" id="userCreationDate" name="userCreationDate"
+																		class="form-control" id="userCreationDate"
+																		name="userCreationDate"
 																		value="${ sessionScope.user.userCreationDate }"
 																		placeholder="Enter Date of Birth from Edit Profile">
 																</div>
@@ -489,184 +512,100 @@
 												<div class="row row-lg">
 													<div class="col-md-5"></div>
 													<div class="col=md-7">
-													<form name="frmDelete" method="post" onsubmit="return confirmDeleteAction()" action="<%= request.getContextPath() %>/UserMasterController">
-														<input type="hidden" name="flag" value="deleteUser">
-														<input type="hidden" name="userId" value="${ sessionScope.user.userId }">
-														<input type="submit" name="userDelete" class="btn btn-danger btn-rounded" value="Delete Account">
-													</form>
+														<form name="frmDelete" method="post"
+															onsubmit="return confirmDeleteAction()"
+															action="<%=request.getContextPath()%>/UserMasterController">
+															<input type="hidden" name="flag" value="deleteUser">
+															<input type="hidden" name="userId"
+																value="${ sessionScope.user.userId }"> <input
+																type="submit" name="userDelete"
+																class="btn btn-danger btn-rounded"
+																value="Delete Account">
+														</form>
 													</div>
 												</div>
 												<div class="row row-lg">&nbsp;</div>
 											</div>
 
-											<div id="follo_8" class="tab-pane fade" role="tabpanel">
-												<div class="row">
-													<div class="col-lg-12">
-														<div class="followers-wrap">
-															<ul class="followers-list-wrap">
-																<li class="follow-list">
-																	<div class="follo-body">
-																		<div class="follo-data">
-																			<img class="user-img img-circle" src="img/user.png"
-																				alt="user" />
-																			<div class="user-data">
-																				<span class="name block capitalize-font">Clay
-																					Masse</span> <span class="time block truncate txt-grey">No
-																					one saves us but ourselves.</span>
-																			</div>
-																			<button
-																				class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
-																			<div class="clearfix"></div>
-																		</div>
-																		<div class="follo-data">
-																			<img class="user-img img-circle" src="img/user1.png"
-																				alt="user" />
-																			<div class="user-data">
-																				<span class="name block capitalize-font">Evie
-																					Ono</span> <span class="time block truncate txt-grey">Unity
-																					is strength</span>
-																			</div>
-																			<button
-																				class="btn btn-success btn-outline pull-right btn-xs fixed-btn">following</button>
-																			<div class="clearfix"></div>
-																		</div>
-																		<div class="follo-data">
-																			<img class="user-img img-circle" src="img/user2.png"
-																				alt="user" />
-																			<div class="user-data">
-																				<span class="name block capitalize-font">Madalyn
-																					Rascon</span> <span class="time block truncate txt-grey">Respect
-																					yourself if you would have others respect you.</span>
-																			</div>
-																			<button
-																				class="btn btn-success btn-outline pull-right btn-xs fixed-btn">following</button>
-																			<div class="clearfix"></div>
-																		</div>
-																		<div class="follo-data">
-																			<img class="user-img img-circle" src="img/user3.png"
-																				alt="user" />
-																			<div class="user-data">
-																				<span class="name block capitalize-font">Mitsuko
-																					Heid</span> <span class="time block truncate txt-grey">I’m
-																					thankful.</span>
-																			</div>
-																			<button
-																				class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
-																			<div class="clearfix"></div>
-																		</div>
-																		<div class="follo-data">
-																			<img class="user-img img-circle" src="img/user.png"
-																				alt="user" />
-																			<div class="user-data">
-																				<span class="name block capitalize-font">Ezequiel
-																					Merideth</span> <span class="time block truncate txt-grey">Patience
-																					is bitter.</span>
-																			</div>
-																			<button
-																				class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
-																			<div class="clearfix"></div>
-																		</div>
-																		<div class="follo-data">
-																			<img class="user-img img-circle" src="img/user1.png"
-																				alt="user" />
-																			<div class="user-data">
-																				<span class="name block capitalize-font">Jonnie
-																					Metoyer</span> <span class="time block truncate txt-grey">Genius
-																					is eternal patience.</span>
-																			</div>
-																			<button
-																				class="btn btn-success btn-outline pull-right btn-xs fixed-btn">following</button>
-																			<div class="clearfix"></div>
-																		</div>
+											<div id="change_password" class="tab-pane fade"
+												role="tabpanel">
+												<form name="frmChangePassword" method="post"
+													onsubmit="return confirmCheckPassword()"
+													action="<%=request.getContextPath()%>/UserMasterController">
+													<input type="hidden" name="flag" value="changePassword">
+													<div class="row row-lg">
+														<div class="col-sm-1"></div>
+														<div class="col-lg-10">
+															<div class="form-group">
+																<label class="control-label mb-10"
+																	for="userCurrentPassword">Enter Password</label>
+																<div class="input-group">
+																	<div class="input-group-addon">
+																		<i class="icon-lock"></i>
 																	</div>
-																</li>
-															</ul>
+																	<input type="password" required="" autocomplete="off"
+																		class="form-control" id="userCurrentPassword"
+																		name="userCurrentPassword"
+																		placeholder="Enter Current Password">
+																</div>
+															</div>
 														</div>
 													</div>
-												</div>
+													<div class="row row-lg">
+														<br>
+													</div>
+													<div class="row row-lg">
+														<div class="col-sm-1"></div>
+														<div class="col-lg-10">
+															<div class="form-group">
+																<label class="control-label mb-10" for="userNewPassword">Enter
+																	New Password</label>
+																<div class="input-group">
+																	<div class="input-group-addon">
+																		<i class="icon-lock"></i>
+																	</div>
+																	<input type="password" required="" autocomplete="off"
+																		class="form-control" id="userNewPassword"
+																		name="userNewPassword" placeholder="Enter New Password">
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="row row-lg">
+														<div class="col-sm-1"></div>
+														<div class="col-lg-10">
+															<div class="form-group">
+																<label class="control-label mb-10" for="confirmNewPassword">Confirm
+																	New Password</label>
+																<div class="input-group">
+																	<div class="input-group-addon">
+																		<i class="icon-lock"></i>
+																	</div>
+																	<input type="password" required="" autocomplete="off"
+																		class="form-control" id="confirmNewPassword"
+																		name="confirmNewPassword"
+																		placeholder="Enter New Confirm Password">
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="row row-lg">
+														<div class="col-md-5"></div>
+														<div class="col=md-7">
+
+															<input type="hidden" name="userId"
+																value="${ sessionScope.user.userId }"> <input
+																type="submit" name="userDelete"
+																class="btn btn-danger btn-rounded"
+																value="Change Password">
+														</div>
+													</div>
+													<div class="row row-lg">&nbsp;</div>
+												</form>
 											</div>
 											<div id="photos_8" class="tab-pane fade" role="tabpanel">
 												<div class="col-md-12 pb-20">
-													<div class="gallery-wrap">
-														<div class="portfolio-wrap project-gallery">
-															<ul id="portfolio_1"
-																class="portf auto-construct  project-gallery"
-																data-col="4">
-																<li class="item"
-																	data-src="img/gallery/equal-size/mock1.jpg"
-																	data-sub-html="<h6>Bagwati</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>">
-																	<a href="#"> <img class="img-responsive"
-																		src="img/gallery/equal-size/mock1.jpg"
-																		alt="Image description" /> <span class="hover-cap">Bagwati</span>
-																</a>
-																</li>
-																<li class="item"
-																	data-src="img/gallery/equal-size/mock2.jpg"
-																	data-sub-html="<h6>Not a Keyboard</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>">
-																	<a href="#"> <img class="img-responsive"
-																		src="img/gallery/equal-size/mock2.jpg"
-																		alt="Image description" /> <span class="hover-cap">Not
-																			a Keyboard</span>
-																</a>
-																</li>
-																<li class="item"
-																	data-src="img/gallery/equal-size/mock3.jpg"
-																	data-sub-html="<h6>Into the Woods</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>">
-																	<a href="#"> <img class="img-responsive"
-																		src="img/gallery/equal-size/mock3.jpg"
-																		alt="Image description" /> <span class="hover-cap">Into
-																			the Woods</span>
-																</a>
-																</li>
-																<li class="item"
-																	data-src="img/gallery/equal-size/mock4.jpg"
-																	data-sub-html="<h6>Ultra Saffire</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>">
-																	<a href="#"> <img class="img-responsive"
-																		src="img/gallery/equal-size/mock4.jpg"
-																		alt="Image description" /> <span class="hover-cap">
-																			Ultra Saffire</span>
-																</a>
-																</li>
-
-																<li class="item"
-																	data-src="img/gallery/equal-size/mock5.jpg"
-																	data-sub-html="<h6>Happy Puppy</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>">
-																	<a href="#"> <img class="img-responsive"
-																		src="img/gallery/equal-size/mock5.jpg"
-																		alt="Image description" /> <span class="hover-cap">Happy
-																			Puppy</span>
-																</a>
-																</li>
-																<li class="item"
-																	data-src="img/gallery/equal-size/mock6.jpg"
-																	data-sub-html="<h6>Wooden Closet</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>">
-																	<a href="#"> <img class="img-responsive"
-																		src="img/gallery/equal-size/mock6.jpg"
-																		alt="Image description" /> <span class="hover-cap">Wooden
-																			Closet</span>
-																</a>
-																</li>
-																<li class="item"
-																	data-src="img/gallery/equal-size/mock7.jpg"
-																	data-sub-html="<h6>Happy Puppy</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>">
-																	<a href="#"> <img class="img-responsive"
-																		src="img/gallery/equal-size/mock7.jpg"
-																		alt="Image description" /> <span class="hover-cap">Happy
-																			Puppy</span>
-																</a>
-																</li>
-																<li class="item"
-																	data-src="img/gallery/equal-size/mock8.jpg"
-																	data-sub-html="<h6>Wooden Closet</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>">
-																	<a href="#"> <img class="img-responsive"
-																		src="img/gallery/equal-size/mock8.jpg"
-																		alt="Image description" /> <span class="hover-cap">Wooden
-																			Closet</span>
-																</a>
-																</li>
-															</ul>
-														</div>
-													</div>
+													
 												</div>
 											</div>
 										</div>

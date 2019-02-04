@@ -74,7 +74,33 @@ public class UserMasterController extends HttpServlet {
 			userUpdate(request, response);
 		} else if(flag.equals("deleteUser")) {
 			deleteUser(request,response);
+		} else if(flag.equals("changePassword")) {
+			changeNewPassword(request,response);
 		}
+	}
+
+	private void changeNewPassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		HttpSession session=request.getSession();
+		UserVo userVo=(UserVo)session.getAttribute("user");
+		
+		String userNewPassword = request.getParameter("userNewPassword");
+		session.setAttribute("loginPassword", true);
+		session.setAttribute("userNewPassword", userNewPassword);
+		
+		Random random = new Random();
+		int otp = random.nextInt(999999);
+		session.setAttribute("otpValue", otp);
+		System.out.println(otp);
+		// Send OPT Code
+		Way2SmsPost smsPost = new Way2SmsPost();
+		String phone = userVo.getUserMobile();
+		String message = "Your OTP for Smart-Spender Change Password is:- " + otp
+				+ ". Enter OTP to complete your update request.";
+		smsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
+
+		session.setAttribute("user", userVo);
+		response.sendRedirect("otp-verification.jsp");		
 	}
 
 	private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -137,7 +163,6 @@ public class UserMasterController extends HttpServlet {
 			Random random = new Random();
 			int otp = random.nextInt(999999);
 			session.setAttribute("otpValue", otp);
-			System.out.println(otp);
 			// Send OPT Code
 			Way2SmsPost smsPost = new Way2SmsPost();
 			String phone = userVo.getUserMobile();
@@ -333,10 +358,18 @@ public class UserMasterController extends HttpServlet {
 		if (otp == otpValue) {
 			Object userObj = session.getAttribute("userForgotFLag");
 			Object mobileChange=session.getAttribute("mobileChange");
+			Object loginPassword=session.getAttribute("loginPassword");
 			if (userObj != null) {
 				response.getWriter().println("Correct");
 			}else if(mobileChange!=null) {
 				response.getWriter().println("MobileChange");
+			}else if(loginPassword!=null) {
+				String userNewPassword = (String)session.getAttribute("userNewPassword");
+				UserMasterDao userMasterDao=new UserMasterDao();
+				UserVo userVo=(UserVo)session.getAttribute("user");
+				userVo.setUserPassword(userNewPassword);
+				userMasterDao.updateUser(userVo);
+				response.getWriter().println("loginPassword");
 			}
 			else {
 				UserVo userVo = (UserVo) session.getAttribute("user");

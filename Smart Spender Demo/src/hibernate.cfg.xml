@@ -20,6 +20,8 @@
     
     <mapping class="vo.UserVo"/>
     <mapping class="vo.TrackingVo" />
+    <mapping class="vo.CategoryVo" />
+    <mapping class="vo.SubCategoriesVo" />
 
 </session-factory>
 </hibernate-configuration>

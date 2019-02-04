@@ -25,24 +25,18 @@
 				alert("<%=userMsg%>");
 			<%
 				session.removeAttribute("userMsg");
-				session.removeAttribute("userExists");
-				}
-			Object choice=session.getAttribute("choice");
-			if(choice!=null)
-			{ %>
-				var userChoice = confirm("<%= choice.toString() %>");
-				if(userChoice == true)
-				{
-					<%
-						UserVo userVo=(UserVo)session.getAttribute("user");
-						userVo.setIsActive("0");
-						UserMasterDao userMasterDao=new UserMasterDao();
-						userMasterDao.updateUser(userVo);
-						session.invalidate();
-					%>
-				}
-		<%	}
-			%>
+			}
+			Object choice = session.getAttribute("choice");
+			if (choice != null) {%>
+				var userChoice = confirm("<%=choice.toString()%>");
+		if (userChoice == true) {
+			<%	UserVo userVo = (UserVo) session.getAttribute("user");
+				userVo.setIsActive("0");
+				UserMasterDao userMasterDao = new UserMasterDao();
+				userMasterDao.updateUser(userVo);
+				session.invalidate();%>
+		}
+		<%}%>
 	}
 
 	function checkDataFill() {
@@ -101,10 +95,16 @@
 											<input type=hidden name="flag" value="login">
 											<div class="form-group">
 												<label class="control-label mb-10" for="userEmail">Email
-													address</label> <input type="email" class="form-control"
-													required="" autofocus="true" autocomplete="off"
-													id="userEmail" onkeyup="checkDataFill()" name="userEmail"
-													placeholder="Enter Email">
+													address</label>
+												<div class="input-group">
+													<div class="input-group-addon">
+														<i class="icon-envelope-open"></i>
+													</div>
+													<input type="email" class="form-control" required=""
+														autofocus="true" autocomplete="off" id="userEmail"
+														onkeyup="checkDataFill()" name="userEmail"
+														placeholder="Enter Email">
+												</div>
 											</div>
 											<div class="form-group">
 												<label class="pull-left control-label mb-10"
@@ -112,9 +112,14 @@
 													class="capitalize-font txt-primary block mb-10 pull-right font-12"
 													href="forgot-password.jsp">forgot password ?</a>
 												<div class="clearfix"></div>
-												<input type="password" class="form-control" required=""
-													id="userPassword" autocomplete="off" name="userPassword"
-													onkeyup="checkDataFill()" placeholder="Enter password">
+												<div class="input-group">
+													<div class="input-group-addon">
+														<i class="icon-lock"></i>
+													</div>
+													<input type="password" class="form-control" required=""
+														id="userPassword" autocomplete="off" name="userPassword"
+														onkeyup="checkDataFill()" placeholder="Enter password">
+												</div>
 											</div>
 
 											<!-- <div class="form-group">

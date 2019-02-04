@@ -121,34 +121,66 @@
 											<input type=hidden name="flag" value="signup">
 											<div class="form-group">
 												<label class="control-label mb-10" for="userName">Enter
-													Name</label> <input type="text" autocomplete="off" autofocus="true"
-													class="form-control" name="userName" required=""
-													id="userName" placeholder="Enter Full Name">
+													Name</label>
+												<div class="input-group">
+													<div class="input-group-addon">
+														<i class="icon-user"></i>
+													</div>
+													<input type="text" autocomplete="off" autofocus="true"
+														class="form-control" name="userName" required=""
+														id="userName" placeholder="Enter Full Name">
+												</div>
 											</div>
 											<div class="form-group">
 												<label class="control-label mb-10" for="userEmail">Email
-													address</label> <input type="email" autocomplete="off"
-													name="userEmail" class="form-control" required=""
-													id="userEmail" placeholder="Enter email">
+													address</label>
+												<div class="input-group">
+													<div class="input-group-addon">
+														<i class="icon-envelope-open"></i>
+													</div>
+													<input type="email" autocomplete="off" name="userEmail"
+														class="form-control" required="" id="userEmail"
+														placeholder="Enter email">
+												</div>
 											</div>
 											<div class="form-group">
 												<label class="control-label mb-10" for="userMobile">Mobile
-													Number</label> <input type="number" autocomplete="off"
-													name="userMobile" class="form-control" required=""
-													id="userMobile" placeholder="Enter Mobile No">
+													Number</label>
+												<div class="input-group">
+													<div class="input-group-addon">
+														<i class="icon-phone"></i>
+													</div>
+													<input type="number" autocomplete="off" name="userMobile"
+														class="form-control" required="" id="userMobile"
+														placeholder="Enter Mobile No">
+												</div>
 											</div>
 											<div class="form-group">
 												<label class="pull-left control-label mb-10"
-													for="userPassword">Password</label> <input type="password"
-													autocomplete="off" name="userPassword" class="form-control"
-													required="" id="userPassword" placeholder="Enter Password">
+													for="userPassword">Password</label>
+												<div class="clearfix"></div>
+												<div class="input-group">
+													<div class="input-group-addon">
+														<i class="icon-lock"></i>
+													</div>
+													<input type="password" autocomplete="off"
+														name="userPassword" class="form-control" required=""
+														id="userPassword" placeholder="Enter Password"> </
+												</div>
+
 											</div>
 											<div class="form-group">
 												<label class="pull-left control-label mb-10"
-													for="confirmPassword">Confirm Password</label> <input
-													type="password" autocomplete="off" name="confirmPassword"
-													class="form-control" required="" id="confirmPassword"
-													placeholder="Confirm Password">
+													for="confirmPassword">Confirm Password</label>
+												<div class="clearfix"></div>
+												<div class="input-group">
+													<div class="input-group-addon">
+														<i class="icon-lock"></i>
+													</div>
+													<input type="password" autocomplete="off"
+														name="confirmPassword" class="form-control" required=""
+														id="confirmPassword" placeholder="Confirm Password">
+												</div>
 											</div>
 											<div class="form-group">
 												<div class="checkbox checkbox-primary pr-10 pull-left">
