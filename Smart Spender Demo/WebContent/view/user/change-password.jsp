@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<!-- Mirrored from hencework.com/theme/magilla/full-width-light/forgot-password.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 09 Jan 2019 07:52:02 GMT -->
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport"
@@ -9,10 +7,10 @@
 <title>Change Password-Smart Spender</title>
 
 <!-- Favicon -->
-<link rel="shortcut icon" href="favicon.ico">
-<link rel="icon" href="img/logo2.png" type="image/x-icon">
+<link rel="shortcut icon" href="../../img/logo2.png">
+<link rel="icon" href="../../img/logo2.png" type="image/x-icon">
 <!-- Custom CSS -->
-<link href="dist/css/style.css" rel="stylesheet" type="text/css">
+<link href="../../dist/css/style.css" rel="stylesheet" type="text/css">
 </head>
 <script type="text/javascript">
 	function checkData() {
@@ -30,7 +28,7 @@
 	Object myObj=session.getAttribute("userForgot");
 	if(myObj==null)
 	{
-		response.sendRedirect("login.jsp");
+		response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
 	}
 %>
 	<!--Preloader-->
@@ -42,15 +40,15 @@
 	<div class="wrapper pa-0">
 		<header class="sp-header">
 			<div class="sp-logo-wrap pull-left">
-				<a href="login.jsp"> <img class="brand-img mr-10"
-					src="img/logo1.png" alt="brand" /> <span class="brand-text">Smart
+				<a href="<%= request.getContextPath() %>/view/user/login.jsp"> <img class="brand-img mr-10"
+					src="../../img/logo1.png" alt="brand" /> <span class="brand-text">Smart
 						Spender</span>
 				</a>
 			</div>
 			<div class="form-group mb-0 pull-right">
 				<span class="inline-block pr-10">Remembered your password ? </span> <a
 					class="inline-block btn btn-info btn-rounded btn-outline"
-					href="login.jsp">Sign In</a>
+					href="<%= request.getContextPath() %>/view/userlogin.jsp">Sign In</a>
 			</div>
 			<div class="clearfix"></div>
 		</header>
@@ -102,16 +100,16 @@
 		<!-- /Main Content -->
 	</div>
 	<!-- jQuery -->
-	<script src="vendors/bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="../../vendors/bower_components/jquery/dist/jquery.min.js"></script>
 
 	<!-- Bootstrap Core JavaScript -->
 	<script
-		src="vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+		src="../../vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
 	<!-- Slimscroll JavaScript -->
-	<script src="dist/js/jquery.slimscroll.js"></script>
+	<script src="../../dist/js/jquery.slimscroll.js"></script>
 
 	<!-- Init JavaScript -->
-	<script src="dist/js/init.js"></script>
+	<script src="../../dist/js/init.js"></script>
 </body>
 </html>

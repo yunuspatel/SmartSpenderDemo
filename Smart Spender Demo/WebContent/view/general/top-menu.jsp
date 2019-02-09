@@ -4,8 +4,8 @@
 	<div class="mobile-only-brand pull-left">
 		<div class="nav-header pull-left">
 			<div class="logo-wrap">
-				<a href="home.jsp"> <img class="brand-img"
-					src="img/logo1.png" alt="brand" /> <span class="brand-text">Smart
+				<a href="<%= request.getContextPath() %>/view/pages/home.jsp"> <img class="brand-img"
+					src="../../img/logo1.png" alt="brand" /> <span class="brand-text">Smart
 						Spender</span>
 				</a>
 			</div>
@@ -153,10 +153,10 @@
 					data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
 					<li><a href="#"><i class="zmdi zmdi-card"></i><span>my
 								balance</span></a></li>
-					<li><a href="user-settings.jsp"><i class="zmdi zmdi-settings"></i><span>Settings</span></a>
+					<li><a href="<%= request.getContextPath() %>/view/user/user-settings.jsp"><i class="zmdi zmdi-settings"></i><span>Settings</span></a>
 					</li>
 					<li class="divider"></li>
-					<li><a href="user-logout.jsp"><i class="zmdi zmdi-power"></i><span>Log
+					<li><a href="<%= request.getContextPath() %>/view/user/user-logout.jsp"><i class="zmdi zmdi-power"></i><span>Log
 								Out</span></a></li>
 				</ul></li>
 		</ul>

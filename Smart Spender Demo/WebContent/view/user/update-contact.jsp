@@ -6,16 +6,15 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Log out Page</title>
+<title>Update Contact</title>
 </head>
 <body>
 <%
 	UserVo userVo=(UserVo)session.getAttribute("user");
-	userVo.setIsActive("0");
 	UserMasterDao userMasterDao=new UserMasterDao();
 	userMasterDao.updateUser(userVo);
-	session.invalidate();
-	response.sendRedirect("login.jsp");
+	session.setAttribute("user", userVo);
+	response.sendRedirect(request.getContextPath()+"/view/user/user-logout.jsp");
 %>
 </body>
 </html>

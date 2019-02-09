@@ -6,7 +6,7 @@
 	UserVo userVo=(UserVo)session.getAttribute("user");
 	if(userVo==null)
 	{
-		response.sendRedirect("login.jsp");
+		response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
 	}
 %>
 <meta charset="UTF-8" />
@@ -15,11 +15,11 @@
 <title>Sign Up-Smart Spender</title>
 
 <!-- Favicon -->
-<link rel="shortcut icon" href="img/logo2.png">
-<link rel="icon" href="img/logo2.png" type="image/x-icon">
+<link rel="shortcut icon" href="../../img/logo2.png">
+<link rel="icon" href="../../img/logo2.png" type="image/x-icon">
 
 <!-- Custom CSS -->
-<link href="dist/css/style.css" rel="stylesheet" type="text/css">
+<link href="../../dist/css/style.css" rel="stylesheet" type="text/css">
 <script type="text/javascript">
 	function enablebtn() {
 		if (document.getElementById("checkbox_2").checked) {
@@ -50,13 +50,13 @@
 					var val = new String(xmlhttp.responseText);
 					if(val.includes("Success"))
 					{
-						window.location.href = 'login.jsp';
+						window.location.href = '<%= request.getContextPath() %>/view/user/login.jsp';
 					}else if(val.includes("Correct")){
-						window.location.href = 'change-password.jsp';
+						window.location.href = '<%= request.getContextPath() %>/view/user/change-password.jsp';
 					}else if(val.includes("MobileChange")){
-						window.location.href = 'update-contact.jsp';
+						window.location.href = '<%= request.getContextPath() %>/view/user/update-contact.jsp';
 					}else if(val.includes('loginPassword')){
-						window.location.href = 'user-logout.jsp';
+						window.location.href = '<%= request.getContextPath() %>/view/user/user-logout.jsp';
 					}
 					else{
 						alert("Wrong OTP entered");
@@ -132,15 +132,15 @@
 	<div class="wrapper pa-0">
 		<header class="sp-header">
 			<div class="sp-logo-wrap pull-left">
-				<a href="login.html"> <img class="brand-img mr-10"
-					src="img/logo1.png" alt="brand" /> <span class="brand-text">Smart
+				<a href="<%= request.getContextPath() %>/view/user/login.html"> <img class="brand-img mr-10"
+					src="../../img/logo1.png" alt="brand" /> <span class="brand-text">Smart
 						Spender</span>
 				</a>
 			</div>
 			<div class="form-group mb-0 pull-right">
 				<span class="inline-block pr-10">Already have an account?</span> <a
 					class="inline-block btn btn-info btn-rounded btn-outline"
-					href="login.html">Sign In</a>
+					href="<%= request.getContextPath() %>/view/user/login.html">Sign In</a>
 			</div>
 			<div class="clearfix"></div>
 		</header>
@@ -221,16 +221,16 @@
 
 	</div>
 	<!-- jQuery -->
-	<script src="vendors/bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="../../vendors/bower_components/jquery/dist/jquery.min.js"></script>
 
 	<!-- Bootstrap Core JavaScript -->
 	<script
-		src="vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+		src="../../vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
 	<!-- Slimscroll JavaScript -->
-	<script src="dist/js/jquery.slimscroll.js"></script>
+	<script src="../../dist/js/jquery.slimscroll.js"></script>
 
 	<!-- Init JavaScript -->
-	<script src="dist/js/init.js"></script>
+	<script src="../../dist/js/init.js"></script>
 </body>
 </html>

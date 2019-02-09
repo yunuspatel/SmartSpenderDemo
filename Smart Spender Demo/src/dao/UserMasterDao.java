@@ -54,7 +54,7 @@ public class UserMasterDao {
 
 	public boolean checkUserExists(UserVo userVo) {
 		dbOperation.transaction = dbOperation.session.beginTransaction();
-		list = dbOperation.session.createQuery("from UserVo where userMobile=" + userVo.getUserMobile()).list();
+		list = dbOperation.session.createQuery("from UserVo where userMobile=" + userVo.getUserMobile() + " or userEmail='" + userVo.getUserEmail() + "'").list();
 		if (list.isEmpty()) {
 			return false;
 		}

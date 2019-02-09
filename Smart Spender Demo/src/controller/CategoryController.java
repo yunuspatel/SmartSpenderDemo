@@ -109,7 +109,7 @@ public class CategoryController extends HttpServlet {
 		session.setAttribute("expenseList", expenseList);
 		session.setAttribute("user", userVo);
 		
-		response.sendRedirect("categories.jsp");
+		response.sendRedirect(request.getContextPath()+"/view/pages/categories.jsp");
 	}
 
 	private void addIncomeCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException,IOException 
@@ -146,7 +146,7 @@ public class CategoryController extends HttpServlet {
 		session.setAttribute("incomeList", incomeList);
 		session.setAttribute("user", userVo);
 		
-		response.sendRedirect("categories.jsp");
+		response.sendRedirect(request.getContextPath()+"/view/pages/categories.jsp");
 	}
 
 	/**

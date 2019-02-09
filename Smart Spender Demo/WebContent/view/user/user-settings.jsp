@@ -7,7 +7,7 @@
 <%
 	UserVo userVo = (UserVo) session.getAttribute("user");
 	if (userVo == null) {
-		response.sendRedirect("login.jsp");
+		response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
 	}
 	String userMale = "", userFemale = "";
 	if (userVo.getUserGender().equals("Male")) {
@@ -23,28 +23,28 @@
 <title>User Settings</title>
 
 <!-- Favicon -->
-<link rel="shortcut icon" href="img/logo2.png">
-<link rel="icon" href="img/logo2.png" type="image/x-icon">
+<link rel="shortcut icon" href="../../img/logo2.png">
+<link rel="icon" href="../../img/logo2.png" type="image/x-icon">
 
 <!-- Morris Charts CSS -->
-<link href="vendors/bower_components/morris.js/morris.css"
+<link href="../../vendors/bower_components/morris.js/morris.css"
 	rel="stylesheet" type="text/css" />
 
 <!-- vector map CSS -->
-<link href="vendors/vectormap/jquery-jvectormap-2.0.2.css"
+<link href="../../vendors/vectormap/jquery-jvectormap-2.0.2.css"
 	rel="stylesheet" type="text/css" />
 
 <!-- Calendar CSS -->
-<link href="vendors/bower_components/fullcalendar/dist/fullcalendar.css"
+<link href="../../vendors/bower_components/fullcalendar/dist/fullcalendar.css"
 	rel="stylesheet" type="text/css" />
 
 <!-- Data table CSS -->
 <link
-	href="vendors/bower_components/datatables/media/css/jquery.dataTables.min.css"
+	href="../../vendors/bower_components/datatables/media/css/jquery.dataTables.min.css"
 	rel="stylesheet" type="text/css" />
 
 <!-- Custom CSS -->
-<link href="dist/css/style.css" rel="stylesheet" type="text/css">
+<link href="../../dist/css/style.css" rel="stylesheet" type="text/css">
 <script type="text/javascript">
 	function upload() {
 		var imgVal = document.getElementById('frmImg');
@@ -117,19 +117,19 @@
 	<div class="wrapper theme-1-active pimary-color-red">
 
 		<!-- Top Menu Items -->
-		<jsp:include page="top-menu.jsp"></jsp:include>
+		<jsp:include page="../general/top-menu.jsp"></jsp:include>
 		<!-- /Top Menu Items -->
 
 		<!-- Left Sidebar Menu -->
-		<jsp:include page="left-sidebar-menu.jsp"></jsp:include>
+		<jsp:include page="../general/left-sidebar-menu.jsp"></jsp:include>
 		<!-- /Left Sidebar Menu -->
 
 		<!-- Right Sidebar Menu -->
-		<jsp:include page="right-sidebar-menu.jsp"></jsp:include>
+		<jsp:include page="../general/right-sidebar-menu.jsp"></jsp:include>
 		<!-- /Right Sidebar Menu -->
 
 		<!-- Right Setting Menu -->
-		<jsp:include page="floating-setting-menu.jsp"></jsp:include>
+		<jsp:include page="../general/floating-setting-menu.jsp"></jsp:include>
 		<!-- /Right Setting Menu -->
 
 		<!-- Right Sidebar Backdrop -->
@@ -656,75 +656,75 @@
 	<!-- JavaScript -->
 
 	<!-- jQuery -->
-	<script src="vendors/bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="../../vendors/bower_components/jquery/dist/jquery.min.js"></script>
 
 	<!-- Bootstrap Core JavaScript -->
 	<script
-		src="vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+		src="../../vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
 	<!-- Vector Maps JavaScript -->
-	<script src="vendors/vectormap/jquery-jvectormap-2.0.2.min.js"></script>
-	<script src="vendors/vectormap/jquery-jvectormap-world-mill-en.js"></script>
-	<script src="dist/js/vectormap-data.js"></script>
+	<script src="../../vendors/vectormap/jquery-jvectormap-2.0.2.min.js"></script>
+	<script src="../../vendors/vectormap/jquery-jvectormap-world-mill-en.js"></script>
+	<script src="../../dist/js/vectormap-data.js"></script>
 
 	<!-- Calender JavaScripts -->
-	<script src="vendors/bower_components/moment/min/moment.min.js"></script>
-	<script src="vendors/jquery-ui.min.js"></script>
+	<script src="../../vendors/bower_components/moment/min/moment.min.js"></script>
+	<script src="../../vendors/jquery-ui.min.js"></script>
 	<script
-		src="vendors/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
-	<script src="dist/js/fullcalendar-data.js"></script>
+		src="../../vendors/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+	<script src="../../dist/js/fullcalendar-data.js"></script>
 
 	<!-- Counter Animation JavaScript -->
 	<script
-		src="vendors/bower_components/waypoints/lib/jquery.waypoints.min.js"></script>
+		src="../../vendors/bower_components/waypoints/lib/jquery.waypoints.min.js"></script>
 	<script
-		src="vendors/bower_components/jquery.counterup/jquery.counterup.min.js"></script>
+		src="../../vendors/bower_components/jquery.counterup/jquery.counterup.min.js"></script>
 
 	<!-- Data table JavaScript -->
 	<script
-		src="vendors/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+		src="../../vendors/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
 
 	<!-- Slimscroll JavaScript -->
-	<script src="dist/js/jquery.slimscroll.js"></script>
+	<script src="../../dist/js/jquery.slimscroll.js"></script>
 
 	<!-- Fancy Dropdown JS -->
-	<script src="dist/js/dropdown-bootstrap-extended.js"></script>
+	<script src="../../dist/js/dropdown-bootstrap-extended.js"></script>
 
 	<!-- Sparkline JavaScript -->
-	<script src="vendors/jquery.sparkline/dist/jquery.sparkline.min.js"></script>
+	<script src="../../vendors/jquery.sparkline/dist/jquery.sparkline.min.js"></script>
 
 	<script
-		src="vendors/bower_components/jquery.easy-pie-chart/dist/jquery.easypiechart.min.js"></script>
-	<script src="dist/js/skills-counter-data.js"></script>
+		src="../../vendors/bower_components/jquery.easy-pie-chart/dist/jquery.easypiechart.min.js"></script>
+	<script src="../../dist/js/skills-counter-data.js"></script>
 
 	<!-- Morris Charts JavaScript -->
-	<script src="vendors/bower_components/raphael/raphael.min.js"></script>
-	<script src="vendors/bower_components/morris.js/morris.min.js"></script>
-	<script src="dist/js/morris-data.js"></script>
+	<script src="../../vendors/bower_components/raphael/raphael.min.js"></script>
+	<script src="../../vendors/bower_components/morris.js/morris.min.js"></script>
+	<script src="../../dist/js/morris-data.js"></script>
 
 	<!-- Owl JavaScript -->
 	<script
-		src="vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
+		src="../../vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
 
 	<!-- Switchery JavaScript -->
-	<script src="vendors/bower_components/switchery/dist/switchery.min.js"></script>
+	<script src="../../vendors/bower_components/switchery/dist/switchery.min.js"></script>
 
 	<!-- Data table JavaScript -->
 	<script
-		src="vendors/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+		src="../../vendors/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
 
 	<!-- Gallery JavaScript -->
-	<script src="dist/js/isotope.js"></script>
-	<script src="dist/js/lightgallery-all.js"></script>
-	<script src="dist/js/froogaloop2.min.js"></script>
-	<script src="dist/js/gallery-data.js"></script>
+	<script src="../../dist/js/isotope.js"></script>
+	<script src="../../dist/js/lightgallery-all.js"></script>
+	<script src="../../dist/js/froogaloop2.min.js"></script>
+	<script src="../../dist/js/gallery-data.js"></script>
 
 	<!-- Spectragram JavaScript -->
-	<script src="dist/js/spectragram.min.js"></script>
+	<script src="../../dist/js/spectragram.min.js"></script>
 
 	<!-- Init JavaScript -->
-	<script src="dist/js/init.js"></script>
-	<script src="dist/js/widgets-data.js"></script>
+	<script src="../../dist/js/init.js"></script>
+	<script src="../../dist/js/widgets-data.js"></script>
 
 </body>
 </html>

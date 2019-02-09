@@ -11,7 +11,7 @@
 <%
 	UserVo userVo = (UserVo) session.getAttribute("user");
 	if (userVo == null) {
-		response.sendRedirect("login.jsp");
+		response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
 	} else {
 		CategoryMasterDao categoryMasterDao = new CategoryMasterDao();
 		List<CategoryVo> incomeList = categoryMasterDao.getCategoryList("income", userVo);
@@ -25,27 +25,27 @@
 <title>Add Income</title>
 
 <!-- Favicon -->
-<link rel="shortcut icon" href="img/logo2.png">
-<link rel="icon" href="img/logo2.png" type="image/x-icon">
+<link rel="shortcut icon" href="../../img/logo2.png">
+<link rel="icon" href="../../img/logo2.png" type="image/x-icon">
 
 
 <!-- select2 CSS -->
-<link href="vendors/bower_components/select2/dist/css/select2.min.css"
+<link href="../../vendors/bower_components/select2/dist/css/select2.min.css"
 	rel="stylesheet" type="text/css" />
 
 <!-- bootstrap-select CSS -->
 <link
-	href="vendors/bower_components/bootstrap-select/dist/css/bootstrap-select.min.css"
+	href="../../vendors/bower_components/bootstrap-select/dist/css/bootstrap-select.min.css"
 	rel="stylesheet" type="text/css" />
 
 <!-- Bootstrap Datetimepicker CSS -->
 <link
-	href="vendors/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css"
+	href="../../vendors/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css"
 	rel="stylesheet" type="text/css" />
 
 
 <!-- Custom CSS -->
-<link href="dist/css/style.css" rel="stylesheet" type="text/css">
+<link href="../../dist/css/style.css" rel="stylesheet" type="text/css">
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
@@ -110,19 +110,19 @@
 	<!-- /Preloader -->
 	<div class="wrapper theme-1-active pimary-color-red">
 		<!-- Top Menu Items -->
-		<jsp:include page="top-menu.jsp"></jsp:include>
+		<jsp:include page="../general/top-menu.jsp"></jsp:include>
 		<!-- /Top Menu Items -->
 
 		<!-- Left Sidebar Menu -->
-		<jsp:include page="left-sidebar-menu.jsp"></jsp:include>
+		<jsp:include page="../general/left-sidebar-menu.jsp"></jsp:include>
 		<!-- /Left Sidebar Menu -->
 
 		<!-- Right Sidebar Menu -->
-		<jsp:include page="right-sidebar-menu.jsp"></jsp:include>
+		<jsp:include page="../general/right-sidebar-menu.jsp"></jsp:include>
 		<!-- /Right Sidebar Menu -->
 
 		<!-- Right Setting Menu -->
-		<jsp:include page="floating-setting-menu.jsp"></jsp:include>
+		<jsp:include page="../general/floating-setting-menu.jsp"></jsp:include>
 		<!-- /Right Setting Menu -->
 
 		<!-- Right Sidebar Backdrop -->
@@ -159,7 +159,7 @@
 										<form name="frmIncome" method="post" action="<%= request.getContextPath() %>/TransactionMasterController">
 											<input type="hidden" name="flag" value="addIncomeTransaction">
 											<div class="row row-lg">
-												<div class="col-md-6">
+												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label mb-10" for="payeeName">Payee
 															Name</label>
@@ -173,7 +173,20 @@
 														</div>
 													</div>
 												</div>
-												<div class="col-md-6">
+												<div class="col-md-4">
+													<div class="form-group">
+														<label class="control-label mb-10" for="transactionAmount">Amount</label>
+														<div class="input-group">
+															<div class="input-group-addon">
+																<i class="fa fa-rupee"></i>
+															</div>
+															<input type="number" autocomplete="off" required=""
+																class="form-control" id="transactionAmount" name="transactionAmount"
+																placeholder="Enter Amount">
+														</div>
+													</div>
+												</div>
+												<div class="col-md-4">
 													<div class="form-group">
 														<label class="control-label mb-10 text-left"
 															for="datetimepicker1">Select Date and Time:-</label>
@@ -313,68 +326,68 @@
 
 	</div>
 	<!-- jQuery -->
-	<script src="vendors/bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="../../vendors/bower_components/jquery/dist/jquery.min.js"></script>
 
 	<!-- Bootstrap Core JavaScript -->
 	<script
-		src="vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+		src="../../vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
 	<!-- Moment JavaScript -->
 	<script type="text/javascript"
-		src="vendors/bower_components/moment/min/moment-with-locales.min.js"></script>
+		src="../../vendors/bower_components/moment/min/moment-with-locales.min.js"></script>
 
 	<!-- Switchery JavaScript -->
-	<script src="vendors/bower_components/switchery/dist/switchery.min.js"></script>
+	<script src="../../vendors/bower_components/switchery/dist/switchery.min.js"></script>
 
 	<!-- Select2 JavaScript -->
 	<script
-		src="vendors/bower_components/select2/dist/js/select2.full.min.js"></script>
+		src="../../vendors/bower_components/select2/dist/js/select2.full.min.js"></script>
 
 	<!-- Bootstrap Select JavaScript -->
 	<script
-		src="vendors/bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+		src="../../vendors/bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
 
 	<!-- Bootstrap Datetimepicker JavaScript -->
 	<script type="text/javascript"
-		src="vendors/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+		src="../../vendors/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 
 	<!-- Form Advance Init JavaScript -->
-	<script src="dist/js/form-advance-data.js"></script>
+	<script src="../../dist/js/form-advance-data.js"></script>
 
 	<!-- Slimscroll JavaScript -->
-	<script src="dist/js/jquery.slimscroll.js"></script>
+	<script src="../../dist/js/jquery.slimscroll.js"></script>
 
 	<!-- Fancy Dropdown JS -->
-	<script src="dist/js/dropdown-bootstrap-extended.js"></script>
+	<script src="../../dist/js/dropdown-bootstrap-extended.js"></script>
 
 	<!-- Owl JavaScript -->
 	<script
-		src="vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
+		src="../../vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
 
 	<!-- Bootstrap Datetimepicker JavaScript -->
 	<script type="text/javascript"
-		src="vendors/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+		src="../../vendors/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 
 	<!-- Form Picker Init JavaScript -->
-	<script src="dist/js/form-picker-data.js"></script>
+	<script src="../../dist/js/form-picker-data.js"></script>
 
 	<!-- Bootstrap Touchspin JavaScript -->
 	<script
-		src="vendors/bower_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js"></script>
+		src="../../vendors/bower_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js"></script>
 
 	<!-- Multiselect JavaScript -->
 	<script
-		src="vendors/bower_components/multiselect/js/jquery.multi-select.js"></script>
+		src="../../vendors/bower_components/multiselect/js/jquery.multi-select.js"></script>
 
 	<!-- Bootstrap Switch JavaScript -->
 	<script
-		src="vendors/bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+		src="../../vendors/bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
 
 	<!-- Bootstrap Colorpicker JavaScript -->
 	<script
-		src="vendors/bower_components/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+		src="../../vendors/bower_components/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
 
 	<!-- Init JavaScript -->
-	<script src="dist/js/init.js"></script>
+	<script src="../../dist/js/init.js"></script>
 </body>
 </html>

@@ -8,7 +8,7 @@
 	UserVo userVo=(UserVo)session.getAttribute("user");
 	if(userVo==null)
 	{
-		response.sendRedirect("login.jsp");
+		response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
 	}
 %>
 <head>
@@ -17,19 +17,16 @@
 	<title>Dashboard</title>
 	
 	<!-- Favicon -->
-	<link rel="shortcut icon" href="img/logo2.png">
-	<link rel="icon" href="img/logo2.png" type="image/x-icon">
-	
-	<!-- Morris Charts CSS -->
-<!--     <link href="vendors/bower_components/morris.js/morris.css" rel="stylesheet" type="text/css"/> -->
+	<link rel="shortcut icon" href="../../img/logo2.png">
+	<link rel="icon" href="../../img/logo2.png" type="image/x-icon">
 	
 	<!-- Data table CSS -->
-	<link href="vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
+	<link href="../../vendors/bower_components/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
 	
-	<link href="vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
+	<link href="../../vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.css" rel="stylesheet" type="text/css">
 		
 	<!-- Custom CSS -->
-	<link href="dist/css/style.css" rel="stylesheet" type="text/css">
+	<link href="../../dist/css/style.css" rel="stylesheet" type="text/css">
 	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> -->
 	<script type="text/javascript">
 		function checkActive()
@@ -48,19 +45,19 @@
 	<!-- /Preloader -->
     <div class="wrapper theme-1-active pimary-color-red">
 		<!-- Top Menu Items -->
-		<jsp:include page="top-menu.jsp"></jsp:include>
+		<jsp:include page="../general/top-menu.jsp"></jsp:include>
 		<!-- /Top Menu Items -->
 		
 		<!-- Left Sidebar Menu -->
-		<jsp:include page="left-sidebar-menu.jsp"></jsp:include>
+		<jsp:include page="../general/left-sidebar-menu.jsp"></jsp:include>
 		<!-- /Left Sidebar Menu -->
 		
 		<!-- Right Sidebar Menu -->
-		<jsp:include page="right-sidebar-menu.jsp"></jsp:include>
+		<jsp:include page="../general/right-sidebar-menu.jsp"></jsp:include>
 		<!-- /Right Sidebar Menu -->
 		
 		<!-- Right Setting Menu -->
-		<jsp:include page="floating-setting-menu.jsp"></jsp:include>
+		<jsp:include page="../general/floating-setting-menu.jsp"></jsp:include>
 		<!-- /Right Setting Menu -->
 		
 		<!-- Right Sidebar Backdrop -->
@@ -175,47 +172,47 @@
 
     </div>
     <!-- jQuery -->
-    <script src="vendors/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../../vendors/bower_components/jquery/dist/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../../vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     
 	<!-- Data table JavaScript -->
-	<script src="vendors/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+	<script src="../../vendors/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
 	
 	<!-- Slimscroll JavaScript -->
-	<script src="dist/js/jquery.slimscroll.js"></script>
+	<script src="../../dist/js/jquery.slimscroll.js"></script>
 	
 	<!-- simpleWeather JavaScript -->
-	<script src="vendors/bower_components/moment/min/moment.min.js"></script>
-	<script src="vendors/bower_components/simpleWeather/jquery.simpleWeather.min.js"></script>
-	<script src="dist/js/simpleweather-data.js"></script>
+	<script src="../../vendors/bower_components/moment/min/moment.min.js"></script>
+	<script src="../../vendors/bower_components/simpleWeather/jquery.simpleWeather.min.js"></script>
+	<script src="../../dist/js/simpleweather-data.js"></script>
 	
 	<!-- Progressbar Animation JavaScript -->
-	<script src="vendors/bower_components/waypoints/lib/jquery.waypoints.min.js"></script>
-	<script src="vendors/bower_components/jquery.counterup/jquery.counterup.min.js"></script>
+	<script src="../../vendors/bower_components/waypoints/lib/jquery.waypoints.min.js"></script>
+	<script src="../../vendors/bower_components/jquery.counterup/jquery.counterup.min.js"></script>
 	
 	<!-- Fancy Dropdown JS -->
-	<script src="dist/js/dropdown-bootstrap-extended.js"></script>
+	<script src="../../dist/js/dropdown-bootstrap-extended.js"></script>
 	
 	<!-- Sparkline JavaScript -->
-	<script src="vendors/jquery.sparkline/dist/jquery.sparkline.min.js"></script>
+	<script src="../../vendors/jquery.sparkline/dist/jquery.sparkline.min.js"></script>
 	
 	<!-- Owl JavaScript -->
-	<script src="vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
+	<script src="../../vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
 	
 	<!-- ChartJS JavaScript -->
-	<script src="vendors/chart.js/Chart.min.js"></script>
+	<script src="../../vendors/chart.js/Chart.min.js"></script>
 	
 	<!-- Morris Charts JavaScript -->
-    <script src="vendors/bower_components/morris.js/morris.min.js"></script>
-    <script src="vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
+    <script src="../../vendors/bower_components/morris.js/morris.min.js"></script>
+    <script src="../../vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
 	
 	<!-- Switchery JavaScript -->
-	<script src="vendors/bower_components/switchery/dist/switchery.min.js"></script>
+	<script src="../../vendors/bower_components/switchery/dist/switchery.min.js"></script>
 	
 	<!-- Init JavaScript -->
-	<script src="dist/js/init.js"></script>
-	<script src="dist/js/dashboard-data.js"></script>
+	<script src="../../dist/js/init.js"></script>
+	<script src="../../dist/js/dashboard-data.js"></script>
 </body>
 </html>

@@ -91,7 +91,7 @@ public class UserMasterController extends HttpServlet {
 		Random random = new Random();
 		int otp = random.nextInt(999999);
 		session.setAttribute("otpValue", otp);
-		System.out.println(otp);
+
 		// Send OPT Code
 		Way2SmsPost smsPost = new Way2SmsPost();
 		String phone = userVo.getUserMobile();
@@ -100,7 +100,7 @@ public class UserMasterController extends HttpServlet {
 		smsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
 
 		session.setAttribute("user", userVo);
-		response.sendRedirect("otp-verification.jsp");		
+		response.sendRedirect(request.getContextPath()+"/view/user/otp-verification.jsp");		
 	}
 
 	private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -117,7 +117,7 @@ public class UserMasterController extends HttpServlet {
 			userMasterDao.updateUser(userVo);
 		}
 		
-		response.sendRedirect("user-logout.jsp");
+		response.sendRedirect(request.getContextPath()+"/view/user/user-logout.jsp");
 	}
 
 	private void userUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -147,7 +147,7 @@ public class UserMasterController extends HttpServlet {
 
 			session.setAttribute("user", userVo);
 			session.setAttribute("userMsg", "Profile Details successfully updated");
-			response.sendRedirect("user-settings.jsp");
+			response.sendRedirect(request.getContextPath()+"/view/user/user-settings.jsp");
 		}else {
 			userVo.setUserName(userName);
 			userVo.setUserEmail(userEmail);
@@ -162,6 +162,7 @@ public class UserMasterController extends HttpServlet {
 			
 			Random random = new Random();
 			int otp = random.nextInt(999999);
+
 			session.setAttribute("otpValue", otp);
 			// Send OPT Code
 			Way2SmsPost smsPost = new Way2SmsPost();
@@ -170,7 +171,7 @@ public class UserMasterController extends HttpServlet {
 					+ ". Enter OTP to complete your update request.";
 			smsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
 
-			response.sendRedirect("otp-verification.jsp");
+			response.sendRedirect(request.getContextPath()+"/view/user/otp-verification.jsp");
 		}
 	}
 
@@ -187,13 +188,12 @@ public class UserMasterController extends HttpServlet {
 		 * System.out.println(currentDir);
 		 */
 
-		String relativePath = "/img/profile";
+		String relativePath = "img/profile";
 		String rootPath = getServletContext().getRealPath(relativePath);
 		System.out.println(rootPath);
 		File file = new File(rootPath);
 		if (!file.exists()) {
 			file.mkdirs();
-			System.out.println("File Directory created to be used for storing files");
 		}
 
 		if (!ServletFileUpload.isMultipartContent(request)) {
@@ -212,11 +212,7 @@ public class UserMasterController extends HttpServlet {
 			Iterator<FileItem> fileItemsIterator = fileItemsList.iterator();
 			while (fileItemsIterator.hasNext()) {
 				FileItem fileItem = fileItemsIterator.next();
-				System.out.println("FieldName=" + fileItem.getFieldName());
-				System.out.println("FileName=" + fileItem.getName());
-				System.out.println("ContentType=" + fileItem.getContentType());
-				System.out.println("Size in bytes=" + fileItem.getSize());
-
+			
 				File uploadFile = new File(file + File.separator + userVo.getUserName() + ".jpg");
 				String fileName = fileItem.getName();
 				if (fileName.contains(".jpg") || fileName.contains(".jpeg") || fileName.contains(".png")
@@ -227,9 +223,8 @@ public class UserMasterController extends HttpServlet {
 						if (uploadFile.exists()) {
 							uploadFile.delete();
 						}
-						System.out.println("Absolute Path at server=" + file.getAbsolutePath());
 						fileItem.write(uploadFile);
-						userVo.setUserImage("img/profile/" + userVo.getUserName() + ".jpg");
+						userVo.setUserImage("../../img/profile/" + userVo.getUserName() + ".jpg");
 						UserMasterDao userMasterDao = new UserMasterDao();
 						userMasterDao.updateUser(userVo);
 						session.setAttribute("imageChanged", true);
@@ -245,7 +240,7 @@ public class UserMasterController extends HttpServlet {
 		}
 		session.setAttribute("user", userVo);
 		session.setAttribute("imageChanged", true);
-		response.sendRedirect("user-settings.jsp");
+		response.sendRedirect(request.getContextPath()+"/view/user/user-settings.jsp");
 	}
 
 	private void loginUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -264,7 +259,7 @@ public class UserMasterController extends HttpServlet {
 		if (userList.isEmpty()) {
 			session.setAttribute("userExists", true);
 			session.setAttribute("userMsg", "Email or Password is incorrect.");
-			response.sendRedirect("login.jsp");
+			response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
 		} else {
 			userVo = userList.get(0);
 			if (userVo.getIsActive().equals("0")) {
@@ -285,14 +280,14 @@ public class UserMasterController extends HttpServlet {
 				trackingMasterDao.addTrack(trackingVo);
 
 				session.setAttribute("user", userVo);
-				response.sendRedirect("home.jsp");
+				response.sendRedirect(request.getContextPath()+"/view/pages/home.jsp");
 			} else {
 				session.setAttribute("user", userVo);
 				session.setAttribute("userExists", true);
 				session.setAttribute("userMsg",
 						"This account is already logged in from another source. If it wasn't you, please change your password and review account activity after changing your password");
 				session.setAttribute("choice", "Do you want to logout?");
-				response.sendRedirect("login.jsp");
+				response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
 			}
 		}
 	}
@@ -307,7 +302,7 @@ public class UserMasterController extends HttpServlet {
 		userVo.setUserPassword(userPassword);
 		userMasterDao.updateUser(userVo);
 
-		response.sendRedirect("login.jsp");
+		response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
 	}
 
 	private void forgotPassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -332,6 +327,7 @@ public class UserMasterController extends HttpServlet {
 
 			Random random = new Random();
 			int otp = random.nextInt(999999);
+
 			session.setAttribute("otpValue", otp);
 
 			// Send OPT Code
@@ -341,11 +337,11 @@ public class UserMasterController extends HttpServlet {
 					+ ". Enter OTP to complete your forgot password request.";
 			smsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
 
-			response.sendRedirect("otp-verification.jsp");
+			response.sendRedirect(request.getContextPath()+"/view/user/otp-verification.jsp");
 		} else {
 			session.setAttribute("userExists", true);
 			session.setAttribute("userMsg", "No such user exists with provided email and mobile number");
-			response.sendRedirect("login.jsp");
+			response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
 		}
 	}
 
@@ -360,10 +356,13 @@ public class UserMasterController extends HttpServlet {
 			Object mobileChange=session.getAttribute("mobileChange");
 			Object loginPassword=session.getAttribute("loginPassword");
 			if (userObj != null) {
+				session.removeAttribute("userForgotFLag");
 				response.getWriter().println("Correct");
 			}else if(mobileChange!=null) {
+				session.removeAttribute("mobileChange");
 				response.getWriter().println("MobileChange");
 			}else if(loginPassword!=null) {
+				session.removeAttribute("loginPassword");
 				String userNewPassword = (String)session.getAttribute("userNewPassword");
 				UserMasterDao userMasterDao=new UserMasterDao();
 				UserVo userVo=(UserVo)session.getAttribute("user");
@@ -404,7 +403,7 @@ public class UserMasterController extends HttpServlet {
 		userVo.setConfirmed(false);
 		userVo.setUserCity("");
 		userVo.setUserPinCode("");
-		userVo.setUserImage("img/profile/empty_user_icon.jpg");
+		userVo.setUserImage("../../img/profile/empty_user_icon.jpg");
 		userVo.setUserGender("abc");
 		userVo.setUserDob("");
 
@@ -420,6 +419,7 @@ public class UserMasterController extends HttpServlet {
 
 			Random random = new Random();
 			int otp = random.nextInt(999999);
+
 			session.setAttribute("otpValue", otp);
 
 			// Send OPT Code
@@ -429,12 +429,12 @@ public class UserMasterController extends HttpServlet {
 					+ ". Enter OTP to complete your user registration request.";
 			smsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
 
-			response.sendRedirect("otp-verification.jsp");
+			response.sendRedirect(request.getContextPath()+"/view/user/otp-verification.jsp");
 		} else {
 			HttpSession session = request.getSession();
 			session.setAttribute("userExists", true);
 			session.setAttribute("userMsg", "User Already Esists. You can't signup with provided details.");
-			response.sendRedirect("login.jsp");
+			response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
 		}
 	}
 
