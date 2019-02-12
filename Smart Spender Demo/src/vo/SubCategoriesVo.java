@@ -24,6 +24,18 @@ public class SubCategoriesVo {
 	@ManyToOne
 	@JoinColumn(name="category_id",referencedColumnName="category_id")
 	CategoryVo categoryVo;
+	
+	@ManyToOne
+	@JoinColumn(name="user_id",referencedColumnName="user_id")
+	UserVo userVo;
+
+	public UserVo getUserVo() {
+		return userVo;
+	}
+
+	public void setUserVo(UserVo userVo) {
+		this.userVo = userVo;
+	}
 
 	public int getSubCategoryId() {
 		return subCategoryId;

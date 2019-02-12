@@ -11,16 +11,17 @@
 <%
 	UserVo userVo = (UserVo) session.getAttribute("user");
 	if (userVo == null) {
-		response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
+		response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
 	} else {
+		session.setAttribute("user", userVo);
 		CategoryMasterDao categoryMasterDao = new CategoryMasterDao();
-		List<CategoryVo> incomeList = categoryMasterDao.getCategoryList("income",userVo);
+		List<CategoryVo> incomeList = categoryMasterDao.getCategoryList("income", userVo);
 		if (!incomeList.isEmpty()) {
 			session.setAttribute("incomeList", incomeList);
 		}
-		CategoryMasterDao categoryMasterDao2=new CategoryMasterDao();
-		List<CategoryVo> expenseList = categoryMasterDao2.getCategoryList("expense",userVo);
-		if(!expenseList.isEmpty()){
+		CategoryMasterDao categoryMasterDao2 = new CategoryMasterDao();
+		List<CategoryVo> expenseList = categoryMasterDao2.getCategoryList("expense", userVo);
+		if (!expenseList.isEmpty()) {
 			session.setAttribute("expenseList", expenseList);
 		}
 	}
@@ -54,6 +55,16 @@
 	function checkActive() {
 		var element = document.getElementById('page-categories');
 		element.classList.add("active");
+		<%
+			Object object=session.getAttribute("userMsg");
+			if(object!=null)
+			{
+			%>
+				alert("<%= object %>");
+			<%
+				session.removeAttribute("userMsg");
+			}
+		%>
 	}
 
 	function addIncSubControls() {
@@ -223,6 +234,98 @@
 					</div>
 				</div>
 				<!-- End Modals Content -->
+
+				<!--Edit Category Modal -->
+				<div class="modal fade modal-fade-in-scale-up"
+					id="editIncCategoryModal" aria-hidden="true"
+					aria-labelledby="exampleModalTitle" role="dialog" tabindex="-1">
+					<div class="modal-dialog modal-simple">
+						<form method="post"
+							action="<%=request.getContextPath()%>/CategoryController">
+							<input type="hidden" name="flag" value="editIncCategory">
+							<input type="hidden" name="editIncCategoryId"
+								id="editIncCategoryId">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal"
+										aria-label="Close">x</button>
+									<h4 class="modal-title">Edit Category</h4>
+								</div>
+								<div class="modal-body">
+									<div class="row">
+										<div class="form-group col-md-8">
+											<label class="control-label mb-10" for="editIncCategoryName">Category
+												Name</label> <input type="text" class="form-control"
+												id="editIncCategoryName" name="editIncCategoryName"
+												placeholder="Category Name" autocomplete="off">
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-md-8">
+											<label class="control-label mb-10" for="editIncSubCategory">Sub-Categories
+											</label> <input type="text" class="form-control"
+												id="editIncSubCategory" name="editIncSubCategory"
+												placeholder="Sub Category Name" autocomplete="off">
+											<label class="control-label mb-10" style="color: black">
+												Note:- Enter "," to seperate various sub category fileds </label>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default"
+										data-dismiss="modal">Close</button>
+									<button type="submit" class="btn btn-primary">Save</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="modal fade modal-fade-in-scale-up"
+					id="editExpCategoryModal" aria-hidden="true"
+					aria-labelledby="exampleModalTitle" role="dialog" tabindex="-1">
+					<div class="modal-dialog modal-simple">
+						<form method="post"
+							action="<%=request.getContextPath()%>/CategoryController">
+							<input type="hidden" name="flag" value="editExpCategory">
+							<input type="hidden" name="editExpCategoryId"
+								id="editExpCategoryId">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal"
+										aria-label="Close">x</button>
+									<h4 class="modal-title">Edit Category</h4>
+								</div>
+								<div class="modal-body">
+									<div class="row">
+										<div class="form-group col-md-8">
+											<label class="control-label mb-10" for="editExpCategoryName">Category
+												Name</label> <input type="text" class="form-control"
+												id="editExpCategoryName" name="editExpCategoryName"
+												placeholder="Category Name" autocomplete="off">
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-md-8">
+											<label class="control-label mb-10" for="editExpSubCategory">Sub-Categories
+											</label> <input type="text" class="form-control"
+												id="editExpSubCategory" name="editExpSubCategory"
+												placeholder="Sub Category Name" autocomplete="off">
+											<label class="control-label mb-10" style="color: black">
+												Note:- Enter "," to seperate various sub category fileds </label>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default"
+										data-dismiss="modal">Close</button>
+									<button type="submit" class="btn btn-primary">Save</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<!-- End Edit Category Modal -->
+
 				<div class="page-header page-header-light">
 					<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
 						<h5 class="txt-dark">Add Categories</h5>
@@ -281,11 +384,31 @@
 													<c:forEach var="incomeData"
 														items="${ sessionScope.incomeList }">
 														<tr>
-															<td>${ incomeData.categoryName }</td>
-															<td><c:forEach var="subIncomeData"
+															<td><input type="hidden"
+																id="incCategoryName${ incomeData.categoryId }"
+																value="${ incomeData.categoryName }">${ incomeData.categoryName }</td>
+															<td>
+																<%
+																	int count = 1;
+																%> <c:forEach var="subIncomeData"
 																	items="${ incomeData.subCategories }">
-																${subIncomeData.subCategoryName },	
-															</c:forEach></td>
+																	<%
+																		count++;
+																	%>
+																	<input type="hidden"
+																		id="incSubCategory${ incomeData.categoryId }<%= count-1 %>"
+																		value="${subIncomeData.subCategoryName }">
+																${subIncomeData.subCategoryName },
+																</c:forEach><input type="hidden"
+																id="incSubCategoryCount${ incomeData.categoryId }"
+																value="<%=count%>">
+															</td>
+															<td><a href="#" id="${ incomeData.categoryId }"
+																class="my-edit-class-incCategory"><i
+																	class="fa fa-edit" aria-hidden="true"></i></a> <a
+																href="<%= request.getContextPath() %>/CategoryController?flag=deleteCategory&id=${ incomeData.categoryId }"
+																id="${ incomeData.categoryId }"><i class="ti-trash"
+																	aria-hidden="true"></i></a></td>
 														</tr>
 													</c:forEach>
 												</tbody>
@@ -341,11 +464,31 @@
 													<c:forEach var="expenseData"
 														items="${ sessionScope.expenseList }">
 														<tr>
-															<td>${ expenseData.categoryName }</td>
-															<td><c:forEach var="subExpenseData"
+															<td><input type="hidden"
+																id="expCategoryName${ expenseData.categoryId }"
+																value="${ expenseData.categoryName }">${ expenseData.categoryName }</td>
+															<td>
+																<%
+																	int count = 1;
+																%><c:forEach var="subExpenseData"
 																	items="${ expenseData.subCategories }">
+																	<%
+																		count++;
+																	%>
+																	<input type="hidden"
+																		id="expSubCategory${ expenseData.categoryId }<%= count-1 %>"
+																		value="${subExpenseData.subCategoryName }">
 																${subExpenseData.subCategoryName },	
-															</c:forEach></td>
+															</c:forEach><input type="hidden"
+																id="expSubCategoryCount${ expenseData.categoryId }"
+																value="<%=count%>">
+															</td>
+															<td><a href="#" id="${ expenseData.categoryId }"
+																class="my-edit-class-expCategory"><i
+																	class="fa fa-edit" aria-hidden="true"></i></a> <a
+																href="<%= request.getContextPath() %>/CategoryController?flag=deleteCategory&id=${ expenseData.categoryId }"
+																id="${ expenseData.categoryId }"><i class="ti-trash"
+																	aria-hidden="true"></i></a></td>
 														</tr>
 													</c:forEach>
 												</tbody>
@@ -371,8 +514,52 @@
 
 		</div>
 		<!-- /Main Content -->
+		<script type="text/javascript">
+			$(".my-edit-class-incCategory").on(
+					'click',
+					function() {
+						var id = $(this).attr("id");
+						$("#editIncCategoryId").val(id);
+						$("#editIncCategoryName").val(
+								$("#incCategoryName" + id).val());
+						var subCount = $('#incSubCategoryCount' + id).val();
+						var incSubCategory = "";
 
+						subCount = (subCount * 1);
+						var i = (1 * 1);
+						while (i < subCount) {
+							incSubCategory += $('#incSubCategory' + id + i)
+									.val()
+									+ ', ';
+							i = (i * 1) + 1;
+						}
+						$('#editIncSubCategory').val(incSubCategory);
+						$('#editIncCategoryModal').modal('show');
+					});
+			$(".my-edit-class-expCategory").on(
+					'click',
+					function() {
+						var id = $(this).attr("id");
+						$("#editExpCategoryId").val(id);
+						$("#editExpCategoryName").val(
+								$("#expCategoryName" + id).val());
+						var subCount = $('#expSubCategoryCount' + id).val();
+						var expSubCategory = "";
+
+						subCount = (subCount * 1);
+						var i = (1 * 1);
+						while (i < subCount) {
+							expSubCategory += $('#expSubCategory' + id + i)
+									.val()
+									+ ', ';
+							i = (i * 1) + 1;
+						}
+						$('#editExpSubCategory').val(expSubCategory);
+						$('#editExpCategoryModal').modal('show');
+					});
+		</script>
 	</div>
+
 	<!-- jQuery -->
 	<script src="../../vendors/bower_components/jquery/dist/jquery.min.js"></script>
 
@@ -400,7 +587,8 @@
 		src="../../vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
 
 	<!-- Switchery JavaScript -->
-	<script src="../../vendors/bower_components/switchery/dist/switchery.min.js"></script>
+	<script
+		src="../../vendors/bower_components/switchery/dist/switchery.min.js"></script>
 
 	<!-- Init JavaScript -->
 	<script src="../../dist/js/init.js"></script>

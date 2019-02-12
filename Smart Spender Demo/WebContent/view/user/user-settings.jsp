@@ -1,3 +1,7 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page import="vo.TrackingVo"%>
+<%@page import="java.util.List"%>
+<%@page import="dao.TrackingMasterDao"%>
 <%@page import="vo.UserVo"%>
 <%@page import="dao.UserMasterDao"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -6,14 +10,19 @@
 <html lang="en">
 <%
 	UserVo userVo = (UserVo) session.getAttribute("user");
-	if (userVo == null) {
-		response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
-	}
 	String userMale = "", userFemale = "";
-	if (userVo.getUserGender().equals("Male")) {
-		userMale = "checked";
-	} else if (userVo.getUserGender().equals("Female")) {
-		userFemale = "checked";
+	if (userVo == null) {
+		response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
+	} else {
+		TrackingMasterDao trackingMasterDao=new TrackingMasterDao();
+		List<TrackingVo> trackList = trackingMasterDao.getTrackingDetails(userVo);
+		session.setAttribute("trackList", trackList);
+
+		if (userVo.getUserGender().equals("Male")) {
+			userMale = "checked";
+		} else if (userVo.getUserGender().equals("Female")) {
+			userFemale = "checked";
+		}
 	}
 %>
 <head>
@@ -35,12 +44,16 @@
 	rel="stylesheet" type="text/css" />
 
 <!-- Calendar CSS -->
-<link href="../../vendors/bower_components/fullcalendar/dist/fullcalendar.css"
+<link
+	href="../../vendors/bower_components/fullcalendar/dist/fullcalendar.css"
 	rel="stylesheet" type="text/css" />
 
 <!-- Data table CSS -->
 <link
 	href="../../vendors/bower_components/datatables/media/css/jquery.dataTables.min.css"
+	rel="stylesheet" type="text/css" />
+<link
+	href="../../vendors/bower_components/datatables.net-responsive/css/responsive.dataTables.min.css"
 	rel="stylesheet" type="text/css" />
 
 <!-- Custom CSS -->
@@ -351,6 +364,9 @@
 												id="follo_tab_8" href="#change_password"><span>Change
 														Password</span></a></li>
 											<li role="presentation" class=""><a data-toggle="tab"
+												id="tracking_tab_8" role="tab" href="#tracking_details"
+												aria-expanded="false"><span>User Tracking Details</span></a></li>
+											<li role="presentation" class=""><a data-toggle="tab"
 												id="photos_tab_8" role="tab" href="#photos_8"
 												aria-expanded="false"><span>Data Export</span></a></li>
 										</ul>
@@ -566,7 +582,8 @@
 																	</div>
 																	<input type="password" required="" autocomplete="off"
 																		class="form-control" id="userNewPassword"
-																		name="userNewPassword" placeholder="Enter New Password">
+																		name="userNewPassword"
+																		placeholder="Enter New Password">
 																</div>
 															</div>
 														</div>
@@ -575,8 +592,8 @@
 														<div class="col-sm-1"></div>
 														<div class="col-lg-10">
 															<div class="form-group">
-																<label class="control-label mb-10" for="confirmNewPassword">Confirm
-																	New Password</label>
+																<label class="control-label mb-10"
+																	for="confirmNewPassword">Confirm New Password</label>
 																<div class="input-group">
 																	<div class="input-group-addon">
 																		<i class="icon-lock"></i>
@@ -603,10 +620,55 @@
 													<div class="row row-lg">&nbsp;</div>
 												</form>
 											</div>
-											<div id="photos_8" class="tab-pane fade" role="tabpanel">
+											<div id="tracking_details" class="tab-pane fade"
+												role="tabpanel">
 												<div class="col-md-12 pb-20">
-													
+													<div class="table-wrap">
+														<div class="">
+															<table id="myTable1" class="table pb-10">
+																<thead>
+																	<tr>
+																		<th>Sr.No.</th>
+																		<th>User-Email</th>
+																		<th>Browser Name</th>
+																		<th>Host Name</th>
+																		<th>IP Address</th>
+																		<th>Login Date & Time</th>
+																		<th>Port Number</th>
+																	</tr>
+																</thead>
+																<tfoot>
+																	<tr>
+																		<th>Sr.No.</th>
+																		<th>User-Email</th>
+																		<th>Browser Name</th>
+																		<th>Host Name</th>
+																		<th>IP Address</th>
+																		<th>Login Date & Time</th>
+																		<th>Port Number</th>
+																	</tr>
+																</tfoot>
+																<tbody>
+																	<% int count=1; %>
+																	<c:forEach var="data" items="${ sessionScope.trackList }">
+																		<tr>
+																			<td><%= count++ %></td>
+																			<td>${ data.userEmail }</td>
+																			<td>${ data.browserName }</td>
+																			<td>${ data.hostName }</td>
+																			<td>${ data.ipAddress }</td>
+																			<td>${ data.loginDateTime }</td>
+																			<td>${ data.portNumber }</td>
+																		</tr>
+																	</c:forEach>
+																</tbody>
+															</table>
+														</div>
+													</div>
 												</div>
+											</div>
+											<div id="photos_8" class="tab-pane fade" role="tabpanel">
+												<div class="col-md-12 pb-20"></div>
 											</div>
 										</div>
 									</div>
@@ -664,7 +726,8 @@
 
 	<!-- Vector Maps JavaScript -->
 	<script src="../../vendors/vectormap/jquery-jvectormap-2.0.2.min.js"></script>
-	<script src="../../vendors/vectormap/jquery-jvectormap-world-mill-en.js"></script>
+	<script
+		src="../../vendors/vectormap/jquery-jvectormap-world-mill-en.js"></script>
 	<script src="../../dist/js/vectormap-data.js"></script>
 
 	<!-- Calender JavaScripts -->
@@ -683,6 +746,11 @@
 	<!-- Data table JavaScript -->
 	<script
 		src="../../vendors/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+	<script
+		src="../../vendors/bower_components/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+	<script
+		src="../../vendors/bower_components/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	<script src="../../dist/js/responsive-datatable-data.js"></script>
 
 	<!-- Slimscroll JavaScript -->
 	<script src="../../dist/js/jquery.slimscroll.js"></script>
@@ -691,7 +759,8 @@
 	<script src="../../dist/js/dropdown-bootstrap-extended.js"></script>
 
 	<!-- Sparkline JavaScript -->
-	<script src="../../vendors/jquery.sparkline/dist/jquery.sparkline.min.js"></script>
+	<script
+		src="../../vendors/jquery.sparkline/dist/jquery.sparkline.min.js"></script>
 
 	<script
 		src="../../vendors/bower_components/jquery.easy-pie-chart/dist/jquery.easypiechart.min.js"></script>
@@ -707,17 +776,8 @@
 		src="../../vendors/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
 
 	<!-- Switchery JavaScript -->
-	<script src="../../vendors/bower_components/switchery/dist/switchery.min.js"></script>
-
-	<!-- Data table JavaScript -->
 	<script
-		src="../../vendors/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
-
-	<!-- Gallery JavaScript -->
-	<script src="../../dist/js/isotope.js"></script>
-	<script src="../../dist/js/lightgallery-all.js"></script>
-	<script src="../../dist/js/froogaloop2.min.js"></script>
-	<script src="../../dist/js/gallery-data.js"></script>
+		src="../../vendors/bower_components/switchery/dist/switchery.min.js"></script>
 
 	<!-- Spectragram JavaScript -->
 	<script src="../../dist/js/spectragram.min.js"></script>
@@ -725,6 +785,5 @@
 	<!-- Init JavaScript -->
 	<script src="../../dist/js/init.js"></script>
 	<script src="../../dist/js/widgets-data.js"></script>
-
 </body>
 </html>

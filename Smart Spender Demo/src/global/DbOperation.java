@@ -1,4 +1,4 @@
-package dao;
+package global;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -11,10 +11,10 @@ import vo.UserVo;
 public class DbOperation {
 
 	static AnnotationConfiguration configuration;
-	static SessionFactory factory;
-	Session session;
-	Transaction transaction;
-	Query query;
+	public static SessionFactory factory;
+	public Session session;
+	public Transaction transaction;
+	public Query query;
 	
 	public DbOperation()
 	{

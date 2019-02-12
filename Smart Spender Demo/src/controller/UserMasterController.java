@@ -213,7 +213,7 @@ public class UserMasterController extends HttpServlet {
 			while (fileItemsIterator.hasNext()) {
 				FileItem fileItem = fileItemsIterator.next();
 			
-				File uploadFile = new File(file + File.separator + userVo.getUserName() + ".jpg");
+				File uploadFile = new File(file + File.separator + userVo.getUserEmail() + ".jpg");
 				String fileName = fileItem.getName();
 				if (fileName.contains(".jpg") || fileName.contains(".jpeg") || fileName.contains(".png")
 						|| fileName.contains(".JPG") || fileName.contains(".JPEG") || fileName.contains(".PNG")) {
@@ -224,7 +224,7 @@ public class UserMasterController extends HttpServlet {
 							uploadFile.delete();
 						}
 						fileItem.write(uploadFile);
-						userVo.setUserImage("../../img/profile/" + userVo.getUserName() + ".jpg");
+						userVo.setUserImage("../../img/profile/" + userVo.getUserEmail() + ".jpg");
 						UserMasterDao userMasterDao = new UserMasterDao();
 						userMasterDao.updateUser(userVo);
 						session.setAttribute("imageChanged", true);
@@ -273,7 +273,7 @@ public class UserMasterController extends HttpServlet {
 				trackingVo.setIpAddress(request.getRemoteAddr());
 				trackingVo.setLoginDateTime(new Date().toString());
 				trackingVo.setPortNumber("" + request.getRemotePort());
-				trackingVo.setUserName(userVo.getUserName());
+				trackingVo.setUserEmail(userVo.getUserEmail());
 				trackingVo.setUserVo(userVo);
 
 				TrackingMasterDao trackingMasterDao = new TrackingMasterDao();

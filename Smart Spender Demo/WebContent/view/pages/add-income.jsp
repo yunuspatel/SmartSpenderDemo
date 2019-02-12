@@ -53,6 +53,16 @@
 	function checkActive() {
 		var element = document.getElementById("page-add-income");
 		element.classList.add("active");
+		<%
+			Object object=session.getAttribute("userMsg");
+			if(object!=null)
+			{
+			%>
+				alert("<%= object %>");
+			<%
+				session.removeAttribute("userMsg");
+			}
+		%>
 	}
 	
 	function fillSubCategoryDropdown()
@@ -73,6 +83,10 @@
 				document.getElementById('subCategorySelect').options.length = 0;
 				var cus = xmlhttp.responseXML.documentElement;
 				var cusname = cus.getElementsByTagName("subcategoryname")[z].childNodes[0].nodeValue;
+				var opt = document.createElement("OPTION");
+				opt.text = "Select";
+				opt.value = null;
+				document.getElementById("subCategorySelect").add(opt);
 				while (cusname != null) {
 					addoptions(cusname);
 					z++;
@@ -180,7 +194,7 @@
 															<div class="input-group-addon">
 																<i class="fa fa-rupee"></i>
 															</div>
-															<input type="number" autocomplete="off" required=""
+															<input type="number" step="any" autocomplete="off" required=""
 																class="form-control" id="transactionAmount" name="transactionAmount"
 																placeholder="Enter Amount">
 														</div>
@@ -191,7 +205,7 @@
 														<label class="control-label mb-10 text-left"
 															for="datetimepicker1">Select Date and Time:-</label>
 														<div class="input-group date" id="datetimepicker1">
-															<input type="text" required="" name="transactionDate"
+															<input type="text" required="" name="transactionDate" autocomplete="off"
 																placeholder="Select Date from calendar icon and Time from watch icon"
 																class="form-control"> <span
 																class="input-group-addon"> <span
@@ -206,7 +220,7 @@
 															<label class="control-label mb-10" for="categoryName">Enter/Select
 																Category Name</label> <input type="text" autocomplete="off"
 																class="form-control" id="categoryName"
-																name="categoryName"
+																name="categoryName" value=""
 																placeholder="Enter Category Name if option not found">
 														</div>
 														<div class="col-md-6">
@@ -230,7 +244,7 @@
 															<label class="control-label mb-10" for="subCategoryName">Enter/Select
 																Sub Category Name</label> <input type="text" autocomplete="off"
 																class="form-control" id="subCategoryName"
-																name="subCategoryName"
+																name="subCategoryName" value=""
 																placeholder="Enter Category Name if option not found">
 														</div>
 														<div class="col-md-6">

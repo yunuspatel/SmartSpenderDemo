@@ -18,8 +18,8 @@ public class TrackingVo {
 	@Column(name="tracking_id",length=5)
 	int trackingId;
 	
-	@Column(name="user_name",length=25,nullable=false)
-	String userName;
+	@Column(name="user_email",length=25,nullable=false)
+	String userEmail;
 	
 	@ManyToOne
 	@JoinColumn(name="user_id",referencedColumnName="user_id")
@@ -48,12 +48,12 @@ public class TrackingVo {
 		this.trackingId = trackingId;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUserEmail() {
+		return userEmail;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
 
 	public UserVo getUserVo() {

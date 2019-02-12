@@ -2,6 +2,7 @@ package dao;
 
 import java.util.List;
 
+import global.DbOperation;
 import vo.UserVo;
 
 public class UserMasterDao {
