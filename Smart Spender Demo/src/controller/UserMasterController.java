@@ -190,7 +190,6 @@ public class UserMasterController extends HttpServlet {
 
 		String relativePath = "img/profile";
 		String rootPath = getServletContext().getRealPath(relativePath);
-		System.out.println(rootPath);
 		File file = new File(rootPath);
 		if (!file.exists()) {
 			file.mkdirs();
@@ -239,7 +238,6 @@ public class UserMasterController extends HttpServlet {
 			out.write("Exception in uploading file.");
 		}
 		session.setAttribute("user", userVo);
-		session.setAttribute("imageChanged", true);
 		response.sendRedirect(request.getContextPath()+"/view/user/user-settings.jsp");
 	}
 

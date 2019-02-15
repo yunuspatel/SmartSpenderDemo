@@ -61,6 +61,39 @@ public class TransactionVo {
 	
 	@Column(name="extra_description",length=250)
 	String extraDescription;
+	
+	@Column(name="receipt_image",length=80)
+	String transactionReceiptImage;
+	
+	@Column(name="balance_added_from_transaction_id",length=10)
+	String balanceAddedFromTransactionId;
+	
+	@Column(name="is_deleted",length=6)
+	boolean isDeleted;
+
+	public String getBalanceAddedFromTransactionId() {
+		return balanceAddedFromTransactionId;
+	}
+
+	public void setBalanceAddedFromTransactionId(String balanceAddedFromTransactionId) {
+		this.balanceAddedFromTransactionId = balanceAddedFromTransactionId;
+	}
+
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	public String getTransactionReceiptImage() {
+		return transactionReceiptImage;
+	}
+
+	public void setTransactionReceiptImage(String transactionReceiptImage) {
+		this.transactionReceiptImage = transactionReceiptImage;
+	}
 
 	public String getPayeeName() {
 		return payeeName;

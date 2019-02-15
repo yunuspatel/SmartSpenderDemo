@@ -165,11 +165,12 @@ public class CategoryController extends HttpServlet {
 	private void getSubCategories(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String value = request.getParameter("value");
+		String category = request.getParameter("forCategory");
 		CategoryMasterDao categoryMasterDao = new CategoryMasterDao();
 		HttpSession session = request.getSession();
 		UserVo userVo = (UserVo) session.getAttribute("user");
 
-		List<CategoryVo> subCategoryList = categoryMasterDao.getSubCategoryBasedOnName(value, "income", userVo);
+		List<CategoryVo> subCategoryList = categoryMasterDao.getSubCategoryBasedOnName(value, category, userVo);
 		CategoryVo categoryVo = subCategoryList.get(0);
 		Set<SubCategoriesVo> subCategoriesVos = categoryVo.getSubCategories();
 

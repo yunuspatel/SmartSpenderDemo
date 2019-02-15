@@ -39,7 +39,7 @@
 				</div>
 				<div class="clearfix"></div></a></li>
 		<li><a id="transaction-list"
-			href="<%=request.getContextPath()%>/view/pages/transaction-list.jsp"><div
+			href="<%=request.getContextPath()%>/TransactionMasterController?flag=loadIncomeTransaction"><div
 					class="pull-left">
 					<img src="../../img/menu/transaction-list.png"><i
 						class="mr-20"></i><span class="right-nav-text">Transaction

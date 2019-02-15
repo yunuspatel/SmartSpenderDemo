@@ -14,15 +14,15 @@
 		response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
 	} else {
 		CategoryMasterDao categoryMasterDao = new CategoryMasterDao();
-		List<CategoryVo> incomeList = categoryMasterDao.getCategoryList("income", userVo);
-		session.setAttribute("incomeList", incomeList);
+		List<CategoryVo> incomeList = categoryMasterDao.getCategoryList("expense", userVo);
+		session.setAttribute("expenseList", incomeList);
 	}
 %>
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Add Income</title>
+<title>Add Expense</title>
 
 <!-- Favicon -->
 <link rel="shortcut icon" href="../../img/logo2.png">
@@ -51,7 +51,7 @@
 <script type="text/javascript">
 
 	function checkActive() {
-		var element = document.getElementById("page-add-income");
+		var element = document.getElementById("page-add-expense");
 		element.classList.add("active");
 		<%
 			Object object=session.getAttribute("userMsg");
@@ -69,7 +69,7 @@
 	{
 		var elementValue = document.getElementById('categorySelect').value;
 		var xmlhttp;
-		var url = '<%=request.getContextPath()%>/CategoryController?flag=getSubCategory&forCategory=income&value='+ elementValue;
+		var url = '<%=request.getContextPath()%>/CategoryController?flag=getSubCategory&forCategory=expense&value='+ elementValue;
 
 		if (window.XMLHttpRequest) {
 			xmlhttp = new XMLHttpRequest();
@@ -148,12 +148,12 @@
 		<div class="page-wrapper">
 			<div class="container-fluid pt-25">
 				<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-					<h5 class="txt-dark">Add Income</h5>
+					<h5 class="txt-dark">Add Expense</h5>
 				</div>
 				<div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
 					<ol class="breadcrumb">
 						<li><a href="#">Main</a></li>
-						<li class="active"><span>Add Income</span></li>
+						<li class="active"><span>Add Expense</span></li>
 					</ol>
 				</div>
 
@@ -163,7 +163,7 @@
 						<div class="panel panel-default card-view">
 							<div class="panel-heading">
 								<div class="pull-left">
-									<h6 class="panel-title txt-dark">Add your income
+									<h6 class="panel-title txt-dark">Add your expense
 										transaction</h6>
 								</div>
 								<div class="clearfix"></div>
@@ -171,8 +171,8 @@
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
 									<div class="form-wrap">
-										<form name="frmIncome" id="frmIncome" method="post" action="<%= request.getContextPath() %>/TransactionMasterController">
-											<input type="hidden" name="flag" value="addIncomeTransaction">
+										<form name="frmExpense" id="frmExpense" method="post" action="<%= request.getContextPath() %>/TransactionMasterController">
+											<input type="hidden" name="flag" value="addExpenseTransaction">
 											<div class="row row-lg">
 												<div class="col-md-4">
 													<div class="form-group">
@@ -231,9 +231,9 @@
 																tabindex="-1" aria-hidden="true" name="categorySelect"
 																id="categorySelect" onchange="fillSubCategoryDropdown()">
 																<option value="null">Select</option>
-																<c:forEach var="incomeData"
-																	items="${ sessionScope.incomeList }">
-																	<option value="${ incomeData.categoryName }">${ incomeData.categoryName }</option>
+																<c:forEach var="expenseData"
+																	items="${ sessionScope.expenseList }">
+																	<option value="${ expenseData.categoryName }">${ expenseData.categoryName }</option>
 																</c:forEach>
 															</select>
 														</div>

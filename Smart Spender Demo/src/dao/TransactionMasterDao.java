@@ -24,7 +24,6 @@ public class TransactionMasterDao {
 	
 	public List<TransactionVo> getTransactionList(UserVo userVo,String forTransaction)
 	{
-		dbOperation.transaction=dbOperation.session.beginTransaction();
 		list=dbOperation.session.createQuery("from TransactionVo where userVo.userId='" + userVo.getUserId() + "' and forTransaction='" + forTransaction + "'").list();
 		return list;
 	}
@@ -36,10 +35,29 @@ public class TransactionMasterDao {
 		return (BigInteger)list.get(0);
 	}
 	
-	public List<TransactionVo> getLastTransaction(UserVo userVo,String forTransaction)
+	public List<TransactionVo> getLastTransaction(UserVo userVo)
 	{
 		dbOperation.transaction=dbOperation.session.beginTransaction();
-		list=dbOperation.session.createQuery("from TransactionVo where userVo.userId='" + userVo.getUserId() + "' and forTransaction='income' order by transactionId desc").list();
+		list=dbOperation.session.createQuery("from TransactionVo where userVo.userId='" + userVo.getUserId() + "' order by transactionId desc").list();
 		return list;
+	}
+	
+	public List<TransactionVo> getTransactionForDisplay(UserVo userVo,String forTransaction)
+	{
+		dbOperation.transaction=dbOperation.session.beginTransaction();
+		list=dbOperation.session.createQuery("from TransactionVo where userVo.userId='" + userVo.getUserId() + "' and forTransaction='" + forTransaction + "' and isDeleted=0").list();
+		return list;
+	}
+	
+	public TransactionVo  getTransactionByIdentificationNumber(String transactionIdentificationNumber)
+	{
+		dbOperation.transaction=dbOperation.session.beginTransaction();
+		list=dbOperation.session.createQuery("from TransactionVo where transactionIdentificationNumber='" + transactionIdentificationNumber + "'").list();
+		return list.get(0);
+	}
+	
+	public void updateReceiptImage(TransactionVo transactionVo)
+	{
+		dbOperation.update(transactionVo);
 	}
 }
