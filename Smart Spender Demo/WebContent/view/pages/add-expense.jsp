@@ -152,7 +152,7 @@
 				</div>
 				<div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
 					<ol class="breadcrumb">
-						<li><a href="#">Main</a></li>
+						<li><a href="<%= request.getContextPath() %>/view/pages/home.jsp">Main</a></li>
 						<li class="active"><span>Add Expense</span></li>
 					</ol>
 				</div>
@@ -338,9 +338,6 @@
 			<!-- /Footer -->
 		</div>
 		<!-- /Main Content -->
-		<form method="post" enctype="multipart/form-data">
-			<input type="file" id="transacTionImage" name="transactionImage">
-		</form>
 	</div>
 	<!-- jQuery -->
 	<script src="../../vendors/bower_components/jquery/dist/jquery.min.js"></script>

@@ -82,6 +82,18 @@ public class TransactionMasterController extends HttpServlet {
 		}
 		
 		HttpSession session=request.getSession();
+		UserVo userVo=(UserVo)session.getAttribute("user");
+		String forTransaction = transactionVo.getForTransaction();
+		
+		if(forTransaction!=null) {
+			CategoryMasterDao categoryMasterDao=new CategoryMasterDao();
+			List<CategoryVo> categoryList = categoryMasterDao.getCategoryList(forTransaction, userVo);
+			session.setAttribute("forTransaction",forTransaction);
+			session.setAttribute("categoryData", categoryList);
+
+		}
+		
+		session.setAttribute("user", userVo);
 		session.setAttribute("transactionDetails", transactionVo);
 		response.sendRedirect(request.getContextPath()+"/view/pages/transaction-detail.jsp");
 	}
