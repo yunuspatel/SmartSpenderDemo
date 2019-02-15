@@ -14,7 +14,7 @@
 	if (userVo == null) {
 		response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
 	} else {
-		TrackingMasterDao trackingMasterDao=new TrackingMasterDao();
+		TrackingMasterDao trackingMasterDao = new TrackingMasterDao();
 		List<TrackingVo> trackList = trackingMasterDao.getTrackingDetails(userVo);
 		session.setAttribute("trackList", trackList);
 
@@ -58,6 +58,8 @@
 
 <!-- Custom CSS -->
 <link href="../../dist/css/style.css" rel="stylesheet" type="text/css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
 	function upload() {
 		var imgVal = document.getElementById('frmImg');
@@ -163,8 +165,9 @@
 										<div class="profile-cover-pic"></div>
 										<div class="profile-info text-center">
 											<div class="profile-img-wrap">
-												<img class="inline-block mb-10"
-													src="${ sessionScope.user.userImage }" alt="user" />
+												<img class="inline-block mb-10" id="userImage"
+													name="userImage" src="${ sessionScope.user.userImage }"
+													alt="Image Not Found" />
 												<div class="fileupload btn btn-default">
 													<span class="btn-text">edit</span>
 													<form name="frmImg" id="frmImg" method="post"
@@ -649,10 +652,13 @@
 																	</tr>
 																</tfoot>
 																<tbody>
-																	<% int count=1; %>
-																	<c:forEach var="data" items="${ sessionScope.trackList }">
+																	<%
+																		int count = 1;
+																	%>
+																	<c:forEach var="data"
+																		items="${ sessionScope.trackList }">
 																		<tr>
-																			<td><%= count++ %></td>
+																			<td><%=count++%></td>
 																			<td>${ data.userEmail }</td>
 																			<td>${ data.browserName }</td>
 																			<td>${ data.hostName }</td>
@@ -699,6 +705,7 @@
 				<!-- /Row -->
 
 			</div>
+
 			<!-- Footer -->
 			<footer class="footer container-fluid pl-30 pr-30">
 				<div class="row">
@@ -709,7 +716,41 @@
 			</footer>
 			<!-- /Footer -->
 
+			<div id="responsive-modal" class="modal fade" tabindex="-1"
+				role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+				style="display: none;">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">×</button>
+							<h5 class="modal-title">Profile Image</h5>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<div class="row row-md">
+									<div class="col-md-10">
+										<center>
+											<img alt="User Profile Image Not Found"
+												src="${ sessionScope.user.userImage }" width="200px"
+												height="200px">
+										</center>
+									</div>
+								</div>
+							</div>
+
+						</div>
+						<div class="modal-footer"></div>
+					</div>
+				</div>
+			</div>
+
 		</div>
+		<script type="text/javascript">
+			$('#userImage').on('click', function() {
+				$('#responsive-modal').modal('show');
+			});
+		</script>
 		<!-- /Main Content -->
 
 	</div>
