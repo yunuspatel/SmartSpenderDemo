@@ -22,8 +22,10 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import dao.TrackingMasterDao;
+import dao.TransactionMasterDao;
 import dao.UserMasterDao;
 import vo.TrackingVo;
+import vo.TransactionVo;
 import vo.UserVo;
 import vo.Way2SmsPost;
 
@@ -276,6 +278,15 @@ public class UserMasterController extends HttpServlet {
 
 				TrackingMasterDao trackingMasterDao = new TrackingMasterDao();
 				trackingMasterDao.addTrack(trackingVo);
+				
+				TransactionMasterDao transactionMasterDao4=new TransactionMasterDao();
+				List<TransactionVo> transactionBalance=transactionMasterDao4.getLastTransactionForBalance(userVo);
+				if(transactionBalance.isEmpty())
+				{
+					session.setAttribute("myBalance", ""+0.00);
+				}else {
+					session.setAttribute("myBalance", ""+transactionBalance.get(0).getTotalAvailableBalance());
+				}
 
 				session.setAttribute("user", userVo);
 				response.sendRedirect(request.getContextPath()+"/view/pages/home.jsp");

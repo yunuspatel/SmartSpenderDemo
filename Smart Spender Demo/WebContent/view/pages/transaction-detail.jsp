@@ -1,3 +1,6 @@
+<%@page import="vo.SubCategoriesVo"%>
+<%@page import="dao.SubCategoryDao"%>
+<%@page import="vo.TransactionVo"%>
 <%@page import="vo.CategoryVo"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page import="java.util.List"%>
@@ -10,8 +13,12 @@
 <html lang="en">
 <%
 	UserVo userVo = (UserVo) session.getAttribute("user");
+	TransactionVo transactionVo = null;
 	if (userVo == null) {
 		response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
+	} else {
+		transactionVo = (TransactionVo) session.getAttribute("transactionDetails");
+		session.setAttribute("transactionDetails", transactionVo);		
 	}
 %>
 <head>
@@ -96,9 +103,39 @@
 			document.getElementById('transactionDetails').hidden = false;
 		}
 	}
+	
+	function deleteTransaction()
+	{
+		var confirmMessage = confirm('Are you sure you want to delete this transaction?');
+		if(confirmMessage == true)
+		{
+			var url = '<%= request.getContextPath() %>/TransactionMasterController?flag=deleteTransaction&transactionIdentificationNumber=${ sessionScope.transactionDetails.transactionIdentificationNumber }';
+			window.location.href = url;
+		}
+	}
+	
+	function controlChanges()
+	{
+		document.getElementById('btnUpdate').disabled = false;
+		document.getElementById('btnReset').disabled = false;
+		document.getElementById('btnEdit').disabled = true;
+		document.getElementById('payeeName').disabled = false;
+		document.getElementById('transactionAmount').disabled = false;
+		document.getElementById('transactionDate').disabled = false;
+		document.getElementById('categoryName').disabled = false;
+		document.getElementById('categoryName').value = '';
+		document.getElementById('categorySelect').disabled = false;
+		document.getElementById('subCategoryName').disabled = false;
+		document.getElementById('subCategoryName').value = '';
+		document.getElementById('subCategorySelect').disabled = false;
+		document.getElementById('paymentMethod').disabled = false;
+		document.getElementById('paymentStatus').disabled = false;
+		document.getElementById('transactionNumber').disabled = false;
+		document.getElementById('paymentDescription').disabled = false;
+	}
 </script>
 </head>
-<body onload="checkActive()">
+<body>
 	<!-- Preloader -->
 	<div class="preloader-it">
 		<div class="la-anim-1"></div>
@@ -159,8 +196,6 @@
 										<form name="frmTransaction" id="frmTransaction" method="post"
 											action="<%=request.getContextPath()%>/TransactionMasterController">
 											<input type="hidden" name="flag" value="editTransaction">
-											<input type="hidden" name="transactionId"
-												value="${ sessionScope.transactionDetails.transactionId }">
 											<div class="row row-lg">
 												<div class="col-md-4">
 													<div class="form-group">
@@ -170,7 +205,7 @@
 															<div class="input-group-addon">
 																<i class="icon-user"></i>
 															</div>
-															<input readonly="" type="text" autocomplete="off"
+															<input disabled="" type="text" autocomplete="off"
 																required="" class="form-control" id="payeeName"
 																name="payeeName"
 																value="${ sessionScope.transactionDetails.payeeName }"
@@ -185,10 +220,11 @@
 															<div class="input-group-addon">
 																<i class="fa fa-rupee"></i>
 															</div>
-															<input type="number" readonly="" step="any"
+															<input type="number" disabled="" step="any"
 																autocomplete="off" required="" class="form-control"
 																id="transactionAmount" name="transactionAmount"
-																placeholder="Enter Amount">
+																placeholder="Enter Amount"
+																value="${ sessionScope.transactionDetails.transactionAmount }">
 														</div>
 													</div>
 												</div>
@@ -197,8 +233,9 @@
 														<label class="control-label mb-10 text-left"
 															for="datetimepicker1">Select Date and Time:-</label>
 														<div class="input-group date" id="datetimepicker1">
-															<input type="text" required="" readonly=""
-																name="transactionDate" autocomplete="off"
+															<input type="text" required="" disabled=""
+																name="transactionDate" id="transactionDate" autocomplete="off"
+																value="${ sessionScope.transactionDetails.transactionDateTime }"
 																placeholder="Select Date from calendar icon and Time from watch icon"
 																class="form-control"> <span
 																class="input-group-addon"> <span
@@ -212,7 +249,8 @@
 														<div class="col-md-6">
 															<label class="control-label mb-10" for="categoryName">Enter/Select
 																Category Name</label> <input type="text" autocomplete="off"
-																class="form-control" id="categoryName" readonly=""
+																class="form-control" id="categoryName" disabled=""
+																value="${ sessionScope.transactionDetails.categoryVo.categoryName }"
 																name="categoryName" value=""
 																placeholder="Enter Category Name if option not found">
 														</div>
@@ -246,7 +284,8 @@
 														<div class="col-md-6">
 															<label class="control-label mb-10" for="subCategoryName">Enter/Select
 																Sub Category Name</label> <input type="text" autocomplete="off"
-																class="form-control" readonly="" id="subCategoryName"
+																class="form-control" disabled="" id="subCategoryName"
+																value="${ sessionScope.transactionDetails.subCategoriesVo.subCategoryName }"
 																name="subCategoryName" value=""
 																placeholder="Enter Category Name if option not found">
 														</div>
@@ -257,7 +296,19 @@
 																tabindex="-1" aria-hidden="true"
 																name="subCategorySelect" id="subCategorySelect"
 																disabled="">
-																<option value="null">Select</option>
+																<c:forEach var="incomeData"
+																	items="${ sessionScope.subCategoryList }">
+																	<c:choose>
+																		<c:when
+																			test="${ sessionScope.transactionDetails.subCategoriesVo.subCategoryName == incomeData.subCategoryName }">
+																			<option selected=""
+																				value="${ incomeData.subCategoryName }">${ incomeData.subCategoryName }</option>
+																		</c:when>
+																		<c:otherwise>
+																			<option value="${ incomeData.subCategoryName }">${ incomeData.subCategoryName }</option>
+																		</c:otherwise>
+																	</c:choose>
+																</c:forEach>
 															</select>
 														</div>
 													</div>
@@ -272,11 +323,28 @@
 															class="form-control select2 select2-hidden-accessible"
 															tabindex="-1" aria-hidden="true" name="paymentMethod"
 															id="paymentMethod" onchange="checkMethod()" disabled="">
-															<option value="Cash">Cash</option>
-															<option value="Cheque">Cheque</option>
-															<option value="Credit Card">Credit Card</option>
-															<option value="Debit Card">Debit Card</option>
-															<option value="Net Banking">Net Banking</option>
+															<option
+																<%if (transactionVo.getPaymentMethod().equals("Cash")) { out.println("selected"); }%> value="Cash">Cash</option>
+															<option
+																<%if (transactionVo.getPaymentMethod().equals("Cheque")) {
+				out.println("selected");
+			}%>
+																value="Cheque">Cheque</option>
+															<option
+																<%if (transactionVo.getPaymentMethod().equals("Credit Card")) {
+				out.println("selected");
+			}%>
+																value="Credit Card">Credit Card</option>
+															<option
+																<%if (transactionVo.getPaymentMethod().equals("Debit Card")) {
+				out.println("selected");
+			}%>
+																value="Debit Card">Debit Card</option>
+															<option
+																<%if (transactionVo.getPaymentMethod().equals("Net Banking")) {
+				out.println("selected");
+			}%>
+																value="Net Banking">Net Banking</option>
 														</select>
 													</div>
 												</div>
@@ -287,18 +355,27 @@
 															class="form-control select2 select2-hidden-accessible"
 															tabindex="-1" aria-hidden="true" name="paymentStatus"
 															id="paymentStatus" disabled="">
-															<option value="Cleared">Cleared</option>
-															<option value="Uncleared">Uncleared</option>
+															<option
+																<%if (transactionVo.getStatusOfTransaction().equals("Cleared")) {
+				out.println("selected");
+			}%>
+																value="Cleared">Cleared</option>
+															<option
+																<%if (transactionVo.getStatusOfTransaction().equals("Uncleared")) {
+				out.println("selected");
+			}%>
+																value="Uncleared">Uncleared</option>
 														</select>
 													</div>
 												</div>
-												<div class="col-md-4" id="transactionDetails" hidden="">
+												<div class="col-md-4" id="transactionDetails">
 													<div class="form-group">
 														<label class="control-label mb-10" id="transactionLabel"
 															for="transactionNumber">Transaction/Cheque Number</label>
-														<input type="text" readonly="" autocomplete="off"
+														<input type="text" disabled="" autocomplete="off"
 															class="form-control" id="transactionNumber"
 															name="transactionNumber"
+															value="${ sessionScope.transactionDetails.transactionNumber }"
 															placeholder="Enter Transaction/Cheque No">
 													</div>
 												</div>
@@ -306,8 +383,8 @@
 													<div class="form-group">
 														<label class="control-label mb-10"
 															for="paymentDescription">Extra Description/Notes</label>
-														<textarea id="paymentDescription" readonly=""
-															name="paymentDescription" class="form-control" rows="3"></textarea>
+														<textarea id="paymentDescription" disabled=""
+															name="paymentDescription" class="form-control" rows="3">${ sessionScope.transactionDetails.extraDescription }</textarea>
 													</div>
 												</div>
 												<div class="col-md-6">
@@ -324,15 +401,25 @@
 														</center>
 													</div>
 												</div>
-												<div class="col-md-9">&nbsp;</div>
+												<div class="col-md-6">&nbsp;</div>
 												<div class="col-md-3">
 													<div class="col-md-6">
-														<input type="submit" class="btn  btn-success btn-rounded"
-															value="Save">
+														<input type="button" id="btnEdit" class="btn btn-warning btn-rounded"
+															onclick="controlChanges()" value="Edit">
 													</div>
 													<div class="col-md-6">
-														<input type="reset" class="btn btn-danger btn-rounded"
-															value="Reset">
+														<input type="button" class="btn btn-danger btn-rounded"
+															onclick="deleteTransaction()" value="Delete">
+													</div>
+												</div>
+												<div class="col-md-3">
+													<div class="col-md-6">
+														<input type="submit" id="btnUpdate" disabled=""
+															class="btn btn-success btn-rounded" value="Update">
+													</div>
+													<div class="col-md-6">
+														<input type="reset" id="btnReset" disabled=""
+															class="btn btn-danger btn-rounded" value="Reset">
 													</div>
 												</div>
 											</div>

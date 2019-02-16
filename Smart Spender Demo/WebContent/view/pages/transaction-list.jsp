@@ -77,8 +77,8 @@
 		window.location.href = url;
 	}
 	
-	function upload() {
-		var imgVal = document.getElementById('frmReceipt');
+	function upload(file) {
+		var imgVal = document.getElementById('frmReceipt'+file.id);
 		imgVal.submit();
 	}
 </script>
@@ -188,6 +188,7 @@
 													</tr>
 												</tfoot>
 												<tbody>
+													<% int count=1; %>
 													<c:forEach var="transactionData" items="${ sessionScope.transactionList }">
 														<tr>
 															<td><a style="color : blue" href="<%= request.getContextPath() %>/TransactionMasterController?flag=loadTransactionDetails&id=${ transactionData.transactionIdentificationNumber }">${ transactionData.transactionIdentificationNumber }</a></td>
@@ -198,7 +199,7 @@
 															<td>${ transactionData.transactionDateTime }</td>
 															<td>${ transactionData.paymentMethod }</td>
 															<td>${ transactionData.statusOfTransaction }</td>
-															<td><form name="frmReceipt" id="frmReceipt" method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/TransactionMasterController?flag=uploadReceiptImage&id=${ transactionData.transactionIdentificationNumber }"><input id="receiptImage" name="receiptImage" class="upload" type="file" onchange="upload()"></form></td>
+															<td><form name="frmReceipt" id="frmReceipt${ transactionData.transactionId }" method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/TransactionMasterController?flag=uploadReceiptImage&id=${ transactionData.transactionIdentificationNumber }"><input id="${ transactionData.transactionId }" name="receiptImage${ transactionData.transactionId }" class="upload" type="file" onchange="upload(this)"></form></td>
 														</tr>
 													</c:forEach>
 												</tbody>

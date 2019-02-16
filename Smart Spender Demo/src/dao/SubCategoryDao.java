@@ -3,6 +3,7 @@ package dao;
 import java.util.List;
 
 import global.DbOperation;
+import vo.CategoryVo;
 import vo.SubCategoriesVo;
 import vo.UserVo;
 
@@ -37,5 +38,12 @@ public class SubCategoryDao {
 	public void updateSubCategory(SubCategoriesVo subCategoriesVo)
 	{
 		dbOperation.update(subCategoriesVo);
+	}
+	
+	public List<SubCategoriesVo> getSubCategoryBasedOnName(CategoryVo categoryVo,UserVo userVo)
+	{
+		dbOperation.transaction=dbOperation.session.beginTransaction();
+		list=dbOperation.session.createQuery("from SubCategoriesVo where categoryVo.categoryId='" + categoryVo.getCategoryId() + "' and userVo.userId='" + userVo.getUserId() + "'").list();
+		return list;
 	}
 }

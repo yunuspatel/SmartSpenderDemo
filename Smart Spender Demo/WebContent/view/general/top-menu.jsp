@@ -151,8 +151,8 @@
 					class="user-auth-img img-circle" /><span class="user-online-status"></span></a>
 				<ul class="dropdown-menu user-auth-dropdown"
 					data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
-					<li><a href="#"><i class="zmdi zmdi-card"></i><span>my
-								balance</span></a></li>
+					<li><a href="#"><i class="zmdi zmdi-card"></i><span>My
+								Balance:- ( ${ sessionScope.myBalance } )</span></a></li>
 					<li><a href="<%= request.getContextPath() %>/view/user/user-settings.jsp"><i class="zmdi zmdi-settings"></i><span>Settings</span></a>
 					</li>
 					<li class="divider"></li>

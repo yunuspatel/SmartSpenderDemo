@@ -66,36 +66,325 @@ public class TransactionMasterController extends HttpServlet {
 			loadExpenseTransaction(request, response);
 		} else if (flag.equals("uploadReceiptImage")) {
 			uploadReceiptImage(request, response);
-		} else if(flag.equals("loadTransactionDetails")) {
-			loadTransactionDetails(request,response);
+		} else if (flag.equals("loadTransactionDetails")) {
+			loadTransactionDetails(request, response);
+		} else if (flag.equals("editTransaction")) {
+			editTransaction(request, response);
+		} else if (flag.equals("deleteTransaction")) {
+			deleteTransaction(request, response);
 		}
+	}
+
+	private void deleteTransaction(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		String transactionIdentificationNumber = request.getParameter("transactionIdentificationNumber");
+		TransactionVo transactionVo = new TransactionVo();
+		HttpSession session = request.getSession();
+		UserVo userVo = (UserVo) session.getAttribute("user");
+
+		if (transactionIdentificationNumber != null) {
+			TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
+			transactionVo = transactionMasterDao.getTransactionByIdentificationNumber(transactionIdentificationNumber);
+		}
+
+		transactionVo.setIsDeleted(true);
+
+		TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
+		transactionMasterDao.updateTransaction(transactionVo);
+
+		if (true) {
+			TransactionMasterDao transactionMasterDao2 = new TransactionMasterDao();
+			List<TransactionVo> transactionList = transactionMasterDao2.getAllTransactions(userVo);
+
+			TransactionVo previousVo = null;
+			for (TransactionVo vo : transactionList) {
+				if (vo.getTransactionId() >= transactionVo.getTransactionId()) {
+					if (vo.getForTransaction().equals("income")) {
+						if (previousVo == null) {
+							vo.setTotalAvailableBalance(vo.getTransactionAmount());
+						} else {
+							float newAvailableBalance = previousVo.getTotalAvailableBalance()
+									+ vo.getTransactionAmount();
+							vo.setTotalAvailableBalance(newAvailableBalance);
+						}
+					} else {
+						if (previousVo == null) {
+							vo.setTotalAvailableBalance(0-vo.getTransactionAmount());
+						} else {
+							float newAvailableBalance = previousVo.getTotalAvailableBalance()
+									- vo.getTransactionAmount();
+							vo.setTotalAvailableBalance(newAvailableBalance);
+						}
+					}
+					TransactionMasterDao transactionMasterDao3 = new TransactionMasterDao();
+					transactionMasterDao3.updateTransaction(vo);
+				}
+				previousVo = vo;
+			}
+		}
+		
+		TransactionMasterDao transactionMasterDao4=new TransactionMasterDao();
+		List<TransactionVo> transactionBalance=transactionMasterDao4.getLastTransactionForBalance(userVo);
+		if(transactionBalance.isEmpty())
+		{
+			session.setAttribute("myBalance", ""+0.00);
+		}else {
+			session.setAttribute("myBalance", ""+transactionBalance.get(0).getTotalAvailableBalance());
+		}
+		
+		session.setAttribute("user", userVo);
+		session.setAttribute("userMsg", "Transaction Deleted Successfully.");
+		response.sendRedirect(request.getContextPath() + "/TransactionMasterController?flag=loadIncomeTransaction");
+	}
+
+	private void editTransaction(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		HttpSession session = request.getSession();
+		UserVo userVo = (UserVo) session.getAttribute("user");
+
+		TransactionVo transactionVo = (TransactionVo) session.getAttribute("transactionDetails");
+
+		transactionVo.setUserVo(userVo);
+
+		String payeeName = request.getParameter("payeeName");
+		transactionVo.setPayeeName(payeeName);
+
+		float transactionNewAmount = Float.parseFloat(request.getParameter("transactionAmount"));
+		float transactionOldAmount = transactionVo.getTransactionAmount();
+		transactionVo.setTransactionAmount(transactionNewAmount);
+
+		String transactionDateTime = request.getParameter("transactionDate");
+		transactionVo.setTransactionDateTime(transactionDateTime);
+
+		CategoryVo categoryVo = new CategoryVo();
+		Set<SubCategoriesVo> subCategoriesVos = new HashSet<SubCategoriesVo>();
+		String categoryName = request.getParameter("categoryName");
+		boolean isAvailableCategoryFound = false;
+
+		if (!categoryName.equals("")) {
+			CategoryMasterDao categoryMasterDao = new CategoryMasterDao();
+			List<CategoryVo> categoryList = categoryMasterDao.checkCategoryBasedOnName(categoryName,
+					transactionVo.getForTransaction(), userVo);
+			categoryMasterDao.dbOperation.session.close();
+			if (categoryList.isEmpty()) {
+				categoryVo.setCategoryName(categoryName);
+				categoryVo.setForCategory(transactionVo.getForTransaction());
+				categoryVo.setUserVo(userVo);
+			} else {
+				isAvailableCategoryFound = true;
+				categoryVo = categoryList.get(0);
+				transactionVo.setCategoryVo(categoryVo);
+			}
+		} else {
+			String categoryNameFromSelect = request.getParameter("categorySelect");
+			CategoryMasterDao categoryMasterDao = new CategoryMasterDao();
+			List<CategoryVo> categoryList = categoryMasterDao.checkCategoryBasedOnName(categoryNameFromSelect,
+					transactionVo.getForTransaction(), userVo);
+			categoryVo = categoryList.get(0);
+			categoryMasterDao.dbOperation.session.close();
+			transactionVo.setCategoryVo(categoryVo);
+		}
+
+		String subCategoryName = request.getParameter("subCategoryName");
+
+		if (!subCategoryName.equals("")) {
+			SubCategoryDao subCategoryDao = new SubCategoryDao();
+			List<SubCategoriesVo> subCategoryList = subCategoryDao.checkSubCategory(subCategoryName, userVo);
+			subCategoryDao.dbOperation.session.clear();
+			if (subCategoryList.isEmpty()) {
+				if (isAvailableCategoryFound) {
+					SubCategoriesVo subCategoriesVo = new SubCategoriesVo();
+					subCategoriesVo.setUserVo(userVo);
+					subCategoriesVo.setSubCategoryName(subCategoryName);
+					categoryVo.getSubCategories().add(subCategoriesVo);
+					subCategoriesVo.setCategoryVo(categoryVo);
+
+					CategoryMasterDao categoryMasterDao = new CategoryMasterDao();
+					categoryMasterDao.updateCategory(categoryVo);
+
+					transactionVo.setCategoryVo(categoryVo);
+					transactionVo.setSubCategoriesVo(subCategoriesVo);
+				} else {
+					if (categoryVo.getSubCategories() == null) {
+						SubCategoriesVo subCategoriesVo = new SubCategoriesVo();
+						subCategoriesVo.setSubCategoryName(subCategoryName);
+						subCategoriesVo.setUserVo(userVo);
+						subCategoriesVos.add(subCategoriesVo);
+						subCategoriesVo.setCategoryVo(categoryVo);
+						categoryVo.setSubCategories(subCategoriesVos);
+
+						CategoryMasterDao categoryMasterDao = new CategoryMasterDao();
+						categoryMasterDao.addCategory(categoryVo);
+
+						transactionVo.setCategoryVo(categoryVo);
+						transactionVo.setSubCategoriesVo(subCategoriesVo);
+					} else {
+						SubCategoriesVo subCategoriesVo = new SubCategoriesVo();
+						subCategoriesVo.setSubCategoryName(subCategoryName);
+						subCategoriesVo.setUserVo(userVo);
+						categoryVo.getSubCategories().add(subCategoriesVo);
+						subCategoriesVo.setCategoryVo(categoryVo);
+
+						CategoryMasterDao categoryMasterDao = new CategoryMasterDao();
+						categoryMasterDao.updateCategory(categoryVo);
+
+						transactionVo.setCategoryVo(categoryVo);
+						transactionVo.setSubCategoriesVo(subCategoriesVo);
+					}
+				}
+			} else {
+				SubCategoriesVo subCategoriesVo = subCategoryList.get(0);
+				if (categoryVo.getSubCategories() == null) {
+					SubCategoriesVo subCategoriesVo2 = new SubCategoriesVo();
+					subCategoriesVo2.setSubCategoryName(subCategoriesVo.getSubCategoryName());
+					subCategoriesVo2.setUserVo(userVo);
+					subCategoriesVos.add(subCategoriesVo2);
+					categoryVo.setSubCategories(subCategoriesVos);
+					subCategoriesVo2.setCategoryVo(categoryVo);
+
+					CategoryMasterDao categoryMasterDao = new CategoryMasterDao();
+					categoryMasterDao.addCategory(categoryVo);
+
+					transactionVo.setCategoryVo(categoryVo);
+					transactionVo.setSubCategoriesVo(subCategoriesVo);
+				} else {
+					transactionVo.setSubCategoriesVo(subCategoriesVo);
+				}
+			}
+		} else {
+			String subCategoryFromSelect = request.getParameter("subCategorySelect");
+			SubCategoryDao subCategoryDao = new SubCategoryDao();
+			List<SubCategoriesVo> subCategoryList = subCategoryDao.checkSubCategory(subCategoryFromSelect, userVo);
+			SubCategoriesVo subCategoriesVo = subCategoryList.get(0);
+			transactionVo.setSubCategoriesVo(subCategoriesVo);
+		}
+
+		String paymentMethod = request.getParameter("paymentMethod");
+		transactionVo.setPaymentMethod(paymentMethod);
+
+		if (!paymentMethod.equals("Cash")) {
+			String transactionNumber = request.getParameter("transactionNumber");
+			transactionVo.setTransactionNumber(transactionNumber);
+		} else {
+			transactionVo.setTransactionNumber("");
+		}
+
+		String paymentStatus = request.getParameter("paymentStatus");
+		transactionVo.setStatusOfTransaction(paymentStatus);
+
+		String paymentDescription = request.getParameter("paymentDescription");
+		if (paymentDescription.equals("")) {
+			transactionVo.setExtraDescription("");
+		} else {
+			transactionVo.setExtraDescription(paymentDescription);
+		}
+
+		transactionVo.setForTransaction(transactionVo.getForTransaction());
+
+		float difference;
+
+		if (transactionVo.getForTransaction().equals("income")) {
+			if (transactionNewAmount > transactionOldAmount) {
+				difference = transactionNewAmount - transactionOldAmount;
+				float newBalance = transactionVo.getTotalAvailableBalance() + difference;
+				transactionVo.setTotalAvailableBalance(newBalance);
+			} else {
+				difference = transactionOldAmount - transactionNewAmount;
+				float newBalance = transactionVo.getTotalAvailableBalance() - difference;
+				transactionVo.setTotalAvailableBalance(newBalance);
+			}
+		} else {
+			if (transactionNewAmount > transactionOldAmount) {
+				difference = transactionNewAmount - transactionOldAmount;
+				float newBalance = transactionVo.getTotalAvailableBalance() - difference;
+				transactionVo.setTotalAvailableBalance(newBalance);
+			} else {
+				difference = transactionOldAmount - transactionNewAmount;
+				float newBalance = transactionVo.getTotalAvailableBalance() + difference;
+				transactionVo.setTotalAvailableBalance(newBalance);
+			}
+		}
+
+		transactionVo.setTransactionReceiptImage(transactionVo.getTransactionReceiptImage());
+		transactionVo.setIsDeleted(transactionVo.isDeleted());
+
+		TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
+		transactionMasterDao.updateTransaction(transactionVo);
+
+		if (true) {
+			TransactionMasterDao transactionMasterDao2 = new TransactionMasterDao();
+			List<TransactionVo> transactionList = transactionMasterDao2.getAllTransactions(userVo);
+
+			TransactionVo previousVo = null;
+			boolean value = false;
+			for (TransactionVo vo : transactionList) {
+				if (vo.getTransactionId() != transactionVo.getTransactionId()) {
+					if (value == false) {
+						continue;
+					} else {
+						if (vo.getForTransaction().equals("income")) {
+							float newAvailableBalance = previousVo.getTotalAvailableBalance()
+									+ vo.getTransactionAmount();
+							vo.setTotalAvailableBalance(newAvailableBalance);
+						} else {
+							float newAvailableBalance = previousVo.getTotalAvailableBalance()
+									- vo.getTransactionAmount();
+							vo.setTotalAvailableBalance(newAvailableBalance);
+						}
+					}
+					TransactionMasterDao transactionMasterDao3 = new TransactionMasterDao();
+					transactionMasterDao3.updateTransaction(vo);
+				} else if (vo.getTransactionId() == transactionVo.getTransactionId()) {
+					value = true;
+				}
+				previousVo = vo;
+			}
+		}
+		
+		TransactionMasterDao transactionMasterDao4=new TransactionMasterDao();
+		List<TransactionVo> transactionBalance=transactionMasterDao4.getLastTransactionForBalance(userVo);
+		if(transactionBalance.isEmpty())
+		{
+			session.setAttribute("myBalance", ""+0.00);
+		}else {
+			session.setAttribute("myBalance", ""+transactionBalance.get(0).getTotalAvailableBalance());
+		}
+
+		session.setAttribute("user", userVo);
+		session.setAttribute("userMsg", "Transaction Updated Successfully.");
+		response.sendRedirect(request.getContextPath() + "/TransactionMasterController?flag=loadIncomeTransaction");
 	}
 
 	private void loadTransactionDetails(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// TODO Auto-generated method stub
 		String transactionIdentificationNumber = request.getParameter("id");
 		TransactionVo transactionVo = null;
-		if(transactionIdentificationNumber!=null)
-		{
-			TransactionMasterDao transactionMasterDao=new TransactionMasterDao();
-			transactionVo=transactionMasterDao.getTransactionByIdentificationNumber(transactionIdentificationNumber);
+		if (transactionIdentificationNumber != null) {
+			TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
+			transactionVo = transactionMasterDao.getTransactionByIdentificationNumber(transactionIdentificationNumber);
 		}
-		
-		HttpSession session=request.getSession();
-		UserVo userVo=(UserVo)session.getAttribute("user");
+
+		HttpSession session = request.getSession();
+		UserVo userVo = (UserVo) session.getAttribute("user");
 		String forTransaction = transactionVo.getForTransaction();
-		
-		if(forTransaction!=null) {
-			CategoryMasterDao categoryMasterDao=new CategoryMasterDao();
+
+		if (forTransaction != null) {
+			CategoryMasterDao categoryMasterDao = new CategoryMasterDao();
 			List<CategoryVo> categoryList = categoryMasterDao.getCategoryList(forTransaction, userVo);
-			session.setAttribute("forTransaction",forTransaction);
+			session.setAttribute("forTransaction", forTransaction);
 			session.setAttribute("categoryData", categoryList);
 
 		}
-		
+		if (forTransaction != null) {
+			SubCategoryDao subCategoryDao = new SubCategoryDao();
+			List<SubCategoriesVo> subCategoryList = subCategoryDao
+					.getSubCategoryBasedOnName(transactionVo.getCategoryVo(), transactionVo.getUserVo());
+			session.setAttribute("subCategoryList", subCategoryList);
+		}
+
 		session.setAttribute("user", userVo);
 		session.setAttribute("transactionDetails", transactionVo);
-		response.sendRedirect(request.getContextPath()+"/view/pages/transaction-detail.jsp");
+		response.sendRedirect(request.getContextPath() + "/view/pages/transaction-detail.jsp");
 	}
 
 	private void uploadReceiptImage(HttpServletRequest request, HttpServletResponse response)
@@ -153,15 +442,19 @@ public class TransactionMasterController extends HttpServlet {
 							uploadFile.delete();
 						}
 						fileItem.write(uploadFile);
-						transactionVo.setTransactionReceiptImage("../../img/transactionImages/"+ transactionVo.getTransactionIdentificationNumber() + ".jpg");
+						transactionVo.setTransactionReceiptImage("../../img/transactionImages/"
+								+ transactionVo.getTransactionIdentificationNumber() + ".jpg");
 						TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
 						transactionMasterDao.updateReceiptImage(transactionVo);
 						session.setAttribute("imageChanged", true);
-						response.sendRedirect(request.getContextPath()+ "/TransactionMasterController?flag=loadTransactionDetails&id="+ transactionVo.getTransactionIdentificationNumber());
+						response.sendRedirect(request.getContextPath()
+								+ "/TransactionMasterController?flag=loadTransactionDetails&id="
+								+ transactionVo.getTransactionIdentificationNumber());
 					}
 				} else {
 					session.setAttribute("userMsg", "Can only upload jpeg files");
 				}
+
 			}
 		} catch (FileUploadException e) {
 			System.out.println("Exception in uploading file. FIleUpload");
@@ -367,10 +660,18 @@ public class TransactionMasterController extends HttpServlet {
 
 		transactionVo.setTransactionReceiptImage("");
 		transactionVo.setIsDeleted(false);
-		transactionVo.setBalanceAddedFromTransactionId("");
 
 		TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
 		transactionMasterDao.addTransaction(transactionVo);
+		
+		TransactionMasterDao transactionMasterDao4=new TransactionMasterDao();
+		List<TransactionVo> transactionBalance=transactionMasterDao4.getLastTransactionForBalance(userVo);
+		if(transactionBalance.isEmpty())
+		{
+			session.setAttribute("myBalance", ""+0.00);
+		}else {
+			session.setAttribute("myBalance", ""+transactionBalance.get(0).getTotalAvailableBalance());
+		}
 
 		session.setAttribute("user", userVo);
 		session.setAttribute("userMsg", "Transaction Recorded Successfully.");
@@ -542,10 +843,18 @@ public class TransactionMasterController extends HttpServlet {
 
 		transactionVo.setTransactionReceiptImage("");
 		transactionVo.setIsDeleted(false);
-		transactionVo.setBalanceAddedFromTransactionId("");
 
 		TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
 		transactionMasterDao.addTransaction(transactionVo);
+		
+		TransactionMasterDao transactionMasterDao4=new TransactionMasterDao();
+		List<TransactionVo> transactionBalance=transactionMasterDao4.getLastTransactionForBalance(userVo);
+		if(transactionBalance.isEmpty())
+		{
+			session.setAttribute("myBalance", ""+0.00);
+		}else {
+			session.setAttribute("myBalance", ""+transactionBalance.get(0).getTotalAvailableBalance());
+		}
 
 		session.setAttribute("user", userVo);
 		session.setAttribute("userMsg", "Transaction Recorded Successfully.");
@@ -557,5 +866,4 @@ public class TransactionMasterController extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-
 }
