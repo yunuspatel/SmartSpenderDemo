@@ -62,7 +62,7 @@
 			<%
 				session.removeAttribute("userMsg");
 			}
-		%>
+		%>	
 	}
 	
 	function fillSubCategoryDropdown()

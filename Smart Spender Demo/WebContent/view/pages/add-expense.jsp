@@ -1,3 +1,5 @@
+<%@page import="vo.NotificationVo"%>
+<%@page import="dao.NotificationDao"%>
 <%@page import="vo.CategoryVo"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page import="java.util.List"%>
@@ -61,6 +63,15 @@
 				alert("<%= object %>");
 			<%
 				session.removeAttribute("userMsg");
+			}
+			Object checkNotification = session.getAttribute("checkNotification");
+			if(checkNotification!=null)
+			{
+				session.removeAttribute("checkNotification");
+				NotificationDao notificationDao=new NotificationDao();
+				List<NotificationVo> notificationList=notificationDao.getAllNotifications(userVo);
+				session.setAttribute("notificationsList", notificationList);
+				session.setAttribute("notificationSize", notificationList.size());
 			}
 		%>
 	}

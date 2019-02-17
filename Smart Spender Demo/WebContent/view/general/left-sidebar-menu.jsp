@@ -12,6 +12,14 @@
 				</div>
 				<div class="clearfix"></div>
 		</a></li>
+		<li><a id="page-budget"
+			href="<%=request.getContextPath()%>/BudgetMasterController?flag=loadAllBudgets">
+				<div class="pull-left">
+					<img src="../../img/menu/budget.png"><i class="mr-20"></i><span
+						class="right-nav-text">Budget</span>
+				</div>
+				<div class="clearfix"></div>
+		</a></li>
 		<li><a id="page-add-income"
 			href="<%=request.getContextPath()%>/view/pages/add-income.jsp">
 				<div class="pull-left">

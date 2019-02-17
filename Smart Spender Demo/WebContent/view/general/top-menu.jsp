@@ -1,12 +1,15 @@
+<%@page import="java.util.List"%>
+<%@page import="vo.NotificationVo"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <nav class="navbar navbar-inverse navbar-fixed-top">
 	<div class="mobile-only-brand pull-left">
 		<div class="nav-header pull-left">
 			<div class="logo-wrap">
-				<a href="<%= request.getContextPath() %>/view/pages/home.jsp"> <img class="brand-img"
-					src="../../img/logo1.png" alt="brand" /> <span class="brand-text">Smart
-						Spender</span>
+				<a href="<%=request.getContextPath()%>/view/pages/home.jsp"> <img
+					class="brand-img" src="../../img/logo1.png" alt="brand" /> <span
+					class="brand-text">Smart Spender</span>
 				</a>
 			</div>
 		</div>
@@ -37,110 +40,55 @@
 			<li class="dropdown alert-drp"><a href="#"
 				class="dropdown-toggle" data-toggle="dropdown"><i
 					class="zmdi zmdi-notifications top-nav-icon"></i><span
-					class="top-nav-icon-badge">5</span></a>
+					class="top-nav-icon-badge"><%=session.getAttribute("notificationSize")%></span></a>
 				<ul class="dropdown-menu alert-dropdown" data-dropdown-in="bounceIn"
 					data-dropdown-out="bounceOut">
 					<li>
 						<div class="notification-box-head-wrap">
-							<span class="notification-box-head pull-left inline-block">notifications</span>
+							<span class="notification-box-head pull-left inline-block">Notifications</span>
 							<a class="txt-danger pull-right clear-notifications inline-block"
-								href="javascript:void(0)"> clear all </a>
+								href="<%=request.getContextPath()%>/NotificationController?flag=clearAll">
+								clear all </a>
 							<div class="clearfix"></div>
 							<hr class="light-grey-hr ma-0" />
 						</div>
 					</li>
 					<li>
 						<div class="streamline message-nicescroll-bar">
-							<div class="sl-item">
-								<a href="javascript:void(0)">
-									<div class="icon bg-green">
-										<i class="zmdi zmdi-flag"></i>
-									</div>
-									<div class="sl-content">
-										<span
-											class="inline-block capitalize-font  pull-left truncate head-notifications">
-											New subscription created</span> <span
-											class="inline-block font-11  pull-right notifications-time">2pm</span>
-										<div class="clearfix"></div>
-										<p class="truncate">Your customer subscribed for the basic
-											plan. The customer will pay $25 per month.</p>
-									</div>
-								</a>
-							</div>
-							<hr class="light-grey-hr ma-0" />
-							<div class="sl-item">
-								<a href="javascript:void(0)">
-									<div class="icon bg-yellow">
-										<i class="zmdi zmdi-trending-down"></i>
-									</div>
-									<div class="sl-content">
-										<span
-											class="inline-block capitalize-font  pull-left truncate head-notifications txt-warning">Server
-											#2 not responding</span> <span
-											class="inline-block font-11 pull-right notifications-time">1pm</span>
-										<div class="clearfix"></div>
-										<p class="truncate">Some technical error occurred needs to
-											be resolved.</p>
-									</div>
-								</a>
-							</div>
-							<hr class="light-grey-hr ma-0" />
-							<div class="sl-item">
-								<a href="javascript:void(0)">
-									<div class="icon bg-blue">
-										<i class="zmdi zmdi-email"></i>
-									</div>
-									<div class="sl-content">
-										<span
-											class="inline-block capitalize-font  pull-left truncate head-notifications">2
-											new messages</span> <span
-											class="inline-block font-11  pull-right notifications-time">4pm</span>
-										<div class="clearfix"></div>
-										<p class="truncate">The last payment for your G Suite
-											Basic subscription failed.</p>
-									</div>
-								</a>
-							</div>
-							<hr class="light-grey-hr ma-0" />
-							<div class="sl-item">
-								<a href="javascript:void(0)">
-									<div class="sl-avatar">
-										<img class="img-responsive" src="img/avatar.jpg" alt="avatar" />
-									</div>
-									<div class="sl-content">
-										<span
-											class="inline-block capitalize-font  pull-left truncate head-notifications">Sandy
-											Doe</span> <span
-											class="inline-block font-11  pull-right notifications-time">1pm</span>
-										<div class="clearfix"></div>
-										<p class="truncate">Neque porro quisquam est qui dolorem
-											ipsum quia dolor sit amet, consectetur, adipisci velit</p>
-									</div>
-								</a>
-							</div>
-							<hr class="light-grey-hr ma-0" />
-							<div class="sl-item">
-								<a href="javascript:void(0)">
-									<div class="icon bg-red">
-										<i class="zmdi zmdi-storage"></i>
-									</div>
-									<div class="sl-content">
-										<span
-											class="inline-block capitalize-font  pull-left truncate head-notifications txt-danger">99%
-											server space occupied.</span> <span
-											class="inline-block font-11  pull-right notifications-time">1pm</span>
-										<div class="clearfix"></div>
-										<p class="truncate">consectetur, adipisci velit.</p>
-									</div>
-								</a>
-							</div>
+							<c:forEach var="notification"
+								items="${ sessionScope.notificationsList }">
+								<div class="sl-item">
+									<a
+										href="<%= request.getContextPath() %>/NotificationController?flag=loadNotification&value=${ notification.notificationId }">
+										<c:if
+											test="${ notification.notificationType == 'negativeBalance' }">
+											<img alt="Negative Balance"
+												src="../../img/notification/negative-amount-md.png">
+										</c:if> <c:if
+											test="${ notification.notificationType == 'budgetAmountAlert' }">
+											<img alt="Budget Alert"
+												src="../../img/notification/budget-alert-md.png">
+										</c:if>
+										<div class="sl-content">
+											<span
+												class="inline-block capitalize-font  pull-left truncate head-notifications">${ notification.notificationTitle }</span>
+											<span
+												class="inline-block font-11  pull-right notifications-time">${ notification.notificationDateTime }</span>
+											<div class="clearfix"></div>
+											<p class="truncate">${ notification.notificationMessage }</p>
+										</div>
+									</a>
+								</div>
+								<hr class="light-grey-hr ma-0" />
+							</c:forEach>
 						</div>
 					</li>
 					<li>
 						<div class="notification-box-bottom-wrap">
 							<hr class="light-grey-hr ma-0" />
-							<a class="block text-center read-all" href="javascript:void(0)">
-								read all </a>
+							<a class="block text-center read-all"
+								href="<%=request.getContextPath()%>/NotificationController?flag=displayAll">
+								Read All </a>
 							<div class="clearfix"></div>
 						</div>
 					</li>
@@ -148,16 +96,19 @@
 			<li class="dropdown auth-drp"><a href="#"
 				class="dropdown-toggle pr-0" data-toggle="dropdown"><img
 					src="${ sessionScope.user.userImage }" alt="Image Not Found"
-					class="user-auth-img img-circle" /><span class="user-online-status"></span></a>
+					class="user-auth-img img-circle" /><span
+					class="user-online-status"></span></a>
 				<ul class="dropdown-menu user-auth-dropdown"
 					data-dropdown-in="flipInX" data-dropdown-out="flipOutX">
 					<li><a href="#"><i class="zmdi zmdi-card"></i><span>My
 								Balance:- ( ${ sessionScope.myBalance } )</span></a></li>
-					<li><a href="<%= request.getContextPath() %>/view/user/user-settings.jsp"><i class="zmdi zmdi-settings"></i><span>Settings</span></a>
-					</li>
+					<li><a
+						href="<%=request.getContextPath()%>/view/user/user-settings.jsp"><i
+							class="zmdi zmdi-settings"></i><span>Settings</span></a></li>
 					<li class="divider"></li>
-					<li><a href="<%= request.getContextPath() %>/view/user/user-logout.jsp"><i class="zmdi zmdi-power"></i><span>Log
-								Out</span></a></li>
+					<li><a
+						href="<%=request.getContextPath()%>/view/user/user-logout.jsp"><i
+							class="zmdi zmdi-power"></i><span>Log Out</span></a></li>
 				</ul></li>
 		</ul>
 	</div>

@@ -23,6 +23,8 @@
     <mapping class="vo.CategoryVo" />
     <mapping class="vo.SubCategoriesVo" />
     <mapping class="vo.TransactionVo" />
+    <mapping class="vo.BudgetVo" />
+    <mapping class="vo.NotificationVo" />
 
 </session-factory>
 </hibernate-configuration>

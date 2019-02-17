@@ -1,3 +1,6 @@
+<%@page import="vo.NotificationVo"%>
+<%@page import="java.util.List"%>
+<%@page import="dao.NotificationDao"%>
 <%@page import="dao.UserMasterDao"%>
 <%@page import="vo.UserVo"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -33,6 +36,17 @@
 		{
 			var element = document.getElementById('page-dashboard');
 			element.classList.add("active");
+			<%
+			Object checkNotification = session.getAttribute("checkNotification");
+			if(checkNotification!=null)
+			{
+				session.removeAttribute("checkNotification");
+				NotificationDao notificationDao=new NotificationDao();
+				List<NotificationVo> notificationList=notificationDao.getAllNotifications(userVo);
+				session.setAttribute("notificationsList", notificationList);
+				session.setAttribute("notificationSize", notificationList.size());
+			}
+		%>
 		}
 	</script>
 </head>

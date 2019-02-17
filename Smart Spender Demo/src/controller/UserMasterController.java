@@ -21,9 +21,11 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import dao.NotificationDao;
 import dao.TrackingMasterDao;
 import dao.TransactionMasterDao;
 import dao.UserMasterDao;
+import vo.NotificationVo;
 import vo.TrackingVo;
 import vo.TransactionVo;
 import vo.UserVo;
@@ -286,6 +288,13 @@ public class UserMasterController extends HttpServlet {
 					session.setAttribute("myBalance", ""+0.00);
 				}else {
 					session.setAttribute("myBalance", ""+transactionBalance.get(0).getTotalAvailableBalance());
+				}
+				
+				if(true) {
+					NotificationDao notificationDao=new NotificationDao();
+					List<NotificationVo> notificationsList = notificationDao.getAllNotifications(userVo);
+					session.setAttribute("notificationsList", notificationsList);
+					session.setAttribute("notificationSize", notificationsList.size());
 				}
 
 				session.setAttribute("user", userVo);

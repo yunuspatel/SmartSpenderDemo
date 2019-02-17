@@ -19,7 +19,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Transaction List</title>
+<title>Budget</title>
 
 <!-- Favicon -->
 <link rel="shortcut icon" href="../../img/logo2.png">
@@ -37,60 +37,24 @@
 
 <!-- Custom CSS -->
 <link href="../../dist/css/style.css" rel="stylesheet" type="text/css">
+
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 <script type="text/javascript">
 	function checkActive() {
-		var element = document.getElementById('transaction-list');
+		var element = document.getElementById('page-budget');
 		element.classList.add("active");
-			<%
-			Object incomeObject=session.getAttribute("incomeFlag");
-			if(incomeObject!=null)
-			{
-			%>
-				document.getElementById("forCategory").selectedIndex = "0";
-			<%
-				session.removeAttribute("incomeFlag");
-			}
-			Object  expenseObject = session.getAttribute("expenseFlag");
-			if(expenseObject!= null)
-			{
-			%>
-				document.getElementById("forCategory").selectedIndex = "1";
-			<%
-				session.removeAttribute("expenseFlag");
-			}
-			Object userMsg = session.getAttribute("userMsg");
-			if(userMsg!=null)
-			{
-			%>
-				alert('<%= userMsg %>');
-			<%
-				session.removeAttribute("userMsg");
-			}
-			Object checkNotification = session.getAttribute("checkNotification");
-			if(checkNotification!=null)
-			{
-				session.removeAttribute("checkNotification");
-				NotificationDao notificationDao=new NotificationDao();
-				List<NotificationVo> notificationList=notificationDao.getAllNotifications(userVo);
-				session.setAttribute("notificationsList", notificationList);
-				session.setAttribute("notificationSize", notificationList.size());
-			}
-		%>
-	}
-	
-	function reloadData()
-	{
-		var ddlValue = document.getElementById('forCategory').value;
-		var url = '<%= request.getContextPath() %>/TransactionMasterController?flag='+ddlValue;
-		window.location.href = url;
-	}
-	
-	function upload(file) {
-		var imgVal = document.getElementById('frmReceipt'+file.id);
-		imgVal.submit();
+		<%
+		Object checkNotification = session.getAttribute("checkNotification");
+		if(checkNotification!=null)
+		{
+			session.removeAttribute("checkNotification");
+			NotificationDao notificationDao=new NotificationDao();
+			List<NotificationVo> notificationList=notificationDao.getAllNotifications(userVo);
+			session.setAttribute("notificationsList", notificationList);
+		}
+	%>
 	}
 </script>
 </head>
@@ -129,19 +93,95 @@
 				<!-- Title -->
 				<div class="row heading-bg">
 					<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-						<h5 class="txt-dark">Transaction List</h5>
+						<h5 class="txt-dark">Budget</h5>
 					</div>
 					<!-- Breadcrumb -->
 					<div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
 						<ol class="breadcrumb">
 							<li><a
 								href="<%=request.getContextPath()%>/view/pages/home.jsp">Dashboard</a></li>
-							<li class="active"><span>Transaction List</span></li>
+							<li class="active"><span>Budget</span></li>
 						</ol>
 					</div>
 					<!-- /Breadcrumb -->
 				</div>
 				<!-- /Title -->
+
+				<!-- Budget Modal Start -->
+				<div id="responsive-modal" class="modal fade" tabindex="-1"
+					role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+					style="display: none;">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">×</button>
+								<h5 class="modal-title">Add Budget</h5>
+							</div>
+							<form method="post"
+								action="<%=request.getContextPath()%>/BudgetMasterController">
+								<input type="hidden" name="flag" value="addBudget">
+								<div class="modal-body">
+									<div class="row row-lg">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="budgetName" class="control-label mb-10">Budget
+													Name:-</label> <input type="text" class="form-control"
+													id="budgetName" name="budgetName" required="" placeholder="Enter Budget Name"
+													autocomplete="off">
+											</div>
+										</div>
+										<div class="col-md-12">
+											<div class="col-md-6">
+												<label for="startDate" class="control-label mb-10">Start
+													date:-</label><input type="date" class="form-control"
+													id="startDate" name="startDate" required="" place
+													autocomplete="off">
+											</div>
+											<div class="col-md-6">
+												<label for="endDate" class="control-label mb-10">End
+													Date:-</label><input type="date" class="form-control" id="endDate"
+													name="endDate" required="" autocomplete="off">
+											</div>
+										</div>
+										<div class="col-md-12">&nbsp;</div>
+										<div class="col-md-12">
+											<div class="col-md-6">
+												<div class="form-group">
+													<label for="budgetAmount" class="control-label mb-10">Budget
+														Amount:-</label> <input type="number" class="form-control"
+														id="budgetAmount" name="budgetAmount" required="" placeholder="Enter Budget Amount"
+														autocomplete="off">
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label for="alertAmount" class="control-label mb-10">Alert
+														Amount:-</label> <input type="number" class="form-control"
+														id="alertAmount" name="alertAmount" required="" placeholder="Enter Alert amount for notification"
+														autocomplete="off">
+												</div>
+											</div>
+										</div>
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="budgetDecription" class="control-label mb-10">Description:-</label>
+												<textarea class="form-control" id="budgetDecription" rows="4" placeholder="Extra Budget Description"
+													name="budgetDecription"></textarea>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default"
+										data-dismiss="modal">Close</button>
+									<input type="submit" class="btn btn-danger" value="Add Budget">
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- Budget Modal End -->
 
 				<!-- Row -->
 				<div class="row">
@@ -149,7 +189,7 @@
 						<div class="panel panel-default card-view">
 							<div class="panel-heading">
 								<div class="pull-left">
-									<h6 class="panel-title txt-dark">Transaction Listing</h6>
+									<h6 class="panel-title txt-dark">Budget</h6>
 								</div>
 								<div class="clearfix"></div>
 							</div>
@@ -157,15 +197,12 @@
 								<div class="panel-body">
 									<div class="row row-lg">
 										<div class="col-md-5">
-											<div class="form-group">
-												<label class="control-label mb-10" for="forCategory">Select
-													Transaction For:-</label> <select
-													class="form-control select2 select2-hidden-accessible"
-													tabindex="-1" aria-hidden="true" name="forCategory"
-													id="forCategory" onchange="reloadData()">
-													<option value="loadIncomeTransaction">Income</option>
-													<option value="loadExpenseTransaction">Expense</option>
-												</select>
+											<div class="col-md-1"></div>
+											<div class="col-md-11">
+												<input type="button" value="Add Budget" name="budgetModal"
+													id="budgetModal" data-toggle="modal"
+													data-target="#responsive-modal"
+													class="btn  btn-primary btn-rounded">
 											</div>
 										</div>
 									</div>
@@ -174,43 +211,41 @@
 											<table id="myTable1" class="table table-hover display  pb-30">
 												<thead>
 													<tr>
-														<th>Transaction No</th>
-														<th>Payee Name</th>
-														<th>Sub Category Name</th>
-														<th>Transaction Amount</th>
-														<th>Available Balance</th>
-														<th>Date & Time</th>
-														<th>Payment Method</th>
-														<th>Status Of Transaction</th>
-														<th>Upload Receipt</th>
+														<th>Budget No</th>
+														<th>Name</th>
+														<th>Budget Amount</th>
+														<th>Start Date</th>
+														<th>End Date</th>
+														<th>Remaining Amount</th>
+														<th>Alert Amount</th>
 													</tr>
 												</thead>
 												<tfoot>
 													<tr>
-														<th>Transaction No</th>
-														<th>Payee Name</th>
-														<th>Sub Category Name</th>
-														<th>Transaction Amount</th>
-														<th>Available Balance</th>
-														<th>Date & Time</th>
-														<th>Payment Method</th>
-														<th>Status Of Transaction</th>
-														<th>Upload Receipt</th>
+														<th>Budget No</th>
+														<th>Name</th>
+														<th>Budget Amount</th>
+														<th>Start Date</th>
+														<th>End Date</th>
+														<th>Remaining Amount</th>
+														<th>Alert Amount</th>
 													</tr>
 												</tfoot>
 												<tbody>
-													<% int count=1; %>
-													<c:forEach var="transactionData" items="${ sessionScope.transactionList }">
+													<%
+														int count = 1;
+													%>
+													<c:forEach var="budget"
+														items="${ sessionScope.budgetList }">
 														<tr>
-															<td><a style="color : blue" href="<%= request.getContextPath() %>/TransactionMasterController?flag=loadTransactionDetails&id=${ transactionData.transactionIdentificationNumber }">${ transactionData.transactionIdentificationNumber }</a></td>
-															<td>${ transactionData.payeeName }</td>
-															<td>${ transactionData.subCategoriesVo.subCategoryName }</td>
-															<td>${ transactionData.transactionAmount }</td>
-															<td>${ transactionData.totalAvailableBalance }</td>
-															<td>${ transactionData.transactionDateTime }</td>
-															<td>${ transactionData.paymentMethod }</td>
-															<td>${ transactionData.statusOfTransaction }</td>
-															<td><form name="frmReceipt" id="frmReceipt${ transactionData.transactionId }" method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/TransactionMasterController?flag=uploadReceiptImage&id=${ transactionData.transactionIdentificationNumber }"><input id="${ transactionData.transactionId }" name="receiptImage${ transactionData.transactionId }" class="upload" type="file" onchange="upload(this)"></form></td>
+															<td><%=count++%></td>
+															<td><a style="color: blue"
+																href='<%= request.getContextPath() %>/BudgetMasterController?flag=loadSpecificBudget&value=${ budget.budgetId }'>${ budget.budgetName }</a></td>
+															<td>${ budget.budgetAmount }</td>
+															<td>${ budget.budgetStartDate }</td>
+															<td>${ budget.budgetEndDate }</td>
+															<td>${ budget.budgetAmountLeft }</td>
+															<td>${ budget.budgetAlertAmount }</td>
 														</tr>
 													</c:forEach>
 												</tbody>
@@ -223,7 +258,6 @@
 					</div>
 				</div>
 				<!-- /Row -->
-
 			</div>
 
 			<!-- Footer -->
@@ -250,15 +284,7 @@
 	<!-- Bootstrap Core JavaScript -->
 	<script
 		src="../../vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-		
-	<!-- Bootstrap Select JavaScript -->
-	<script
-		src="../../vendors/bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-	
-	<!-- Select2 JavaScript -->
-	<script
-		src="../../vendors/bower_components/select2/dist/js/select2.full.min.js"></script>
-	
+
 	<!-- Data table JavaScript -->
 	<script
 		src="../../vendors/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>

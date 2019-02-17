@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -24,11 +25,15 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import dao.BudgetMasterDao;
 import dao.CategoryMasterDao;
+import dao.NotificationDao;
 import dao.SubCategoryDao;
 import dao.TransactionMasterDao;
 import dao.UserMasterDao;
+import vo.BudgetVo;
 import vo.CategoryVo;
+import vo.NotificationVo;
 import vo.SubCategoriesVo;
 import vo.TransactionVo;
 import vo.UserVo;
@@ -59,7 +64,11 @@ public class TransactionMasterController extends HttpServlet {
 		if (flag.equals("addIncomeTransaction")) {
 			addIncomeTransaction(request, response);
 		} else if (flag.equals("addExpenseTransaction")) {
-			addExpenseTransaction(request, response);
+			try {
+				addExpenseTransaction(request, response);
+			} catch (ParseException e) {
+				System.out.println(e.getMessage());
+			}
 		} else if (flag.equals("loadIncomeTransaction")) {
 			loadIncomeTransaction(request, response);
 		} else if (flag.equals("loadExpenseTransaction")) {
@@ -69,13 +78,22 @@ public class TransactionMasterController extends HttpServlet {
 		} else if (flag.equals("loadTransactionDetails")) {
 			loadTransactionDetails(request, response);
 		} else if (flag.equals("editTransaction")) {
-			editTransaction(request, response);
+			try {
+				editTransaction(request, response);
+			} catch (ParseException e) {
+				System.out.println(e.getMessage());
+			}
 		} else if (flag.equals("deleteTransaction")) {
-			deleteTransaction(request, response);
+			try {
+				deleteTransaction(request, response);
+			} catch (ParseException e) {
+				System.out.println(e.getMessage());
+			}
 		}
 	}
 
-	private void deleteTransaction(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	private void deleteTransaction(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ParseException {
 		// TODO Auto-generated method stub
 		String transactionIdentificationNumber = request.getParameter("transactionIdentificationNumber");
 		TransactionVo transactionVo = new TransactionVo();
@@ -109,12 +127,13 @@ public class TransactionMasterController extends HttpServlet {
 						}
 					} else {
 						if (previousVo == null) {
-							vo.setTotalAvailableBalance(0-vo.getTransactionAmount());
+							vo.setTotalAvailableBalance(0 - vo.getTransactionAmount());
 						} else {
 							float newAvailableBalance = previousVo.getTotalAvailableBalance()
 									- vo.getTransactionAmount();
 							vo.setTotalAvailableBalance(newAvailableBalance);
 						}
+
 					}
 					TransactionMasterDao transactionMasterDao3 = new TransactionMasterDao();
 					transactionMasterDao3.updateTransaction(vo);
@@ -122,22 +141,57 @@ public class TransactionMasterController extends HttpServlet {
 				previousVo = vo;
 			}
 		}
-		
-		TransactionMasterDao transactionMasterDao4=new TransactionMasterDao();
-		List<TransactionVo> transactionBalance=transactionMasterDao4.getLastTransactionForBalance(userVo);
-		if(transactionBalance.isEmpty())
-		{
-			session.setAttribute("myBalance", ""+0.00);
-		}else {
-			session.setAttribute("myBalance", ""+transactionBalance.get(0).getTotalAvailableBalance());
+
+		if (true) {
+			BudgetMasterDao budgetMasterDao = new BudgetMasterDao();
+			List<BudgetVo> budgetList = budgetMasterDao.getAllBudgets(userVo);
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+			Date currentTransactionDate = dateFormat.parse(transactionVo.getTransactionDateTime());
+			int currentDate = currentTransactionDate.getDate();
+			int currentMonth = currentTransactionDate.getMonth();
+			int currentYear = currentTransactionDate.getYear();
+
+			for (BudgetVo budgetVo : budgetList) {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				Date budgetStartDate = format.parse(budgetVo.getBudgetStartDate());
+				Date budgetEndDate = format.parse(budgetVo.getBudgetEndDate());
+
+				int startDate = budgetStartDate.getDate();
+				int startMonth = budgetStartDate.getMonth();
+				int startYear = budgetStartDate.getYear();
+				int endDate = budgetEndDate.getDate();
+				int endMonth = budgetEndDate.getMonth();
+				int endYear = budgetEndDate.getYear();
+
+				if ((currentYear >= startYear) && (currentYear <= endYear)) {
+					if ((currentMonth >= startMonth) && (currentMonth <= endMonth)) {
+						if ((currentDate >= startDate) && (currentDate <= endDate)) {
+							budgetVo.setBudgetAmountLeft(
+									budgetVo.getBudgetAmountLeft() + transactionVo.getTransactionAmount());
+							BudgetMasterDao budgetMasterDao2 = new BudgetMasterDao();
+							budgetMasterDao2.updateBudget(budgetVo);
+						}
+					}
+				}
+			}
 		}
-		
+
+		TransactionMasterDao transactionMasterDao4 = new TransactionMasterDao();
+		List<TransactionVo> transactionBalance = transactionMasterDao4.getLastTransactionForBalance(userVo);
+		if (transactionBalance.isEmpty()) {
+			session.setAttribute("myBalance", "" + 0.00);
+		} else {
+			session.setAttribute("myBalance", "" + transactionBalance.get(0).getTotalAvailableBalance());
+		}
+
 		session.setAttribute("user", userVo);
 		session.setAttribute("userMsg", "Transaction Deleted Successfully.");
 		response.sendRedirect(request.getContextPath() + "/TransactionMasterController?flag=loadIncomeTransaction");
 	}
 
-	private void editTransaction(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	private void editTransaction(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ParseException {
 		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
 		UserVo userVo = (UserVo) session.getAttribute("user");
@@ -340,14 +394,69 @@ public class TransactionMasterController extends HttpServlet {
 				previousVo = vo;
 			}
 		}
-		
-		TransactionMasterDao transactionMasterDao4=new TransactionMasterDao();
-		List<TransactionVo> transactionBalance=transactionMasterDao4.getLastTransactionForBalance(userVo);
-		if(transactionBalance.isEmpty())
-		{
-			session.setAttribute("myBalance", ""+0.00);
-		}else {
-			session.setAttribute("myBalance", ""+transactionBalance.get(0).getTotalAvailableBalance());
+
+		TransactionMasterDao transactionMasterDao4 = new TransactionMasterDao();
+		List<TransactionVo> transactionBalance = transactionMasterDao4.getLastTransactionForBalance(userVo);
+		if (transactionBalance.isEmpty()) {
+			session.setAttribute("myBalance", "" + 0.00);
+		} else {
+			session.setAttribute("myBalance", "" + transactionBalance.get(0).getTotalAvailableBalance());
+		}
+
+		if (transactionVo.getForTransaction().equals("expense")) {
+			if (true) {
+				BudgetMasterDao budgetMasterDao = new BudgetMasterDao();
+				List<BudgetVo> budgetList = budgetMasterDao.getAllBudgets(userVo);
+
+				SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+				Date currentTransactionDate = dateFormat.parse(transactionVo.getTransactionDateTime());
+				int currentDate = currentTransactionDate.getDate();
+				int currentMonth = currentTransactionDate.getMonth();
+				int currentYear = currentTransactionDate.getYear();
+
+				for (BudgetVo budgetVo : budgetList) {
+					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+					Date budgetStartDate = format.parse(budgetVo.getBudgetStartDate());
+					Date budgetEndDate = format.parse(budgetVo.getBudgetEndDate());
+
+					int startDate = budgetStartDate.getDate();
+					int startMonth = budgetStartDate.getMonth();
+					int startYear = budgetStartDate.getYear();
+					int endDate = budgetEndDate.getDate();
+					int endMonth = budgetEndDate.getMonth();
+					int endYear = budgetEndDate.getYear();
+
+					if ((currentYear >= startYear) && (currentYear <= endYear)) {
+						if ((currentMonth >= startMonth) && (currentMonth <= endMonth)) {
+							if ((currentDate >= startDate) && (currentDate <= endDate)) {
+								float amount = transactionOldAmount - transactionNewAmount;
+								budgetVo.setBudgetAmountLeft(budgetVo.getBudgetAmountLeft() + amount);
+
+								if (budgetVo.getBudgetAmountLeft() <= budgetVo.getBudgetAlertAmount()) {
+									NotificationVo notificationVo = new NotificationVo();
+									notificationVo.setNotificationDateTime(new Date().toString());
+									notificationVo.setNotificationTitle("Budget Alert");
+									notificationVo.setNotificationMessage("Alert to notify Budget Named:- "
+											+ budgetVo.getBudgetName()
+											+ "'s alert amount has been surpassed. Budget Amount Remaining is:- "
+											+ budgetVo.getBudgetAmountLeft()
+											+ ". If their's a problem review your transactions from Transaction List page.");
+									notificationVo.setNotificationType("budgetAmountAlert");
+									notificationVo.setRead(false);
+									notificationVo.setNotificationUrl("NotificationController?flag=loadBudget&value=" + budgetVo.getBudgetId());
+									notificationVo.setUserVo(userVo);
+
+									NotificationDao notificationDao = new NotificationDao();
+									notificationDao.addNotification(notificationVo);
+									session.setAttribute("checkNotification", true);
+								}
+								BudgetMasterDao budgetMasterDao2 = new BudgetMasterDao();
+								budgetMasterDao2.updateBudget(budgetVo);
+							}
+						}
+					}
+				}
+			}
 		}
 
 		session.setAttribute("user", userVo);
@@ -494,7 +603,8 @@ public class TransactionMasterController extends HttpServlet {
 		response.sendRedirect(request.getContextPath() + "/view/pages/transaction-list.jsp");
 	}
 
-	private void addExpenseTransaction(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	private void addExpenseTransaction(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ParseException {
 		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
 		UserVo userVo = (UserVo) session.getAttribute("user");
@@ -663,14 +773,84 @@ public class TransactionMasterController extends HttpServlet {
 
 		TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
 		transactionMasterDao.addTransaction(transactionVo);
-		
-		TransactionMasterDao transactionMasterDao4=new TransactionMasterDao();
-		List<TransactionVo> transactionBalance=transactionMasterDao4.getLastTransactionForBalance(userVo);
-		if(transactionBalance.isEmpty())
-		{
-			session.setAttribute("myBalance", ""+0.00);
-		}else {
-			session.setAttribute("myBalance", ""+transactionBalance.get(0).getTotalAvailableBalance());
+
+		TransactionMasterDao transactionMasterDao4 = new TransactionMasterDao();
+		List<TransactionVo> transactionBalance = transactionMasterDao4.getLastTransactionForBalance(userVo);
+		if (transactionBalance.isEmpty()) {
+			session.setAttribute("myBalance", "" + 0.00);
+		} else {
+			session.setAttribute("myBalance", "" + transactionBalance.get(0).getTotalAvailableBalance());
+		}
+
+		if (transactionBalance.get(0).getTotalAvailableBalance() < 0) {
+			NotificationVo notificationVo = new NotificationVo();
+			notificationVo.setNotificationDateTime(new Date().toString());
+			notificationVo.setNotificationTitle("Balance Alert");
+			notificationVo.setNotificationMessage(
+					"Balance has been down to negative value. If their's a problem review your transactions from Transaction List page.");
+			notificationVo.setNotificationType("negativeBalance");
+			notificationVo.setRead(false);
+			notificationVo.setNotificationUrl("TransactionMasterController?flag=loadIncomeTransaction");
+			notificationVo.setUserVo(userVo);
+
+			NotificationDao notificationDao = new NotificationDao();
+			notificationDao.addNotification(notificationVo);
+			session.setAttribute("checkNotification", true);
+		}
+
+		if (true) {
+			BudgetMasterDao budgetMasterDao = new BudgetMasterDao();
+			List<BudgetVo> budgetList = budgetMasterDao.getAllBudgets(userVo);
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+			Date currentTransactionDate = dateFormat.parse(transactionDateTime);
+			int currentDate = currentTransactionDate.getDate();
+			int currentMonth = currentTransactionDate.getMonth();
+			int currentYear = currentTransactionDate.getYear();
+
+			for (BudgetVo budgetVo : budgetList) {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				Date budgetStartDate = format.parse(budgetVo.getBudgetStartDate());
+				Date budgetEndDate = format.parse(budgetVo.getBudgetEndDate());
+
+				int startDate = budgetStartDate.getDate();
+				int startMonth = budgetStartDate.getMonth();
+				int startYear = budgetStartDate.getYear();
+				int endDate = budgetEndDate.getDate();
+				int endMonth = budgetEndDate.getMonth();
+				int endYear = budgetEndDate.getYear();
+
+				if ((currentYear >= startYear) && (currentYear <= endYear)) {
+					if ((currentMonth >= startMonth) && (currentMonth <= endMonth)) {
+						if ((currentDate >= startDate) && (currentDate <= endDate)) {
+							budgetVo.setBudgetAmountLeft(
+									budgetVo.getBudgetAmountLeft() - transactionVo.getTransactionAmount());
+
+							if (budgetVo.getBudgetAmountLeft() <= budgetVo.getBudgetAlertAmount()) {
+								NotificationVo notificationVo = new NotificationVo();
+								notificationVo.setNotificationDateTime(new Date().toString());
+								notificationVo.setNotificationTitle("Budget Alert");
+								notificationVo.setNotificationMessage("Alert to notify Budget Named:- "
+										+ budgetVo.getBudgetName()
+										+ "'s alert amount has been surpassed. Budget Amount Remaining is:- "
+										+ budgetVo.getBudgetAmountLeft()
+										+ ". If their's a problem review your transactions from Transaction List page.");
+								notificationVo.setNotificationType("budgetAmountAlert");
+								notificationVo.setRead(false);
+								notificationVo.setNotificationUrl("NotificationController?flag=loadBudget&value=" + budgetVo.getBudgetId());
+								notificationVo.setUserVo(userVo);
+
+								NotificationDao notificationDao = new NotificationDao();
+								notificationDao.addNotification(notificationVo);
+								session.setAttribute("checkNotification", true);
+							}
+
+							BudgetMasterDao budgetMasterDao2 = new BudgetMasterDao();
+							budgetMasterDao2.updateBudget(budgetVo);
+						}
+					}
+				}
+			}
 		}
 
 		session.setAttribute("user", userVo);
@@ -846,14 +1026,13 @@ public class TransactionMasterController extends HttpServlet {
 
 		TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
 		transactionMasterDao.addTransaction(transactionVo);
-		
-		TransactionMasterDao transactionMasterDao4=new TransactionMasterDao();
-		List<TransactionVo> transactionBalance=transactionMasterDao4.getLastTransactionForBalance(userVo);
-		if(transactionBalance.isEmpty())
-		{
-			session.setAttribute("myBalance", ""+0.00);
-		}else {
-			session.setAttribute("myBalance", ""+transactionBalance.get(0).getTotalAvailableBalance());
+
+		TransactionMasterDao transactionMasterDao4 = new TransactionMasterDao();
+		List<TransactionVo> transactionBalance = transactionMasterDao4.getLastTransactionForBalance(userVo);
+		if (transactionBalance.isEmpty()) {
+			session.setAttribute("myBalance", "" + 0.00);
+		} else {
+			session.setAttribute("myBalance", "" + transactionBalance.get(0).getTotalAvailableBalance());
 		}
 
 		session.setAttribute("user", userVo);

@@ -77,7 +77,8 @@
 			if (imageObject != null) {%>
 					location.realod(true);
 				<%session.removeAttribute("imageChanged");
-			}%>
+			}
+		%>
 	}
 	
 	function checkPassword()
