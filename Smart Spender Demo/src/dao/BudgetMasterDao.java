@@ -31,4 +31,10 @@ public class BudgetMasterDao {
 		list=dbOperation.session.createQuery("from BudgetVo where isDeleted='0' and userVo.userId='" + userVo.getUserId() + "'").list();
 		return list;
 	}
+	
+	public List<BudgetVo> loadBudgetById(BudgetVo budgetVo)
+	{
+		list=dbOperation.session.createQuery("from BudgetVo where budgetId='" + budgetVo.getBudgetId() + "'").list();
+		return list;
+	}
 }

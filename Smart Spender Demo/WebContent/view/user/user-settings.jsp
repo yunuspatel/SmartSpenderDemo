@@ -77,8 +77,7 @@
 			if (imageObject != null) {%>
 					location.realod(true);
 				<%session.removeAttribute("imageChanged");
-			}
-		%>
+			}%>
 	}
 	
 	function checkPassword()
@@ -675,7 +674,44 @@
 												</div>
 											</div>
 											<div id="photos_8" class="tab-pane fade" role="tabpanel">
-												<div class="col-md-12 pb-20"></div>
+												<div class="col-md-12 pb-20">
+													<div class="col-md-3">&nbsp;</div>
+													<div class="col-md-6">
+														<form name="frmExport" method="post"
+															action="<%=request.getContextPath()%>/UserMasterController">
+															<input type="hidden" name="flag" value="exportData">
+															<div class="row row-lg">&nbsp;</div>
+															<div class="row row-lg">
+																<div class="col-sm-1"></div>
+																<div class="col-lg-10">
+																	<div class="form-group">
+																		<label class="control-label mb-10"
+																			for="userCurrentPassword">Enter FileName:-</label>
+																		<div class="input-group">
+																			<div class="input-group-addon">
+																				<i class="fa fa-file-excel-o"></i>
+																			</div>
+																			<input type="text" required="" autocomplete="off"
+																				class="form-control" id="userFileName"
+																				name="userFileName"
+																				placeholder="Enter File Name to export data">
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<div class="row row-lg">
+																<div class="col-sm-1"></div>
+																<div class="col-md-10">
+																	<center>
+																		<input type="submit" name="export"
+																			class="btn btn-info btn-rounded"
+																			value="Export Expense Manager Data">
+																	</center>
+																</div>
+															</div>
+														</form>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>

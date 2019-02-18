@@ -54,7 +54,15 @@
 			List<NotificationVo> notificationList=notificationDao.getAllNotifications(userVo);
 			session.setAttribute("notificationsList", notificationList);
 		}
-	%>
+		Object object=session.getAttribute("userMsg");
+		if(object!=null)
+		{
+		%>
+			alert('<%= object %>');
+		<%
+			session.removeAttribute("userMsg");
+		}
+		%>
 	}
 </script>
 </head>

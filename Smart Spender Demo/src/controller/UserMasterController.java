@@ -1,7 +1,10 @@
 package controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.util.Date;
@@ -10,6 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +24,10 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import dao.NotificationDao;
 import dao.TrackingMasterDao;
@@ -76,22 +84,155 @@ public class UserMasterController extends HttpServlet {
 			uploadProfileImage(request, response);
 		} else if (flag.equals("userUpdate")) {
 			userUpdate(request, response);
-		} else if(flag.equals("deleteUser")) {
-			deleteUser(request,response);
-		} else if(flag.equals("changePassword")) {
-			changeNewPassword(request,response);
+		} else if (flag.equals("deleteUser")) {
+			deleteUser(request, response);
+		} else if (flag.equals("changePassword")) {
+			changeNewPassword(request, response);
+		} else if (flag.equals("exportData")) {
+			exportData(request, response);
 		}
+	}
+
+	private void exportData(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		String fileName = request.getParameter("userFileName");
+		HttpSession session = request.getSession();
+		UserVo userVo = (UserVo) session.getAttribute("user");
+
+		// Create blank workbook
+		XSSFWorkbook workbook = new XSSFWorkbook();
+
+		// Create a blank sheet
+		XSSFSheet spreadsheet = workbook.createSheet(" Employee Info ");
+
+		// Create row object
+		XSSFRow row;
+
+		TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
+		List<TransactionVo> transactionList = transactionMasterDao.getAllTransactions(userVo);
+
+		if (true) {
+			row = spreadsheet.createRow(0);
+			Cell cell1 = row.createCell(0);
+			cell1.setCellValue((String) "Id");
+
+			Cell cell2 = row.createCell(1);
+			cell2.setCellValue((String) "For Transaction");
+
+			Cell cell3 = row.createCell(2);
+			cell3.setCellValue((String) "Payee Name");
+
+			Cell cell4 = row.createCell(3);
+			cell4.setCellValue((String) "Amount");
+
+			Cell cell5 = row.createCell(4);
+			cell5.setCellValue((String) "Date");
+
+			Cell cell6 = row.createCell(5);
+			cell6.setCellValue((String) "Available Balance");
+
+			Cell cell7 = row.createCell(6);
+			cell7.setCellValue((String) "Category Name");
+
+			Cell cell8 = row.createCell(7);
+			cell8.setCellValue((String) "Sub-Category Name");
+
+			Cell cell9 = row.createCell(8);
+			cell9.setCellValue((String) "Payment Method");
+
+			Cell cell10 = row.createCell(9);
+			cell10.setCellValue((String) "Status");
+
+			Cell cell11 = row.createCell(10);
+			cell11.setCellValue((String) "Reference Number");
+
+			Cell cell12 = row.createCell(11);
+			cell12.setCellValue((String) "Extra Description");
+		}
+
+		int rowid = 1;
+		for (TransactionVo transactionVo : transactionList) {
+			row = spreadsheet.createRow(rowid++);
+			Cell cell1 = row.createCell(0);
+			cell1.setCellValue((String) "" + transactionVo.getTransactionIdentificationNumber());
+
+			Cell cell2 = row.createCell(1);
+			cell2.setCellValue((String) "" + transactionVo.getForTransaction());
+
+			Cell cell3 = row.createCell(2);
+			cell3.setCellValue((String) "" + transactionVo.getPayeeName());
+
+			Cell cell4 = row.createCell(3);
+			cell4.setCellValue((String) "" + transactionVo.getTransactionAmount());
+
+			Cell cell5 = row.createCell(4);
+			cell5.setCellValue((String) "" + transactionVo.getTransactionDateTime());
+
+			Cell cell6 = row.createCell(5);
+			cell6.setCellValue((String) "" + transactionVo.getTotalAvailableBalance());
+
+			Cell cell7 = row.createCell(6);
+			cell7.setCellValue((String) "" + transactionVo.getCategoryVo().getCategoryName());
+
+			Cell cell8 = row.createCell(7);
+			cell8.setCellValue((String) "" + transactionVo.getSubCategoriesVo().getSubCategoryName());
+
+			Cell cell9 = row.createCell(8);
+			cell9.setCellValue((String) "" + transactionVo.getPaymentMethod());
+
+			Cell cell10 = row.createCell(9);
+			cell10.setCellValue((String) "" + transactionVo.getStatusOfTransaction());
+
+			Cell cell11 = row.createCell(10);
+			cell11.setCellValue((String) "" + transactionVo.getTransactionNumber());
+
+			Cell cell12 = row.createCell(11);
+			cell12.setCellValue((String) "" + transactionVo.getExtraDescription());
+		}
+
+		// File Temporary Path Code
+		String relativePath = "img/userExportData";
+		String rootPath = getServletContext().getRealPath(relativePath);
+		File file = new File(rootPath);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		File dataFile =new File(rootPath + "/" + fileName +".xlsx");
+		if(dataFile.exists()) {
+			dataFile.delete();
+		}
+		FileOutputStream out = new FileOutputStream(dataFile);
+		workbook.write(out);
+		out.close();
+		
+		InputStream fis = new FileInputStream(dataFile);
+		response.setContentType("application/vnd.ms-excel");
+		response.setContentLength((int) dataFile.length());
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + ".xlsx\"");
+		
+		ServletOutputStream os = response.getOutputStream();
+		byte[] bufferData = new byte[1024];
+		int read=0;
+		while((read = fis.read(bufferData))!= -1){
+			os.write(bufferData, 0, read);
+		}
+		os.flush();
+		os.close();
+		fis.close();
+
+		session.setAttribute("user", userVo);
+		response.sendRedirect(request.getContextPath() + "/view/user/user-settings.jsp");
 	}
 
 	private void changeNewPassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// TODO Auto-generated method stub
-		HttpSession session=request.getSession();
-		UserVo userVo=(UserVo)session.getAttribute("user");
-		
+		HttpSession session = request.getSession();
+		UserVo userVo = (UserVo) session.getAttribute("user");
+
 		String userNewPassword = request.getParameter("userNewPassword");
 		session.setAttribute("loginPassword", true);
 		session.setAttribute("userNewPassword", userNewPassword);
-		
+
 		Random random = new Random();
 		int otp = random.nextInt(999999);
 		session.setAttribute("otpValue", otp);
@@ -104,24 +245,23 @@ public class UserMasterController extends HttpServlet {
 		smsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
 
 		session.setAttribute("user", userVo);
-		response.sendRedirect(request.getContextPath()+"/view/user/otp-verification.jsp");		
+		response.sendRedirect(request.getContextPath() + "/view/user/otp-verification.jsp");
 	}
 
 	private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// TODO Auto-generated method stub
 		String userId = request.getParameter("userId");
-		
-		HttpSession session=request.getSession();
-		UserVo userVo=(UserVo)session.getAttribute("user");
-		
-		if(Integer.parseInt(userId) == userVo.getUserId())
-		{
+
+		HttpSession session = request.getSession();
+		UserVo userVo = (UserVo) session.getAttribute("user");
+
+		if (Integer.parseInt(userId) == userVo.getUserId()) {
 			userVo.setIsDeleted("1");
-			UserMasterDao userMasterDao=new UserMasterDao();
+			UserMasterDao userMasterDao = new UserMasterDao();
 			userMasterDao.updateUser(userVo);
 		}
-		
-		response.sendRedirect(request.getContextPath()+"/view/user/user-logout.jsp");
+
+		response.sendRedirect(request.getContextPath() + "/view/user/user-logout.jsp");
 	}
 
 	private void userUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -135,8 +275,8 @@ public class UserMasterController extends HttpServlet {
 		String userGender = request.getParameter("userGender");
 		String userCity = request.getParameter("userCity");
 		String userPincode = request.getParameter("userPincode");
-		String userDob=request.getParameter("userDob");
-		
+		String userDob = request.getParameter("userDob");
+
 		if (userVo.getUserMobile().equals(userMobile)) {
 			userVo.setUserName(userName);
 			userVo.setUserEmail(userEmail);
@@ -145,14 +285,14 @@ public class UserMasterController extends HttpServlet {
 			userVo.setUserCity(userCity);
 			userVo.setUserPinCode(userPincode);
 			userVo.setUserDob(userDob);
-			
+
 			UserMasterDao userMasterDao = new UserMasterDao();
 			userMasterDao.updateUser(userVo);
 
 			session.setAttribute("user", userVo);
 			session.setAttribute("userMsg", "Profile Details successfully updated");
-			response.sendRedirect(request.getContextPath()+"/view/user/user-settings.jsp");
-		}else {
+			response.sendRedirect(request.getContextPath() + "/view/user/user-settings.jsp");
+		} else {
 			userVo.setUserName(userName);
 			userVo.setUserEmail(userEmail);
 			userVo.setUserMobile(userMobile);
@@ -160,10 +300,10 @@ public class UserMasterController extends HttpServlet {
 			userVo.setUserCity(userCity);
 			userVo.setUserPinCode(userPincode);
 			userVo.setUserDob(userDob);
-			
+
 			session.setAttribute("user", userVo);
 			session.setAttribute("mobileChange", true);
-			
+
 			Random random = new Random();
 			int otp = random.nextInt(999999);
 
@@ -175,7 +315,7 @@ public class UserMasterController extends HttpServlet {
 					+ ". Enter OTP to complete your update request.";
 			smsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
 
-			response.sendRedirect(request.getContextPath()+"/view/user/otp-verification.jsp");
+			response.sendRedirect(request.getContextPath() + "/view/user/otp-verification.jsp");
 		}
 	}
 
@@ -215,7 +355,7 @@ public class UserMasterController extends HttpServlet {
 			Iterator<FileItem> fileItemsIterator = fileItemsList.iterator();
 			while (fileItemsIterator.hasNext()) {
 				FileItem fileItem = fileItemsIterator.next();
-			
+
 				File uploadFile = new File(file + File.separator + userVo.getUserEmail() + ".jpg");
 				String fileName = fileItem.getName();
 				if (fileName.contains(".jpg") || fileName.contains(".jpeg") || fileName.contains(".png")
@@ -242,7 +382,7 @@ public class UserMasterController extends HttpServlet {
 			out.write("Exception in uploading file.");
 		}
 		session.setAttribute("user", userVo);
-		response.sendRedirect(request.getContextPath()+"/view/user/user-settings.jsp");
+		response.sendRedirect(request.getContextPath() + "/view/user/user-settings.jsp");
 	}
 
 	private void loginUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -261,7 +401,7 @@ public class UserMasterController extends HttpServlet {
 		if (userList.isEmpty()) {
 			session.setAttribute("userExists", true);
 			session.setAttribute("userMsg", "Email or Password is incorrect.");
-			response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
+			response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
 		} else {
 			userVo = userList.get(0);
 			if (userVo.getIsActive().equals("0")) {
@@ -280,32 +420,31 @@ public class UserMasterController extends HttpServlet {
 
 				TrackingMasterDao trackingMasterDao = new TrackingMasterDao();
 				trackingMasterDao.addTrack(trackingVo);
-				
-				TransactionMasterDao transactionMasterDao4=new TransactionMasterDao();
-				List<TransactionVo> transactionBalance=transactionMasterDao4.getLastTransactionForBalance(userVo);
-				if(transactionBalance.isEmpty())
-				{
-					session.setAttribute("myBalance", ""+0.00);
-				}else {
-					session.setAttribute("myBalance", ""+transactionBalance.get(0).getTotalAvailableBalance());
+
+				TransactionMasterDao transactionMasterDao4 = new TransactionMasterDao();
+				List<TransactionVo> transactionBalance = transactionMasterDao4.getLastTransactionForBalance(userVo);
+				if (transactionBalance.isEmpty()) {
+					session.setAttribute("myBalance", "" + 0.00);
+				} else {
+					session.setAttribute("myBalance", "" + transactionBalance.get(0).getTotalAvailableBalance());
 				}
-				
-				if(true) {
-					NotificationDao notificationDao=new NotificationDao();
+
+				if (true) {
+					NotificationDao notificationDao = new NotificationDao();
 					List<NotificationVo> notificationsList = notificationDao.getAllNotifications(userVo);
 					session.setAttribute("notificationsList", notificationsList);
 					session.setAttribute("notificationSize", notificationsList.size());
 				}
 
 				session.setAttribute("user", userVo);
-				response.sendRedirect(request.getContextPath()+"/view/pages/home.jsp");
+				response.sendRedirect(request.getContextPath() + "/view/pages/home.jsp");
 			} else {
 				session.setAttribute("user", userVo);
 				session.setAttribute("userExists", true);
 				session.setAttribute("userMsg",
 						"This account is already logged in from another source. If it wasn't you, please change your password and review account activity after changing your password");
 				session.setAttribute("choice", "Do you want to logout?");
-				response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
+				response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
 			}
 		}
 	}
@@ -320,7 +459,7 @@ public class UserMasterController extends HttpServlet {
 		userVo.setUserPassword(userPassword);
 		userMasterDao.updateUser(userVo);
 
-		response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
+		response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
 	}
 
 	private void forgotPassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -355,11 +494,11 @@ public class UserMasterController extends HttpServlet {
 					+ ". Enter OTP to complete your forgot password request.";
 			smsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
 
-			response.sendRedirect(request.getContextPath()+"/view/user/otp-verification.jsp");
+			response.sendRedirect(request.getContextPath() + "/view/user/otp-verification.jsp");
 		} else {
 			session.setAttribute("userExists", true);
 			session.setAttribute("userMsg", "No such user exists with provided email and mobile number");
-			response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
+			response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
 		}
 	}
 
@@ -371,24 +510,23 @@ public class UserMasterController extends HttpServlet {
 
 		if (otp == otpValue) {
 			Object userObj = session.getAttribute("userForgotFLag");
-			Object mobileChange=session.getAttribute("mobileChange");
-			Object loginPassword=session.getAttribute("loginPassword");
+			Object mobileChange = session.getAttribute("mobileChange");
+			Object loginPassword = session.getAttribute("loginPassword");
 			if (userObj != null) {
 				session.removeAttribute("userForgotFLag");
 				response.getWriter().println("Correct");
-			}else if(mobileChange!=null) {
+			} else if (mobileChange != null) {
 				session.removeAttribute("mobileChange");
 				response.getWriter().println("MobileChange");
-			}else if(loginPassword!=null) {
+			} else if (loginPassword != null) {
 				session.removeAttribute("loginPassword");
-				String userNewPassword = (String)session.getAttribute("userNewPassword");
-				UserMasterDao userMasterDao=new UserMasterDao();
-				UserVo userVo=(UserVo)session.getAttribute("user");
+				String userNewPassword = (String) session.getAttribute("userNewPassword");
+				UserMasterDao userMasterDao = new UserMasterDao();
+				UserVo userVo = (UserVo) session.getAttribute("user");
 				userVo.setUserPassword(userNewPassword);
 				userMasterDao.updateUser(userVo);
 				response.getWriter().println("loginPassword");
-			}
-			else {
+			} else {
 				UserVo userVo = (UserVo) session.getAttribute("user");
 				UserMasterDao userMasterDao = new UserMasterDao();
 
@@ -447,12 +585,12 @@ public class UserMasterController extends HttpServlet {
 					+ ". Enter OTP to complete your user registration request.";
 			smsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
 
-			response.sendRedirect(request.getContextPath()+"/view/user/otp-verification.jsp");
+			response.sendRedirect(request.getContextPath() + "/view/user/otp-verification.jsp");
 		} else {
 			HttpSession session = request.getSession();
 			session.setAttribute("userExists", true);
 			session.setAttribute("userMsg", "User Already Esists. You can't signup with provided details.");
-			response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
+			response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
 		}
 	}
 
