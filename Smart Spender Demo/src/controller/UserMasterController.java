@@ -29,10 +29,12 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import dao.BudgetMasterDao;
 import dao.NotificationDao;
 import dao.TrackingMasterDao;
 import dao.TransactionMasterDao;
 import dao.UserMasterDao;
+import vo.BudgetVo;
 import vo.NotificationVo;
 import vo.TrackingVo;
 import vo.TransactionVo;
@@ -103,7 +105,7 @@ public class UserMasterController extends HttpServlet {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 
 		// Create a blank sheet
-		XSSFSheet spreadsheet = workbook.createSheet(" Employee Info ");
+		XSSFSheet spreadsheet = workbook.createSheet("Transactions");
 
 		// Create row object
 		XSSFRow row;
@@ -190,6 +192,68 @@ public class UserMasterController extends HttpServlet {
 			cell12.setCellValue((String) "" + transactionVo.getExtraDescription());
 		}
 
+		// Budget Data Write to file
+		XSSFSheet budgetSheet = workbook.createSheet("Budgets");
+		XSSFRow row2;
+
+		BudgetMasterDao budgetMasterDao = new BudgetMasterDao();
+		List<BudgetVo> budgetList = budgetMasterDao.getAllBudgets(userVo);
+
+		if (true) {
+			row2 = budgetSheet.createRow(0);
+			Cell cell1 = row2.createCell(0);
+			cell1.setCellValue((String) "Id");
+
+			Cell cell2 = row2.createCell(1);
+			cell2.setCellValue((String) "Name");
+
+			Cell cell3 = row2.createCell(2);
+			cell3.setCellValue((String) "Amount");
+
+			Cell cell4 = row2.createCell(3);
+			cell4.setCellValue((String) "Start Date");
+
+			Cell cell5 = row2.createCell(4);
+			cell5.setCellValue((String) "End Date");
+
+			Cell cell6 = row2.createCell(5);
+			cell6.setCellValue((String) "Amount Left");
+
+			Cell cell7 = row2.createCell(6);
+			cell7.setCellValue((String) "Alert Amount");
+
+			Cell cell8 = row2.createCell(7);
+			cell8.setCellValue((String) "Extra Description");
+		}
+
+		rowid = 1;
+		for (BudgetVo budgetVo : budgetList) {
+			row2 = budgetSheet.createRow(rowid++);
+			Cell cell1 = row2.createCell(0);
+			cell1.setCellValue((String) "" + (rowid - 1));
+
+			Cell cell2 = row2.createCell(1);
+			cell2.setCellValue((String) "" + budgetVo.getBudgetName());
+
+			Cell cell3 = row2.createCell(2);
+			cell3.setCellValue((String) "" + budgetVo.getBudgetAmount());
+
+			Cell cell4 = row2.createCell(3);
+			cell4.setCellValue((String) "" + budgetVo.getBudgetStartDate());
+
+			Cell cell5 = row2.createCell(4);
+			cell5.setCellValue((String) "" + budgetVo.getBudgetEndDate());
+
+			Cell cell6 = row2.createCell(5);
+			cell6.setCellValue((String) "" + budgetVo.getBudgetAmountLeft());
+
+			Cell cell7 = row2.createCell(6);
+			cell7.setCellValue((String) "" + budgetVo.getBudgetAlertAmount());
+
+			Cell cell8 = row2.createCell(7);
+			cell8.setCellValue((String) "" + budgetVo.getBudgetDescription());
+		}
+
 		// File Temporary Path Code
 		String relativePath = "img/userExportData";
 		String rootPath = getServletContext().getRealPath(relativePath);
@@ -197,23 +261,24 @@ public class UserMasterController extends HttpServlet {
 		if (!file.exists()) {
 			file.mkdirs();
 		}
-		File dataFile =new File(rootPath + "/" + fileName +".xlsx");
-		if(dataFile.exists()) {
+		File dataFile = new File(rootPath + "/" + fileName + ".xlsx");
+		if (dataFile.exists()) {
 			dataFile.delete();
 		}
 		FileOutputStream out = new FileOutputStream(dataFile);
 		workbook.write(out);
 		out.close();
-		
+
+		// Download File Code
 		InputStream fis = new FileInputStream(dataFile);
 		response.setContentType("application/vnd.ms-excel");
 		response.setContentLength((int) dataFile.length());
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + ".xlsx\"");
-		
+
 		ServletOutputStream os = response.getOutputStream();
 		byte[] bufferData = new byte[1024];
-		int read=0;
-		while((read = fis.read(bufferData))!= -1){
+		int read = 0;
+		while ((read = fis.read(bufferData)) != -1) {
 			os.write(bufferData, 0, read);
 		}
 		os.flush();
@@ -221,7 +286,9 @@ public class UserMasterController extends HttpServlet {
 		fis.close();
 
 		session.setAttribute("user", userVo);
-		response.sendRedirect(request.getContextPath() + "/view/user/user-settings.jsp");
+		if (!response.isCommitted()) {
+			response.sendRedirect(request.getContextPath() + "/view/user/user-settings.jsp");
+		}
 	}
 
 	private void changeNewPassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
