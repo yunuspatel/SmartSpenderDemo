@@ -18,7 +18,14 @@ public class DbOperation {
 	
 	public DbOperation()
 	{
-		getConnection();
+		//getConnection();
+		session=factory.openSession();
+	}
+
+	static {
+		configuration = new AnnotationConfiguration();
+		configuration.configure("hibernate.cfg.xml");
+		factory = configuration.buildSessionFactory();
 	}
 
 	private void getConnection() {

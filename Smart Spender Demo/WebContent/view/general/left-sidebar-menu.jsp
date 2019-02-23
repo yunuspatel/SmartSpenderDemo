@@ -5,7 +5,7 @@
 		<li class="navigation-header"><span>Main</span> <i
 			class="zmdi zmdi-more"></i></li>
 		<li><a id="page-dashboard"
-			href="<%=request.getContextPath()%>/view/pages/home.jsp">
+			href="<%=request.getContextPath()%>/UserMasterController?flag=loadDashboard">
 				<div class="pull-left">
 					<img src="../../img/menu/dashboard.png"><i class="mr-20"></i><span
 						class="right-nav-text">Dashboard</span>

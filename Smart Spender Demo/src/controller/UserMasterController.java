@@ -92,7 +92,44 @@ public class UserMasterController extends HttpServlet {
 			changeNewPassword(request, response);
 		} else if (flag.equals("exportData")) {
 			exportData(request, response);
+		} else if (flag.equals("loadDashboard")) {
+			loadDashboard(request, response);
+		} else if (flag.equals("changeThemeDiv")) {
+			changeThemeDiv(request, response);
 		}
+	}
+
+	private void changeThemeDiv(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		String classList = request.getParameter("value");
+		String[] classLst = classList.split(" ");
+
+		String finalClass = "";
+		for (String str : classLst) {
+			if (!str.equalsIgnoreCase("open-setting-panel")) {
+				if (!str.equalsIgnoreCase("no-transition")) {
+					finalClass += str + " ";
+				}
+			}
+		}
+		HttpSession session = request.getSession();
+		UserVo userVo = (UserVo) session.getAttribute("user");
+		userVo.setPreLoaderClass(finalClass);
+
+		UserMasterDao userMasterDao = new UserMasterDao();
+		userMasterDao.updateUser(userVo);
+
+		session.setAttribute("user", userVo);
+		response.getWriter().println(finalClass);
+	}
+
+	private void loadDashboard(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		HttpSession session = request.getSession();
+		UserVo userVo = (UserVo) session.getAttribute("user");
+
+		session.setAttribute("user", userVo);
+		response.sendRedirect(request.getContextPath() + "/view/pages/home.jsp");
 	}
 
 	private void exportData(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -504,7 +541,8 @@ public class UserMasterController extends HttpServlet {
 				}
 
 				session.setAttribute("user", userVo);
-				response.sendRedirect(request.getContextPath() + "/view/pages/home.jsp");
+				loadDashboard(request, response);
+//				response.sendRedirect(request.getContextPath() + "/view/pages/home.jsp");
 			} else {
 				session.setAttribute("user", userVo);
 				session.setAttribute("userExists", true);
@@ -629,6 +667,8 @@ public class UserMasterController extends HttpServlet {
 		userVo.setUserImage("../../img/profile/empty_user_icon.jpg");
 		userVo.setUserGender("abc");
 		userVo.setUserDob("");
+		userVo.setStockPermission(false);
+		userVo.setPreLoaderClass("wrapper theme-1-active pimary-color-red");
 
 		UserMasterDao masterDao = new UserMasterDao();
 		boolean userExisits = masterDao.checkUserExists(userVo);

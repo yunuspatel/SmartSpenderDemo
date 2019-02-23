@@ -44,53 +44,63 @@
 	function checkActive() {
 		var element = document.getElementById('transaction-list');
 		element.classList.add("active");
-			<%
-			Object incomeObject=session.getAttribute("incomeFlag");
-			if(incomeObject!=null)
-			{
-			%>
+			<%Object incomeObject = session.getAttribute("incomeFlag");
+			if (incomeObject != null) {%>
 				document.getElementById("forCategory").selectedIndex = "0";
-			<%
-				session.removeAttribute("incomeFlag");
+			<%session.removeAttribute("incomeFlag");
 			}
-			Object  expenseObject = session.getAttribute("expenseFlag");
-			if(expenseObject!= null)
-			{
-			%>
+			Object expenseObject = session.getAttribute("expenseFlag");
+			if (expenseObject != null) {%>
 				document.getElementById("forCategory").selectedIndex = "1";
-			<%
-				session.removeAttribute("expenseFlag");
+			<%session.removeAttribute("expenseFlag");
 			}
 			Object userMsg = session.getAttribute("userMsg");
-			if(userMsg!=null)
-			{
-			%>
-				alert('<%= userMsg %>');
-			<%
-				session.removeAttribute("userMsg");
+			if (userMsg != null) {%>
+				alert('<%=userMsg%>');
+			<%session.removeAttribute("userMsg");
 			}
 			Object checkNotification = session.getAttribute("checkNotification");
-			if(checkNotification!=null)
-			{
+			if (checkNotification != null) {
 				session.removeAttribute("checkNotification");
-				NotificationDao notificationDao=new NotificationDao();
-				List<NotificationVo> notificationList=notificationDao.getAllNotifications(userVo);
+				NotificationDao notificationDao = new NotificationDao();
+				List<NotificationVo> notificationList = notificationDao.getAllNotifications(userVo);
 				session.setAttribute("notificationsList", notificationList);
 				session.setAttribute("notificationSize", notificationList.size());
-			}
-		%>
+			}%>
 	}
 	
 	function reloadData()
 	{
 		var ddlValue = document.getElementById('forCategory').value;
-		var url = '<%= request.getContextPath() %>/TransactionMasterController?flag='+ddlValue;
+		var url = '<%=request.getContextPath()%>/TransactionMasterController?flag='+ddlValue;
 		window.location.href = url;
 	}
 	
 	function upload(file) {
 		var imgVal = document.getElementById('frmReceipt'+file.id);
 		imgVal.submit();
+	}
+	
+	function changeThemeClass(div)
+	{
+		var xmlhttp;
+		var url = '<%=request.getContextPath()%>/UserMasterController?flag=changeThemeDiv&value='+div.classList;
+
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				var themeClass = document.getElementById('themeClass');
+				themeClass.classList = xmlhttp.responseText;
+			}
+		}
+
+		xmlhttp.open('POST', url, true);
+		xmlhttp.send();
 	}
 </script>
 </head>
@@ -100,7 +110,8 @@
 		<div class="la-anim-1"></div>
 	</div>
 	<!--/Preloader-->
-	<div class="wrapper theme-1-active pimary-color-red">
+	<div id="themeClass" onchange="changeThemeClass(this)"
+		class="${ sessionScope.user.preLoaderClass }">
 
 		<!-- Top Menu Items -->
 		<jsp:include page="../general/top-menu.jsp"></jsp:include>
@@ -135,7 +146,7 @@
 					<div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
 						<ol class="breadcrumb">
 							<li><a
-								href="<%=request.getContextPath()%>/view/pages/home.jsp">Dashboard</a></li>
+								href="<%=request.getContextPath()%>/UserMasterController?flag=loadDashboard">Dashboard</a></li>
 							<li class="active"><span>Transaction List</span></li>
 						</ol>
 					</div>
@@ -199,10 +210,14 @@
 													</tr>
 												</tfoot>
 												<tbody>
-													<% int count=1; %>
-													<c:forEach var="transactionData" items="${ sessionScope.transactionList }">
+													<%
+														int count = 1;
+													%>
+													<c:forEach var="transactionData"
+														items="${ sessionScope.transactionList }">
 														<tr>
-															<td><a style="color : blue" href="<%= request.getContextPath() %>/TransactionMasterController?flag=loadTransactionDetails&id=${ transactionData.transactionIdentificationNumber }">${ transactionData.transactionIdentificationNumber }</a></td>
+															<td><a style="color: blue"
+																href="<%= request.getContextPath() %>/TransactionMasterController?flag=loadTransactionDetails&id=${ transactionData.transactionIdentificationNumber }">${ transactionData.transactionIdentificationNumber }</a></td>
 															<td>${ transactionData.payeeName }</td>
 															<td>${ transactionData.subCategoriesVo.subCategoryName }</td>
 															<td>${ transactionData.transactionAmount }</td>
@@ -210,7 +225,14 @@
 															<td>${ transactionData.transactionDateTime }</td>
 															<td>${ transactionData.paymentMethod }</td>
 															<td>${ transactionData.statusOfTransaction }</td>
-															<td><form name="frmReceipt" id="frmReceipt${ transactionData.transactionId }" method="post" enctype="multipart/form-data" action="<%=request.getContextPath()%>/TransactionMasterController?flag=uploadReceiptImage&id=${ transactionData.transactionIdentificationNumber }"><input id="${ transactionData.transactionId }" name="receiptImage${ transactionData.transactionId }" class="upload" type="file" onchange="upload(this)"></form></td>
+															<td><form name="frmReceipt"
+																	id="frmReceipt${ transactionData.transactionId }"
+																	method="post" enctype="multipart/form-data"
+																	action="<%=request.getContextPath()%>/TransactionMasterController?flag=uploadReceiptImage&id=${ transactionData.transactionIdentificationNumber }">
+																	<input id="${ transactionData.transactionId }"
+																		name="receiptImage${ transactionData.transactionId }"
+																		class="upload" type="file" onchange="upload(this)">
+																</form></td>
 														</tr>
 													</c:forEach>
 												</tbody>
@@ -250,15 +272,15 @@
 	<!-- Bootstrap Core JavaScript -->
 	<script
 		src="../../vendors/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-		
+
 	<!-- Bootstrap Select JavaScript -->
 	<script
 		src="../../vendors/bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-	
+
 	<!-- Select2 JavaScript -->
 	<script
 		src="../../vendors/bower_components/select2/dist/js/select2.full.min.js"></script>
-	
+
 	<!-- Data table JavaScript -->
 	<script
 		src="../../vendors/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>

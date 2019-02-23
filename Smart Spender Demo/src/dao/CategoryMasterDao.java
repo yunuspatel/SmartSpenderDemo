@@ -30,7 +30,6 @@ public class CategoryMasterDao {
 	
 	public List<CategoryVo> getSubCategoryBasedOnName(String categoryName,String forCategory,UserVo userVo)
 	{
-		dbOperation.transaction=dbOperation.session.beginTransaction();
 		list=dbOperation.session.createQuery("from CategoryVo where categoryName='" + categoryName + "' and forCategory='" + forCategory + "' and userVo.userId=" + userVo.getUserId()).list();
 		return list;
 	}

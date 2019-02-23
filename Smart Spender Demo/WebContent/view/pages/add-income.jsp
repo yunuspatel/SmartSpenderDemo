@@ -11,11 +11,12 @@
 <%
 	UserVo userVo = (UserVo) session.getAttribute("user");
 	if (userVo == null) {
-		response.sendRedirect(request.getContextPath()+"/view/user/login.jsp");
+		response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
 	} else {
 		CategoryMasterDao categoryMasterDao = new CategoryMasterDao();
 		List<CategoryVo> incomeList = categoryMasterDao.getCategoryList("income", userVo);
 		session.setAttribute("incomeList", incomeList);
+		session.setAttribute("categoryDao", categoryMasterDao);
 	}
 %>
 <head>
@@ -30,7 +31,8 @@
 
 
 <!-- select2 CSS -->
-<link href="../../vendors/bower_components/select2/dist/css/select2.min.css"
+<link
+	href="../../vendors/bower_components/select2/dist/css/select2.min.css"
 	rel="stylesheet" type="text/css" />
 
 <!-- bootstrap-select CSS -->
@@ -53,23 +55,18 @@
 	function checkActive() {
 		var element = document.getElementById("page-add-income");
 		element.classList.add("active");
-		<%
-			Object object=session.getAttribute("userMsg");
-			if(object!=null)
-			{
-			%>
-				alert("<%= object %>");
-			<%
-				session.removeAttribute("userMsg");
-			}
-		%>	
+		<%Object object = session.getAttribute("userMsg");
+			if (object != null) {%>
+				alert("<%=object%>");
+			<%session.removeAttribute("userMsg");
+			}%>	
 	}
 	
 	function fillSubCategoryDropdown()
 	{
 		var elementValue = document.getElementById('categorySelect').value;
 		var xmlhttp;
-		var url = '<%=request.getContextPath()%>/CategoryController?flag=getSubCategory&forCategory=income&value='+ elementValue;
+		var url = '<%=request.getContextPath()%>/CategoryController?flag=getSubCategory&forCategory=income&value='+elementValue;
 
 		if (window.XMLHttpRequest) {
 			xmlhttp = new XMLHttpRequest();
@@ -115,6 +112,27 @@
 		}
 	}
 	
+	function changeThemeClass(div)
+	{
+		var xmlhttp;
+		var url = '<%=request.getContextPath()%>/UserMasterController?flag=changeThemeDiv&value='+div.classList;
+
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				var themeClass = document.getElementById('themeClass');
+				themeClass.classList = xmlhttp.responseText;
+			}
+		}
+
+		xmlhttp.open('POST', url, true);
+		xmlhttp.send();
+	}
 </script>
 </head>
 <body onload="checkActive()">
@@ -123,7 +141,8 @@
 		<div class="la-anim-1"></div>
 	</div>
 	<!-- /Preloader -->
-	<div class="wrapper theme-1-active pimary-color-red">
+	<div id="themeClass" onchange="changeThemeClass(this)"
+		class="${ sessionScope.user.preLoaderClass }">
 		<!-- Top Menu Items -->
 		<jsp:include page="../general/top-menu.jsp"></jsp:include>
 		<!-- /Top Menu Items -->
@@ -152,7 +171,8 @@
 				</div>
 				<div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
 					<ol class="breadcrumb">
-						<li><a href="<%= request.getContextPath() %>/view/pages/home.jsp">Main</a></li>
+						<li><a
+							href="<%=request.getContextPath()%>/UserMasterController?flag=loadDashboard">Main</a></li>
 						<li class="active"><span>Add Income</span></li>
 					</ol>
 				</div>
@@ -171,7 +191,8 @@
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body">
 									<div class="form-wrap">
-										<form name="frmIncome" id="frmIncome" method="post" action="<%= request.getContextPath() %>/TransactionMasterController">
+										<form name="frmIncome" id="frmIncome" method="post"
+											action="<%=request.getContextPath()%>/TransactionMasterController">
 											<input type="hidden" name="flag" value="addIncomeTransaction">
 											<div class="row row-lg">
 												<div class="col-md-4">
@@ -195,9 +216,9 @@
 															<div class="input-group-addon">
 																<i class="fa fa-rupee"></i>
 															</div>
-															<input type="number" step="any" autocomplete="off" required=""
-																class="form-control" id="transactionAmount" name="transactionAmount"
-																placeholder="Enter Amount">
+															<input type="number" step="any" autocomplete="off"
+																required="" class="form-control" id="transactionAmount"
+																name="transactionAmount" placeholder="Enter Amount">
 														</div>
 													</div>
 												</div>
@@ -206,7 +227,8 @@
 														<label class="control-label mb-10 text-left"
 															for="datetimepicker1">Select Date and Time:-</label>
 														<div class="input-group date" id="datetimepicker1">
-															<input type="text" required="" name="transactionDate" autocomplete="off"
+															<input type="text" required="" name="transactionDate"
+																autocomplete="off"
 																placeholder="Select Date from calendar icon and Time from watch icon"
 																class="form-control"> <span
 																class="input-group-addon"> <span
@@ -351,7 +373,8 @@
 		src="../../vendors/bower_components/moment/min/moment-with-locales.min.js"></script>
 
 	<!-- Switchery JavaScript -->
-	<script src="../../vendors/bower_components/switchery/dist/switchery.min.js"></script>
+	<script
+		src="../../vendors/bower_components/switchery/dist/switchery.min.js"></script>
 
 	<!-- Select2 JavaScript -->
 	<script

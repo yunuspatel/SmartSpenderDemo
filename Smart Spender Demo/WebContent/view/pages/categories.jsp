@@ -55,16 +55,11 @@
 	function checkActive() {
 		var element = document.getElementById('page-categories');
 		element.classList.add("active");
-		<%
-			Object object=session.getAttribute("userMsg");
-			if(object!=null)
-			{
-			%>
-				alert("<%= object %>");
-			<%
-				session.removeAttribute("userMsg");
-			}
-		%>
+		<%Object object = session.getAttribute("userMsg");
+			if (object != null) {%>
+				alert("<%=object%>");
+			<%session.removeAttribute("userMsg");
+			}%>
 	}
 
 	function addIncSubControls() {
@@ -106,6 +101,28 @@
 		document.getElementById("expenseNodes").removeChild(
 				ctrlParent.parentNode);
 	}
+	
+	function changeThemeClass(div)
+	{
+		var xmlhttp;
+		var url = '<%=request.getContextPath()%>/UserMasterController?flag=changeThemeDiv&value='+div.classList;
+
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				var themeClass = document.getElementById('themeClass');
+				themeClass.classList = xmlhttp.responseText;
+			}
+		}
+
+		xmlhttp.open('POST', url, true);
+		xmlhttp.send();
+	}
 </script>
 </head>
 <body onload="checkActive()">
@@ -114,7 +131,8 @@
 		<div class="la-anim-1"></div>
 	</div>
 	<!-- /Preloader -->
-	<div class="wrapper theme-1-active pimary-color-red">
+	<div id="themeClass" onchange="changeThemeClass(this)"
+		class="${ sessionScope.user.preLoaderClass }">
 		<!-- Top Menu Items -->
 		<jsp:include page="../general/top-menu.jsp"></jsp:include>
 		<!-- /Top Menu Items -->
@@ -332,7 +350,8 @@
 					</div>
 					<div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
 						<ol class="breadcrumb">
-							<li><a href="<%= request.getContextPath() %>/view/pages/home.jsp">Main</a></li>
+							<li><a
+								href="<%=request.getContextPath()%>/UserMasterController?flag=loadDashboard">Main</a></li>
 							<li class="active"><span>Categories</span></li>
 						</ol>
 					</div>

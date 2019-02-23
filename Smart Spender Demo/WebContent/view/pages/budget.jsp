@@ -45,24 +45,40 @@
 	function checkActive() {
 		var element = document.getElementById('page-budget');
 		element.classList.add("active");
-		<%
-		Object checkNotification = session.getAttribute("checkNotification");
-		if(checkNotification!=null)
-		{
-			session.removeAttribute("checkNotification");
-			NotificationDao notificationDao=new NotificationDao();
-			List<NotificationVo> notificationList=notificationDao.getAllNotifications(userVo);
-			session.setAttribute("notificationsList", notificationList);
+		<%Object checkNotification = session.getAttribute("checkNotification");
+			if (checkNotification != null) {
+				session.removeAttribute("checkNotification");
+				NotificationDao notificationDao = new NotificationDao();
+				List<NotificationVo> notificationList = notificationDao.getAllNotifications(userVo);
+				session.setAttribute("notificationsList", notificationList);
+			}
+			Object object = session.getAttribute("userMsg");
+			if (object != null) {%>
+			alert('<%=object%>');
+		<%session.removeAttribute("userMsg");
+			}%>
+	}
+	
+	function changeThemeClass(div)
+	{
+		var xmlhttp;
+		var url = '<%=request.getContextPath()%>/UserMasterController?flag=changeThemeDiv&value='+div.classList;
+
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 		}
-		Object object=session.getAttribute("userMsg");
-		if(object!=null)
-		{
-		%>
-			alert('<%= object %>');
-		<%
-			session.removeAttribute("userMsg");
+
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				var themeClass = document.getElementById('themeClass');
+				themeClass.classList = xmlhttp.responseText;
+			}
 		}
-		%>
+
+		xmlhttp.open('POST', url, true);
+		xmlhttp.send();
 	}
 </script>
 </head>
@@ -72,7 +88,8 @@
 		<div class="la-anim-1"></div>
 	</div>
 	<!--/Preloader-->
-	<div class="wrapper theme-1-active pimary-color-red">
+	<div id="themeClass" onchange="changeThemeClass(this)"
+		class="${ sessionScope.user.preLoaderClass }">
 
 		<!-- Top Menu Items -->
 		<jsp:include page="../general/top-menu.jsp"></jsp:include>
@@ -107,7 +124,7 @@
 					<div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
 						<ol class="breadcrumb">
 							<li><a
-								href="<%=request.getContextPath()%>/view/pages/home.jsp">Dashboard</a></li>
+								href="<%=request.getContextPath()%>/UserMasterController?flag=loadDashboard">Dashboard</a></li>
 							<li class="active"><span>Budget</span></li>
 						</ol>
 					</div>
@@ -135,8 +152,8 @@
 											<div class="form-group">
 												<label for="budgetName" class="control-label mb-10">Budget
 													Name:-</label> <input type="text" class="form-control"
-													id="budgetName" name="budgetName" required="" placeholder="Enter Budget Name"
-													autocomplete="off">
+													id="budgetName" name="budgetName" required=""
+													placeholder="Enter Budget Name" autocomplete="off">
 											</div>
 										</div>
 										<div class="col-md-12">
@@ -158,15 +175,16 @@
 												<div class="form-group">
 													<label for="budgetAmount" class="control-label mb-10">Budget
 														Amount:-</label> <input type="number" class="form-control"
-														id="budgetAmount" name="budgetAmount" required="" placeholder="Enter Budget Amount"
-														autocomplete="off">
+														id="budgetAmount" name="budgetAmount" required=""
+														placeholder="Enter Budget Amount" autocomplete="off">
 												</div>
 											</div>
 											<div class="col-md-6">
 												<div class="form-group">
 													<label for="alertAmount" class="control-label mb-10">Alert
 														Amount:-</label> <input type="number" class="form-control"
-														id="alertAmount" name="alertAmount" required="" placeholder="Enter Alert amount for notification"
+														id="alertAmount" name="alertAmount" required=""
+														placeholder="Enter Alert amount for notification"
 														autocomplete="off">
 												</div>
 											</div>
@@ -174,7 +192,8 @@
 										<div class="col-md-12">
 											<div class="form-group">
 												<label for="budgetDecription" class="control-label mb-10">Description:-</label>
-												<textarea class="form-control" id="budgetDecription" rows="4" placeholder="Extra Budget Description"
+												<textarea class="form-control" id="budgetDecription"
+													rows="4" placeholder="Extra Budget Description"
 													name="budgetDecription"></textarea>
 											</div>
 										</div>

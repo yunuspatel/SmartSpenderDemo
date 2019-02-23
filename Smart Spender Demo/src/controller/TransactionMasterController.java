@@ -25,6 +25,8 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
+
 import dao.BudgetMasterDao;
 import dao.CategoryMasterDao;
 import dao.NotificationDao;
@@ -819,10 +821,17 @@ public class TransactionMasterController extends HttpServlet {
 				int endDate = budgetEndDate.getDate();
 				int endMonth = budgetEndDate.getMonth();
 				int endYear = budgetEndDate.getYear();
+				
+				System.out.println("Current dd-mm-yyyy "+currentDate+"-"+currentMonth+"-"+currentYear);
+				System.out.println("Budget start:- "+startDate+"-"+startMonth+"-"+startYear);
+				System.out.println("End date:- "+endDate+"-"+endMonth+"-"+endYear);
 
 				if ((currentYear >= startYear) && (currentYear <= endYear)) {
+					System.out.println("inside first");
 					if ((currentMonth >= startMonth) && (currentMonth <= endMonth)) {
+						System.out.println("inside second");
 						if ((currentDate >= startDate) && (currentDate <= endDate)) {
+							System.out.println("inside third");
 							budgetVo.setBudgetAmountLeft(
 									budgetVo.getBudgetAmountLeft() - transactionVo.getTransactionAmount());
 

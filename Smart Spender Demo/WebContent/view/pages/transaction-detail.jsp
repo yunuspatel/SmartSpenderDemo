@@ -18,7 +18,7 @@
 		response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
 	} else {
 		transactionVo = (TransactionVo) session.getAttribute("transactionDetails");
-		session.setAttribute("transactionDetails", transactionVo);		
+		session.setAttribute("transactionDetails", transactionVo);
 	}
 %>
 <head>
@@ -109,7 +109,7 @@
 		var confirmMessage = confirm('Are you sure you want to delete this transaction?');
 		if(confirmMessage == true)
 		{
-			var url = '<%= request.getContextPath() %>/TransactionMasterController?flag=deleteTransaction&transactionIdentificationNumber=${ sessionScope.transactionDetails.transactionIdentificationNumber }';
+			var url = '<%=request.getContextPath()%>/TransactionMasterController?flag=deleteTransaction&transactionIdentificationNumber=${ sessionScope.transactionDetails.transactionIdentificationNumber }';
 			window.location.href = url;
 		}
 	}
@@ -133,6 +133,28 @@
 		document.getElementById('transactionNumber').disabled = false;
 		document.getElementById('paymentDescription').disabled = false;
 	}
+	
+	function changeThemeClass(div)
+	{
+		var xmlhttp;
+		var url = '<%=request.getContextPath()%>/UserMasterController?flag=changeThemeDiv&value='+div.classList;
+
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				var themeClass = document.getElementById('themeClass');
+				themeClass.classList = xmlhttp.responseText;
+			}
+		}
+
+		xmlhttp.open('POST', url, true);
+		xmlhttp.send();
+	}
 </script>
 </head>
 <body>
@@ -141,7 +163,8 @@
 		<div class="la-anim-1"></div>
 	</div>
 	<!-- /Preloader -->
-	<div class="wrapper theme-1-active pimary-color-red">
+	<div id="themeClass" onchange="changeThemeClass(this)"
+		class="${ sessionScope.user.preLoaderClass }">
 		<!-- Top Menu Items -->
 		<jsp:include page="../general/top-menu.jsp"></jsp:include>
 		<!-- /Top Menu Items -->
@@ -171,7 +194,7 @@
 				<div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
 					<ol class="breadcrumb">
 						<li><a
-							href="<%=request.getContextPath()%>/view/pages/home.jsp">Main</a></li>
+							href="<%=request.getContextPath()%>/UserMasterController?flag=loadDashboard">Main</a></li>
 						<li><a
 							href="<%=request.getContextPath()%>/view/pages/transaction-list.jsp">Transaction
 								List</a></li>
@@ -233,7 +256,8 @@
 															for="datetimepicker1">Select Date and Time:-</label>
 														<div class="input-group date" id="datetimepicker1">
 															<input type="text" required="" disabled=""
-																name="transactionDate" id="transactionDate" autocomplete="off"
+																name="transactionDate" id="transactionDate"
+																autocomplete="off"
 																value="${ sessionScope.transactionDetails.transactionDateTime }"
 																placeholder="Select Date from calendar icon and Time from watch icon"
 																class="form-control"> <span
@@ -323,7 +347,10 @@
 															tabindex="-1" aria-hidden="true" name="paymentMethod"
 															id="paymentMethod" onchange="checkMethod()" disabled="">
 															<option
-																<%if (transactionVo.getPaymentMethod().equals("Cash")) { out.println("selected"); }%> value="Cash">Cash</option>
+																<%if (transactionVo.getPaymentMethod().equals("Cash")) {
+				out.println("selected");
+			}%>
+																value="Cash">Cash</option>
 															<option
 																<%if (transactionVo.getPaymentMethod().equals("Cheque")) {
 				out.println("selected");
@@ -403,7 +430,8 @@
 												<div class="col-md-6">&nbsp;</div>
 												<div class="col-md-3">
 													<div class="col-md-6">
-														<input type="button" id="btnEdit" class="btn btn-warning btn-rounded"
+														<input type="button" id="btnEdit"
+															class="btn btn-warning btn-rounded"
 															onclick="controlChanges()" value="Edit">
 													</div>
 													<div class="col-md-6">

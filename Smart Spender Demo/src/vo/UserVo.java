@@ -55,6 +55,28 @@ public class UserVo {
 	@Column(name="user_dob",length=20)
 	String userDob;
 
+	@Column(name="stock_permission",length=6)
+	boolean stockPermission;
+	
+	@Column(name="pre_loader_class",length=150)
+	String preLoaderClass;
+	
+	public String getPreLoaderClass() {
+		return preLoaderClass;
+	}
+
+	public void setPreLoaderClass(String preLoaderClass) {
+		this.preLoaderClass = preLoaderClass;
+	}
+
+	public boolean isStockPermission() {
+		return stockPermission;
+	}
+
+	public void setStockPermission(boolean stockPermission) {
+		this.stockPermission = stockPermission;
+	}
+
 	public String getUserDob() {
 		return userDob;
 	}

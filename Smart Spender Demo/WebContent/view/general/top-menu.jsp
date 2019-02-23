@@ -7,7 +7,7 @@
 	<div class="mobile-only-brand pull-left">
 		<div class="nav-header pull-left">
 			<div class="logo-wrap">
-				<a href="<%=request.getContextPath()%>/view/pages/home.jsp"> <img
+				<a href="<%=request.getContextPath()%>/UserMasterController?flag=loadDashboard"> <img
 					class="brand-img" src="../../img/logo1.png" alt="brand" /> <span
 					class="brand-text">Smart Spender</span>
 				</a>

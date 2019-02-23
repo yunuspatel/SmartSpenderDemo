@@ -34,6 +34,30 @@
 <link href="../../dist/css/style.css" rel="stylesheet" type="text/css">
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+function changeThemeClass(div)
+{
+	var xmlhttp;
+	var url = '<%=request.getContextPath()%>/UserMasterController?flag=changeThemeDiv&value='+div.classList;
+
+		if (window.XMLHttpRequest) {
+			xmlhttp = new XMLHttpRequest();
+		} else {
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				var themeClass = document.getElementById('themeClass');
+				themeClass.classList = xmlhttp.responseText;
+			}
+		}
+
+		xmlhttp.open('POST', url, true);
+		xmlhttp.send();
+	}
+</script>
 </head>
 <body>
 	<!--Preloader-->
@@ -41,7 +65,8 @@
 		<div class="la-anim-1"></div>
 	</div>
 	<!--/Preloader-->
-	<div class="wrapper theme-1-active pimary-color-red">
+	<div id="themeClass" onchange="changeThemeClass(this)"
+		class="${ sessionScope.user.preLoaderClass }">
 
 		<!-- Top Menu Items -->
 		<jsp:include page="../general/top-menu.jsp"></jsp:include>
@@ -76,7 +101,7 @@
 					<div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
 						<ol class="breadcrumb">
 							<li><a
-								href="<%=request.getContextPath()%>/view/pages/home.jsp">Dashboard</a></li>
+								href="<%=request.getContextPath()%>/UserMasterController?flag=loadDashboard">Dashboard</a></li>
 							<li class="active"><span>Notifications List</span></li>
 						</ol>
 					</div>
