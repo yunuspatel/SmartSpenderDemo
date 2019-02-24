@@ -23,6 +23,7 @@
     <mapping class="vo.TransactionVo" />
     <mapping class="vo.BudgetVo" />
     <mapping class="vo.NotificationVo" />
+    <mapping class="vo.SuperUserVo" />
 
 </session-factory>
 </hibernate-configuration>

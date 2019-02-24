@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="fixed-sidebar-left">
 	<ul class="nav navbar-nav side-nav nicescroll-bar">
 		<li class="navigation-header"><span>Main</span> <i
@@ -31,13 +32,13 @@
 		<li><a id="page-add-expense"
 			href="<%=request.getContextPath()%>/view/pages/add-expense.jsp">
 				<div class="pull-left">
-					<i class="fa fa-inr mr-20"></i><span
-						class="right-nav-text">Add Expense</span>
+					<i class="fa fa-inr mr-20"></i><span class="right-nav-text">Add
+						Expense</span>
 				</div>
 				<div class="clearfix"></div>
 		</a></li>
 		<li><hr class="light-grey-hr mb-10" /></li>
-		<li class="navigation-header"><span>component</span> <i
+		<li class="navigation-header"><span>Components</span> <i
 			class="zmdi zmdi-more"></i></li>
 		<li><a id="page-categories"
 			href="<%=request.getContextPath()%>/view/pages/categories.jsp"><div
@@ -54,5 +55,16 @@
 						List</span>
 				</div>
 				<div class="clearfix"></div></a></li>
+		<li><hr class="light-grey-hr mb-10" /></li>
+		<li class="navigation-header"><span>Extra's</span> <i
+			class="zmdi zmdi-more"></i></li>
+		<c:if test="${ sessionScope.user.stockPermission == false }">
+			<li><a id="page-categories" href="#"><div class="pull-left">
+						<img src="../../img/menu/extra-stock-permission.png"><i
+							class="mr-20"></i><span class="right-nav-text">Inventory
+							Management</span>
+					</div>
+					<div class="clearfix"></div></a></li>
+		</c:if>
 	</ul>
 </div>

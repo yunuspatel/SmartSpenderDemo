@@ -270,7 +270,6 @@ public class UserMasterController extends HttpServlet {
 					float janIncome = Float.parseFloat(graphData.getJanIncome()) + transactionVo.getTransactionAmount();
 					graphData.setJanIncome("" + janIncome);
 				} else if (tranDate.getMonth() == 1) {
-					System.out.println(Float.parseFloat(graphData.getFebIncome()) + transactionVo.getTransactionAmount());
 					float febIncome = Float.parseFloat(graphData.getFebIncome()) + transactionVo.getTransactionAmount();
 					graphData.setFebIncome("" + febIncome);
 				} else if (tranDate.getMonth() == 2) {
@@ -349,7 +348,6 @@ public class UserMasterController extends HttpServlet {
 			}
 		}
 
-		System.out.println(graphData.getFebIncome());
 		session.setAttribute("currentBalance", currentBalance);
 		session.setAttribute("todayIncome", todayIncome);
 		session.setAttribute("todayExpense", todayExpense);
