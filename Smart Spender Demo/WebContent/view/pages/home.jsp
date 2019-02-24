@@ -34,7 +34,8 @@
 
 <!-- Custom CSS -->
 <link href="../../dist/css/style.css" rel="stylesheet" type="text/css">
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
 		function checkActive()
 		{
@@ -107,76 +108,9 @@
 			<div class="container-fluid pt-25">
 
 				<!-- Row -->
-				<div class="row">
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box bg-red">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span
-														class="counter-anim">914,001</span></span> <span
-														class="weight-500 uppercase-font txt-light block font-13">visits</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
-													<i
-														class="zmdi zmdi-male-female txt-light data-right-rep-icon"></i>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box bg-yellow">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span
-														class="counter-anim">46.41</span>%</span> <span
-														class="weight-500 uppercase-font txt-light block">bounce
-														rate</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
-													<i class="zmdi zmdi-redo txt-light data-right-rep-icon"></i>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
-						<div class="panel panel-default card-view pa-0">
-							<div class="panel-wrapper collapse in">
-								<div class="panel-body pa-0">
-									<div class="sm-data-box bg-green">
-										<div class="container-fluid">
-											<div class="row">
-												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
-													<span class="txt-light block counter"><span
-														class="counter-anim">4,054,876</span></span> <span
-														class="weight-500 uppercase-font txt-light block">pageviews</span>
-												</div>
-												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
-													<i class="zmdi zmdi-file txt-light data-right-rep-icon"></i>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+				<div class="row row-lg">
+					<div class="col-md-3">&nbsp;</div>
+					<div class="col-md-6">
 						<div class="panel panel-default card-view pa-0">
 							<div class="panel-wrapper collapse in">
 								<div class="panel-body pa-0">
@@ -185,14 +119,214 @@
 											<div class="row">
 												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
 													<span class="txt-light block counter"><span
-														class="counter-anim">46.43</span>%</span> <span
-														class="weight-500 uppercase-font txt-light block">growth
-														rate</span>
+														class="counter-anim">${ sessionScope.currentBalance }</span></span>
+													<span
+														class="weight-500 uppercase-font txt-light block font-13">Current
+														Balance</span>
 												</div>
-												<div
-													class="col-xs-6 text-center  pl-0 pr-0 pt-25  data-wrap-right">
-													<div id="sparkline_4"
-														style="width: 100px; overflow: hidden; margin: 0px auto;"></div>
+												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
+													<i class="zmdi zmdi txt-light data-right-rep-icon"><img
+														alt="Current Balance" src="../../img/menu/bank-md.png"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row row-lg">
+					<div class="col-md-3">
+						<div class="panel panel-default card-view pa-0">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body pa-0">
+									<div class="sm-data-box bg-green">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+													<span class="txt-light block counter"><span
+														class="counter-anim">${ sessionScope.todayIncome }</span></span>
+													<span class="weight-500 uppercase-font txt-light block">Today's
+														Income</span>
+												</div>
+												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
+													<i class="zmdi txt-light data-right-rep-icon"><img
+														alt="Today's Income" src="../../img/menu/income-md.png"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="panel panel-default card-view pa-0">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body pa-0">
+									<div class="sm-data-box bg-green">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+													<span class="txt-light block counter"><span
+														class="counter-anim">${ sessionScope.weekIncome }</span></span> <span
+														class="weight-500 uppercase-font txt-light block">Current
+														Week's Income</span>
+												</div>
+												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
+													<i class="zmdi txt-light data-right-rep-icon"><img
+														alt="Week's Income" src="../../img/menu/income-md.png"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="panel panel-default card-view pa-0">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body pa-0">
+									<div class="sm-data-box bg-green">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+													<span class="txt-light block counter"><span
+														class="counter-anim">${ sessionScope.monthIncome }</span></span>
+													<span class="weight-500 uppercase-font txt-light block">Month's
+														Income</span>
+												</div>
+												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
+													<i class="zmdi txt-light data-right-rep-icon"><img
+														alt="Month's Income" src="../../img/menu/income-md.png"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="panel panel-default card-view pa-0">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body pa-0">
+									<div class="sm-data-box bg-green">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+													<span class="txt-light block counter"><span
+														class="counter-anim">${ sessionScope.yearIncome }</span></span> <span
+														class="weight-500 uppercase-font txt-light block">Current
+														Year's Income</span>
+												</div>
+												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
+													<i class="zmdi txt-light data-right-rep-icon"><img
+														alt="Years's Income" src="../../img/menu/income-md.png"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row row-lg">
+					<div class="col-lg-3">
+						<div class="panel panel-default card-view pa-0">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body pa-0">
+									<div class="sm-data-box bg-red">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+													<span class="txt-light block counter"><span
+														class="counter-anim">${ sessionScope.todayExpense }</span></span>
+													<span
+														class="weight-500 uppercase-font txt-light block font-13">Today's
+														Expense</span>
+												</div>
+												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
+													<i class="zmdi txt-light data-right-rep-icon"><img
+														alt="Today's Expense" src="../../img/menu/expense-md.png"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="panel panel-default card-view pa-0">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body pa-0">
+									<div class="sm-data-box bg-red">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+													<span class="txt-light block counter"><span
+														class="counter-anim">${ sessionScope.weekExpense }</span></span>
+													<span
+														class="weight-500 uppercase-font txt-light block font-13">Current
+														Week's Expense</span>
+												</div>
+												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
+													<i class="zmdi txt-light data-right-rep-icon"><img
+														alt="Week's Expense" src="../../img/menu/expense-md.png"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="panel panel-default card-view pa-0">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body pa-0">
+									<div class="sm-data-box bg-red">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+													<span class="txt-light block counter"><span
+														class="counter-anim">${ sessionScope.monthExpense }</span></span>
+													<span
+														class="weight-500 uppercase-font txt-light block font-13">Month's
+														Expense</span>
+												</div>
+												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
+													<i class="zmdi txt-light data-right-rep-icon"><img
+														alt="Month's Expense" src="../../img/menu/expense-md.png"></i>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-3">
+						<div class="panel panel-default card-view pa-0">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body pa-0">
+									<div class="sm-data-box bg-red">
+										<div class="container-fluid">
+											<div class="row">
+												<div class="col-xs-6 text-center pl-0 pr-0 data-wrap-left">
+													<span class="txt-light block counter"><span
+														class="counter-anim">${ sessionScope.yearExpense }</span></span>
+													<span
+														class="weight-500 uppercase-font txt-light block font-13">Current
+														Year's Expense</span>
+												</div>
+												<div class="col-xs-6 text-center  pl-0 pr-0 data-wrap-right">
+													<i class="zmdi txt-light data-right-rep-icon"><img
+														alt="Year's Expense" src="../../img/menu/expense-md.png"></i>
 												</div>
 											</div>
 										</div>

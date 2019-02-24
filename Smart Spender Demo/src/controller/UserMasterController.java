@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -75,7 +78,12 @@ public class UserMasterController extends HttpServlet {
 		if (flag.equals("signup")) {
 			registerUser(request, response);
 		} else if (flag.equals("login")) {
-			loginUser(request, response);
+			try {
+				loginUser(request, response);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.getMessage();
+			}
 		} else if (flag.equals("verifyOtp")) {
 			verifyOtp(request, response);
 		} else if (flag.equals("forgot-password")) {
@@ -93,7 +101,12 @@ public class UserMasterController extends HttpServlet {
 		} else if (flag.equals("exportData")) {
 			exportData(request, response);
 		} else if (flag.equals("loadDashboard")) {
-			loadDashboard(request, response);
+			try {
+				loadDashboard(request, response);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.getMessage();
+			}
 		} else if (flag.equals("changeThemeDiv")) {
 			changeThemeDiv(request, response);
 		}
@@ -123,11 +136,139 @@ public class UserMasterController extends HttpServlet {
 		response.getWriter().println(finalClass);
 	}
 
-	private void loadDashboard(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	private void loadDashboard(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ParseException {
 		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
 		UserVo userVo = (UserVo) session.getAttribute("user");
 
+		String currentBalance = "0.00", todayIncome = "0.00", weekIncome = "0.00", monthIncome = "0.00",
+				yearIncome = "0.00";
+		String todayExpense = "0.00", weekExpense = "0.00", monthExpense = "0.00", yearExpense = "0.00";
+
+		TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
+		List<TransactionVo> transactionList = transactionMasterDao.getAllTransactions(userVo);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+
+		// Current Balance
+		if (true) {
+			TransactionMasterDao transactionMasterDao2 = new TransactionMasterDao();
+			List<TransactionVo> list = transactionMasterDao2.getLastTransactionForBalance(userVo);
+			if (list.isEmpty()) {
+				currentBalance = "0.00";
+			} else {
+				currentBalance = "" + list.get(0).getTotalAvailableBalance();
+			}
+		}
+
+		// Today's Income
+		Date todayDate = new Date();
+		for (TransactionVo transactionVo : transactionList) {
+			if (transactionVo.getForTransaction().equals("income")) {
+				Date tranDate = dateFormat.parse(transactionVo.getTransactionDateTime());
+				if ((tranDate.getDate() == todayDate.getDate()) && (tranDate.getMonth() == todayDate.getMonth())
+						&& (tranDate.getYear() == todayDate.getYear())) {
+					float transactionAmount = transactionVo.getTransactionAmount();
+					todayIncome = "" + (Float.parseFloat(todayIncome) + transactionAmount);
+				}
+			}
+		}
+
+		// Today's Expense
+		for (TransactionVo transactionVo : transactionList) {
+			if (transactionVo.getForTransaction().equals("expense")) {
+				Date tranDate = dateFormat.parse(transactionVo.getTransactionDateTime());
+				if ((tranDate.getDate() == todayDate.getDate()) && (tranDate.getMonth() == todayDate.getMonth())
+						&& (tranDate.getYear() == todayDate.getYear())) {
+					float transactionAmount = transactionVo.getTransactionAmount();
+					todayExpense = "" + (Float.parseFloat(todayExpense) + transactionAmount);
+				}
+			}
+		}
+
+		// Month's Income
+		for (TransactionVo transactionVo : transactionList) {
+			if (transactionVo.getForTransaction().equals("income")) {
+				Date tranDate = dateFormat.parse(transactionVo.getTransactionDateTime());
+				if ((tranDate.getMonth() == todayDate.getMonth()) && (tranDate.getYear() == todayDate.getYear())) {
+					float transactionAmount = transactionVo.getTransactionAmount();
+					monthIncome = "" + (Float.parseFloat(monthIncome) + transactionAmount);
+				}
+			}
+		}
+
+		// Month's Expense
+		for (TransactionVo transactionVo : transactionList) {
+			if (transactionVo.getForTransaction().equals("expense")) {
+				Date tranDate = dateFormat.parse(transactionVo.getTransactionDateTime());
+				if ((tranDate.getMonth() == todayDate.getMonth()) && (tranDate.getYear() == todayDate.getYear())) {
+					float transactionAmount = transactionVo.getTransactionAmount();
+					monthExpense = "" + (Float.parseFloat(monthExpense) + transactionAmount);
+				}
+			}
+		}
+
+		// Year's Income
+		for (TransactionVo transactionVo : transactionList) {
+			if (transactionVo.getForTransaction().equals("income")) {
+				Date tranDate = dateFormat.parse(transactionVo.getTransactionDateTime());
+				if ((tranDate.getYear() == todayDate.getYear())) {
+					float transactionAmount = transactionVo.getTransactionAmount();
+					yearIncome = "" + (Float.parseFloat(yearIncome) + transactionAmount);
+				}
+			}
+		}
+
+		// Year's Expense
+		for (TransactionVo transactionVo : transactionList) {
+			if (transactionVo.getForTransaction().equals("expense")) {
+				Date tranDate = dateFormat.parse(transactionVo.getTransactionDateTime());
+				if ((tranDate.getYear() == todayDate.getYear())) {
+					float transactionAmount = transactionVo.getTransactionAmount();
+					yearExpense = "" + (Float.parseFloat(yearExpense) + transactionAmount);
+				}
+			}
+		}
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(todayDate);
+		int currentWeek = calendar.get(Calendar.WEEK_OF_YEAR);
+
+		// Week's Income
+		for (TransactionVo transactionVo : transactionList) {
+			if (transactionVo.getForTransaction().equals("income")) {
+				Date tranDate = dateFormat.parse(transactionVo.getTransactionDateTime());
+				calendar.setTime(tranDate);
+				int tranWeek = calendar.get(Calendar.WEEK_OF_YEAR);
+				if (currentWeek == tranWeek) {
+					float transactionAmount = transactionVo.getTransactionAmount();
+					weekIncome = "" + (Float.parseFloat(weekIncome) + transactionAmount);
+				}
+			}
+		}
+
+		// Week's Expense
+		for (TransactionVo transactionVo : transactionList) {
+			if (transactionVo.getForTransaction().equals("expense")) {
+				Date tranDate = dateFormat.parse(transactionVo.getTransactionDateTime());
+				calendar.setTime(tranDate);
+				int tranWeek = calendar.get(Calendar.WEEK_OF_YEAR);
+				if (currentWeek == tranWeek) {
+					float transactionAmount = transactionVo.getTransactionAmount();
+					weekExpense = "" + (Float.parseFloat(weekExpense) + transactionAmount);
+				}
+			}
+		}
+		
+		session.setAttribute("currentBalance", currentBalance);
+		session.setAttribute("todayIncome", todayIncome);
+		session.setAttribute("todayExpense", todayExpense);
+		session.setAttribute("weekIncome", weekIncome);
+		session.setAttribute("weekExpense", weekExpense);
+		session.setAttribute("monthIncome", monthIncome);
+		session.setAttribute("monthExpense", monthExpense);
+		session.setAttribute("yearIncome", yearIncome);
+		session.setAttribute("yearExpense", yearExpense);
 		session.setAttribute("user", userVo);
 		response.sendRedirect(request.getContextPath() + "/view/pages/home.jsp");
 	}
@@ -489,7 +630,8 @@ public class UserMasterController extends HttpServlet {
 		response.sendRedirect(request.getContextPath() + "/view/user/user-settings.jsp");
 	}
 
-	private void loginUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	private void loginUser(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ParseException {
 		// TODO Auto-generated method stub
 		String userEmail = request.getParameter("userEmail");
 		String userPassword = request.getParameter("userPassword");

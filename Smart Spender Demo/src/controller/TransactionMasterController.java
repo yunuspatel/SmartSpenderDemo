@@ -827,11 +827,8 @@ public class TransactionMasterController extends HttpServlet {
 				System.out.println("End date:- "+endDate+"-"+endMonth+"-"+endYear);
 
 				if ((currentYear >= startYear) && (currentYear <= endYear)) {
-					System.out.println("inside first");
 					if ((currentMonth >= startMonth) && (currentMonth <= endMonth)) {
-						System.out.println("inside second");
 						if ((currentDate >= startDate) && (currentDate <= endDate)) {
-							System.out.println("inside third");
 							budgetVo.setBudgetAmountLeft(
 									budgetVo.getBudgetAmountLeft() - transactionVo.getTransactionAmount());
 
