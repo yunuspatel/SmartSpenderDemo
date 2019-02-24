@@ -266,40 +266,40 @@ public class UserMasterController extends HttpServlet {
 		for (TransactionVo transactionVo : transactionList) {
 			if (transactionVo.getForTransaction().equals("income")) {
 				Date tranDate = dateFormat.parse(transactionVo.getTransactionDateTime());
-				if (tranDate.getMonth() == 0) {
+				if (tranDate.getMonth() == 0 && tranDate.getYear() == todayDate.getYear()) {
 					float janIncome = Float.parseFloat(graphData.getJanIncome()) + transactionVo.getTransactionAmount();
 					graphData.setJanIncome("" + janIncome);
-				} else if (tranDate.getMonth() == 1) {
+				} else if (tranDate.getMonth() == 1 && tranDate.getYear() == todayDate.getYear()) {
 					float febIncome = Float.parseFloat(graphData.getFebIncome()) + transactionVo.getTransactionAmount();
 					graphData.setFebIncome("" + febIncome);
-				} else if (tranDate.getMonth() == 2) {
+				} else if (tranDate.getMonth() == 2 && tranDate.getYear() == todayDate.getYear()) {
 					float marIncome = Float.parseFloat(graphData.getMarIncome()) + transactionVo.getTransactionAmount();
 					graphData.setMarIncome("" + marIncome);
-				} else if (tranDate.getMonth() == 3) {
+				} else if (tranDate.getMonth() == 3 && tranDate.getYear() == todayDate.getYear()) {
 					float aprIncome = Float.parseFloat(graphData.getAprIncome()) + transactionVo.getTransactionAmount();
 					graphData.setAprIncome("" + aprIncome);
-				} else if (tranDate.getMonth() == 4) {
+				} else if (tranDate.getMonth() == 4 && tranDate.getYear() == todayDate.getYear()) {
 					float mayIncome = Float.parseFloat(graphData.getMayIncome()) + transactionVo.getTransactionAmount();
 					graphData.setMayIncome("" + mayIncome);
-				} else if (tranDate.getMonth() == 5) {
+				} else if (tranDate.getMonth() == 5 && tranDate.getYear() == todayDate.getYear()) {
 					float juneIncome = Float.parseFloat(graphData.getJuneIncome()) + transactionVo.getTransactionAmount();
 					graphData.setJuneIncome("" + juneIncome);
-				} else if (tranDate.getMonth() == 6) {
+				} else if (tranDate.getMonth() == 6 && tranDate.getYear() == todayDate.getYear()) {
 					float julyIncome = Float.parseFloat(graphData.getJulyIncome()) + transactionVo.getTransactionAmount();
 					graphData.setJulyIncome("" + julyIncome);
-				} else if (tranDate.getMonth() == 7) {
+				} else if (tranDate.getMonth() == 7 && tranDate.getYear() == todayDate.getYear()) {
 					float augIncome = Float.parseFloat(graphData.getAugIncome()) + transactionVo.getTransactionAmount();
 					graphData.setAugIncome("" + augIncome);
-				} else if (tranDate.getMonth() == 8) {
+				} else if (tranDate.getMonth() == 8 && tranDate.getYear() == todayDate.getYear()) {
 					float sepIncome = Float.parseFloat(graphData.getSepIncome()) + transactionVo.getTransactionAmount();
 					graphData.setSepIncome("" + sepIncome);
-				} else if (tranDate.getMonth() == 9) {
+				} else if (tranDate.getMonth() == 9 && tranDate.getYear() == todayDate.getYear()) {
 					float octIncome = Float.parseFloat(graphData.getOctIncome()) + transactionVo.getTransactionAmount();
 					graphData.setOctIncome("" + octIncome);
-				} else if (tranDate.getMonth() == 10) {
+				} else if (tranDate.getMonth() == 10 && tranDate.getYear() == todayDate.getYear()) {
 					float novIncome = Float.parseFloat(graphData.getNovIncome()) + transactionVo.getTransactionAmount();
 					graphData.setNovIncome("" + novIncome);
-				} else if (tranDate.getMonth() == 11) {
+				} else if (tranDate.getMonth() == 11 && tranDate.getYear() == todayDate.getYear()) {
 					float decIncome = Float.parseFloat(graphData.getDecIncome()) + transactionVo.getTransactionAmount();
 					graphData.setDecIncome("" + decIncome);
 				}
@@ -308,40 +308,40 @@ public class UserMasterController extends HttpServlet {
 		for (TransactionVo transactionVo : transactionList) {
 			if (transactionVo.getForTransaction().equals("expense")) {
 				Date tranDate = dateFormat.parse(transactionVo.getTransactionDateTime());
-				if (tranDate.getMonth() == 0) {
+				if (tranDate.getMonth() == 0 && tranDate.getYear() == todayDate.getYear()) {
 					float janExpense = Float.parseFloat(graphData.getJanExpense()) + transactionVo.getTransactionAmount();
 					graphData.setJanExpense("" + janExpense);
-				} else if (tranDate.getMonth() == 1) {
+				} else if (tranDate.getMonth() == 1 && tranDate.getYear() == todayDate.getYear()) {
 					float febExpense = Float.parseFloat(graphData.getFebExpense()) + transactionVo.getTransactionAmount();
 					graphData.setFebExpense("" + febExpense);
-				} else if (tranDate.getMonth() == 2) {
+				} else if (tranDate.getMonth() == 2 && tranDate.getYear() == todayDate.getYear()) {
 					float marExpense = Float.parseFloat(graphData.getMarExpense()) + transactionVo.getTransactionAmount();
 					graphData.setMarExpense("" + marExpense);
-				} else if (tranDate.getMonth() == 3) {
+				} else if (tranDate.getMonth() == 3 && tranDate.getYear() == todayDate.getYear()) {
 					float aprExpense = Float.parseFloat(graphData.getAprExpense()) + transactionVo.getTransactionAmount();
 					graphData.setAprExpense("" + aprExpense);
-				} else if (tranDate.getMonth() == 4) {
+				} else if (tranDate.getMonth() == 4 && tranDate.getYear() == todayDate.getYear()) {
 					float mayExpense = Float.parseFloat(graphData.getMayExpense()) + transactionVo.getTransactionAmount();
 					graphData.setMayExpense("" + mayExpense);
-				} else if (tranDate.getMonth() == 5) {
+				} else if (tranDate.getMonth() == 5 && tranDate.getYear() == todayDate.getYear()) {
 					float juneExpense = Float.parseFloat(graphData.getJuneExpense()) + transactionVo.getTransactionAmount();
 					graphData.setJuneExpense("" + juneExpense);
-				} else if (tranDate.getMonth() == 6) {
+				} else if (tranDate.getMonth() == 6 && tranDate.getYear() == todayDate.getYear()) {
 					float julyExpense = Float.parseFloat(graphData.getJulyExpense()) + transactionVo.getTransactionAmount();
 					graphData.setJulyExpense("" + julyExpense);
-				} else if (tranDate.getMonth() == 7) {
+				} else if (tranDate.getMonth() == 7 && tranDate.getYear() == todayDate.getYear()) {
 					float augExpense = Float.parseFloat(graphData.getAugExpense()) + transactionVo.getTransactionAmount();
 					graphData.setAugExpense("" + augExpense);
-				} else if (tranDate.getMonth() == 8) {
+				} else if (tranDate.getMonth() == 8 && tranDate.getYear() == todayDate.getYear()) {
 					float sepExpense = Float.parseFloat(graphData.getSepExpense()) + transactionVo.getTransactionAmount();
 					graphData.setSepExpense("" + sepExpense);
-				} else if (tranDate.getMonth() == 9) {
+				} else if (tranDate.getMonth() == 9 && tranDate.getYear() == todayDate.getYear()) {
 					float octExpense = Float.parseFloat(graphData.getOctExpense()) + transactionVo.getTransactionAmount();
 					graphData.setOctExpense("" + octExpense);
-				} else if (tranDate.getMonth() == 10) {
+				} else if (tranDate.getMonth() == 10 && tranDate.getYear() == todayDate.getYear()) {
 					float novExpense = Float.parseFloat(graphData.getNovExpense()) + transactionVo.getTransactionAmount();
 					graphData.setNovExpense("" + novExpense);
-				} else if (tranDate.getMonth() == 11) {
+				} else if (tranDate.getMonth() == 11 && tranDate.getYear() == todayDate.getYear()) {
 					float decExpense = Float.parseFloat(graphData.getDecExpense()) + transactionVo.getTransactionAmount();
 					graphData.setDecExpense("" + decExpense);
 				}
