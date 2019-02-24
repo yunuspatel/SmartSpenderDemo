@@ -23,6 +23,10 @@
 <link rel="shortcut icon" href="../../img/logo2.png">
 <link rel="icon" href="../../img/logo2.png" type="image/x-icon">
 
+<!-- Morris Charts CSS -->
+<link href="../../vendors/bower_components/morris.js/morris.css"
+	rel="stylesheet" type="text/css" />
+
 <!-- Data table CSS -->
 <link
 	href="../../vendors/bower_components/datatables/media/css/jquery.dataTables.min.css"
@@ -36,6 +40,7 @@
 <link href="../../dist/css/style.css" rel="stylesheet" type="text/css">
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 <script type="text/javascript">
 		function checkActive()
 		{
@@ -336,6 +341,24 @@
 						</div>
 					</div>
 				</div>
+				<div class="row row-lg">
+					<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+						<div class="panel panel-default card-view">
+							<div class="panel-heading">
+								<div class="pull-left">
+									<h6 class="panel-title txt-dark">Yearly Statistics</h6>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div id="morris_extra_line_chart" class="morris-chart"
+										style="height: 293px;"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 				<!-- /Row -->
 			</div>
 			<!-- Footer -->
@@ -352,6 +375,197 @@
 		<!-- /Main Content -->
 
 	</div>
+	
+	<script type="text/javascript">
+	$(document).ready(function(){
+		if( $('#chart_6').length > 0 ){
+			var ctx6 = document.getElementById("chart_6").getContext("2d");
+			var data6 = {
+				 labels: [
+				"organic",
+				"Referral",
+				"Other"
+			],
+			datasets: [
+				{
+					data: [200,50,250],
+					backgroundColor: [
+						"#0f4fa8",
+						"#09a275",
+						"#f2b701",
+					],
+					hoverBackgroundColor: [
+						"#0f4fa8",
+						"#09a275",
+						"#f2b701",
+					]
+				}]
+			};
+			
+			var pieChart  = new Chart(ctx6,{
+				type: 'pie',
+				data: data6,
+				options: {
+					animation: {
+						duration:	3000
+					},
+					responsive: true,
+					maintainAspectRatio:false,
+					legend: {
+						display:false
+					},
+					tooltip: {
+						backgroundColor:'rgba(33,33,33,1)',
+						cornerRadius:0,
+						footerFontFamily:"'Roboto'"
+					},
+					elements: {
+						arc: {
+							borderWidth: 0
+						}
+					}
+				}
+			});
+		}
+		if($('#morris_extra_line_chart').length > 0) {
+			var data=[{
+	            period: 'Son',
+	            income: 50,
+	            expense: 80
+	        }, {
+	            period: 'Mon',
+	            income: 50,
+	            expense: 80
+	        }, {
+	            period: 'Tue',
+	            income: 50,
+	            expense: 80
+	        }, {
+	            period: 'Wed',
+	            income: 50,
+	            expense: 80
+	        }, {
+	            period: 'Thu',
+	            income: 50,
+	            expense: 80
+	        }, {
+	            period: 'Fri',
+	            income: 50,
+	            expense: 80
+	        },
+	         {
+	            period: 'Sat',
+	            income: 50,
+	            expense: 80
+	        }];
+			var dataNew = [{
+	            period: 'Jan',
+	            income: ${ sessionScope.graphData.janIncome },
+	            expense: ${ sessionScope.graphData.janExpense }
+	        }, 
+			{
+	            period: 'Feb',
+	            income: ${ sessionScope.graphData.febIncome },
+	            expense: ${ sessionScope.graphData.febExpense }
+	        },
+			{
+	            period: 'Mar',
+	            income: ${ sessionScope.graphData.marIncome },
+	            expense: ${ sessionScope.graphData.marExpense }
+	        },
+			{
+	            period: 'April',
+	            income: ${ sessionScope.graphData.aprIncome },
+	            expense: ${ sessionScope.graphData.aprExpense }
+	        },
+			{
+	            period: 'May',
+	            income: ${ sessionScope.graphData.mayIncome },
+	            expense: ${ sessionScope.graphData.mayExpense }
+	        },
+			{
+	            period: 'June',
+	            income: ${ sessionScope.graphData.juneIncome },
+	            expense: ${ sessionScope.graphData.juneExpense }
+	        },
+			{
+	            period: 'July',
+	            income: ${ sessionScope.graphData.julyIncome },
+	            expense: ${ sessionScope.graphData.julyExpense }
+	        },
+			{
+	            period: 'Aug',
+	            income: ${ sessionScope.graphData.augIncome },
+	            expense: ${ sessionScope.graphData.augExpense }
+	        },
+			{
+	            period: 'Sep',
+	            income: ${ sessionScope.graphData.sepIncome },
+	            expense: ${ sessionScope.graphData.sepExpense }
+	        },
+			{
+	            period: 'Oct',
+	            income: ${ sessionScope.graphData.octIncome },
+	            expense: ${ sessionScope.graphData.octExpense }
+	        },
+			{
+	            period: 'Nov',
+	            income: ${ sessionScope.graphData.novIncome },
+	            expense: ${ sessionScope.graphData.novExpense }
+	        },
+			{
+	            period: 'Dec',
+	            income: ${ sessionScope.graphData.decIncome },
+	            expense: ${ sessionScope.graphData.decExpense }
+	        }
+			];
+			var lineChart = Morris.Line({
+	        element: 'morris_extra_line_chart',
+	        data: data ,
+	        xkey: 'period',
+	        ykeys: ['income', 'expense'],
+	        labels: ['income', 'expense'],
+	        pointSize: 2,
+	        fillOpacity: 0,
+			lineWidth:2,
+			pointStrokeColors:['#f2b701', '#b10058'],
+			behaveLikeLine: true,
+			gridLineColor: '#878787',
+			hideHover: 'auto',
+			lineColors: ['#f2b701', '#b10058'],
+			resize: true,
+			redraw: true,
+			gridTextColor:'#878787',
+			gridTextFamily:"Roboto",
+	        parseTime: false
+	    });
+
+		}
+		/* Switchery Init*/
+		var elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+		$('#morris_switch').each(function() {
+			new Switchery($(this)[0], $(this).data());
+		});
+		var swichMorris = function() {
+			if($("#morris_switch").is(":checked")) {
+				lineChart.setData(data);
+				lineChart.redraw();
+			} else {
+				lineChart.setData(dataNew);
+				lineChart.redraw();
+			}
+		}
+		swichMorris();	
+		$(document).on('change', '#morris_switch', function () {
+			swichMorris();
+		});
+		
+	});
+	/*****Ready function end*****/
+
+	/*****Load function start*****/
+	</script>
+	
 	<!-- jQuery -->
 	<script src="../../vendors/bower_components/jquery/dist/jquery.min.js"></script>
 
@@ -393,6 +607,7 @@
 	<script src="../../vendors/chart.js/Chart.min.js"></script>
 
 	<!-- Morris Charts JavaScript -->
+	<script src="../../vendors/bower_components/raphael/raphael.min.js"></script>
 	<script src="../../vendors/bower_components/morris.js/morris.min.js"></script>
 	<script
 		src="../../vendors/bower_components/jquery-toast-plugin/dist/jquery.toast.min.js"></script>
@@ -403,6 +618,6 @@
 
 	<!-- Init JavaScript -->
 	<script src="../../dist/js/init.js"></script>
-	<script src="../../dist/js/dashboard-data.js"></script>
+ 	<script src="../../dist/js/dashboard-data.js"></script>
 </body>
 </html>
