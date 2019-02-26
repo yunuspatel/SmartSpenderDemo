@@ -25,6 +25,10 @@
     <mapping class="vo.NotificationVo" />
     <mapping class="vo.SuperUserVo" />
     <mapping class="vo.InventoryPermissionVo" />
+    <mapping class="vo.ProductVo" />
+    <mapping class="vo.PurchaseVo" />
+    <mapping class="vo.SalesVo" />
+    <mapping class="vo.StockVo" />
 
 </session-factory>
 </hibernate-configuration>

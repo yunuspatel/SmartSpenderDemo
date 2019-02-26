@@ -100,29 +100,29 @@
 					<div class="clearfix"></div></a></li>
 		</c:if>
 		<c:if test="${ sessionScope.user.stockPermission == true }">
-			<li><a id="products"
-				href="<%=request.getContextPath()%>/view/pages/stock/products.jsp"><div
+			<li><a id="page-products"
+				href="<%=request.getContextPath()%>/ProductController?flag=loadProducts"><div
 						class="pull-left">
 						<img src="../../img/menu/product.png"><i class="mr-20"></i><span
 							class="right-nav-text">Products</span>
 					</div>
 					<div class="clearfix"></div></a></li>
-			<li><a id="products"
-				href="<%=request.getContextPath()%>/view/pages/stock/stock.jsp"><div
+			<li><a id="page-stock"
+				href="<%=request.getContextPath()%>/StockController?flag=loadStock"><div
 						class="pull-left">
 						<img src="../../img/menu/stock.png"><i class="mr-20"></i><span
 							class="right-nav-text">Stock</span>
 					</div>
 					<div class="clearfix"></div></a></li>
-			<li><a id="products"
-				href="<%=request.getContextPath()%>/view/pages/stock/purchase.jsp"><div
+			<li><a id="page-purchase"
+				href="<%=request.getContextPath()%>/PurchaseController?flag=loadPurchases"><div
 						class="pull-left">
 						<img src="../../img/menu/purchase.png"><i class="mr-20"></i><span
 							class="right-nav-text">Purchase</span>
 					</div>
 					<div class="clearfix"></div></a></li>
-			<li><a id="products"
-				href="<%=request.getContextPath()%>/view/pages/stock/sales.jsp"><div
+			<li><a id="page-sales"
+				href="<%=request.getContextPath()%>/SalesController?flag=loadSales"><div
 						class="pull-left">
 						<i class="ti-shopping-cart-full mr-20"></i><span
 							class="right-nav-text">Sales</span>
