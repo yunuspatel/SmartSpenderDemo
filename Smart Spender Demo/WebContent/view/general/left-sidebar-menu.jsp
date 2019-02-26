@@ -1,7 +1,39 @@
+<%@page import="java.util.Date"%>
+<%@page import="vo.InventoryPermissionVo"%>
+<%@page import="vo.UserVo"%>
+<%@page import="dao.InventoryPermissionDao"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="fixed-sidebar-left">
+	<script type="text/javascript">
+		function modalShow()
+		{
+			var value = false;
+			value = confirm('Are you sure, You want to access the Invenory Management Module of Smart Spender!');
+			if(value == true){
+				var xmlhttp;
+				var url = '<%=request.getContextPath()%>/InventoryPermissionController?flag=requestPermission';
+
+				if (window.XMLHttpRequest) {
+					xmlhttp = new XMLHttpRequest();
+				} else {
+					xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+				}
+
+				xmlhttp.onreadystatechange = function() {
+					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+						alert(xmlhttp.responseText);
+					}
+				}
+
+				xmlhttp.open('POST', url, true);
+				xmlhttp.send();
+			} else {
+				alert('You cancelled your request for accessing Inventory Management Module of Smart Spender.');
+			}
+		}
+	</script>
 	<ul class="nav navbar-nav side-nav nicescroll-bar">
 		<li class="navigation-header"><span>Main</span> <i
 			class="zmdi zmdi-more"></i></li>
@@ -59,7 +91,8 @@
 		<li class="navigation-header"><span>Extra's</span> <i
 			class="zmdi zmdi-more"></i></li>
 		<c:if test="${ sessionScope.user.stockPermission == false }">
-			<li><a id="page-categories" href="#"><div class="pull-left">
+			<li><a id="sa-params" onclick="modalShow()" href="#"><div
+						class="pull-left">
 						<img src="../../img/menu/extra-stock-permission.png"><i
 							class="mr-20"></i><span class="right-nav-text">Inventory
 							Management</span>

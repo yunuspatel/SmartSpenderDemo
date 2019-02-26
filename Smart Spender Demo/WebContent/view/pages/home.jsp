@@ -375,58 +375,9 @@
 		<!-- /Main Content -->
 
 	</div>
-	
+
 	<script type="text/javascript">
 	$(document).ready(function(){
-		if( $('#chart_6').length > 0 ){
-			var ctx6 = document.getElementById("chart_6").getContext("2d");
-			var data6 = {
-				 labels: [
-				"organic",
-				"Referral",
-				"Other"
-			],
-			datasets: [
-				{
-					data: [200,50,250],
-					backgroundColor: [
-						"#0f4fa8",
-						"#09a275",
-						"#f2b701",
-					],
-					hoverBackgroundColor: [
-						"#0f4fa8",
-						"#09a275",
-						"#f2b701",
-					]
-				}]
-			};
-			
-			var pieChart  = new Chart(ctx6,{
-				type: 'pie',
-				data: data6,
-				options: {
-					animation: {
-						duration:	3000
-					},
-					responsive: true,
-					maintainAspectRatio:false,
-					legend: {
-						display:false
-					},
-					tooltip: {
-						backgroundColor:'rgba(33,33,33,1)',
-						cornerRadius:0,
-						footerFontFamily:"'Roboto'"
-					},
-					elements: {
-						arc: {
-							borderWidth: 0
-						}
-					}
-				}
-			});
-		}
 		if($('#morris_extra_line_chart').length > 0) {
 			var data=[{
 	            period: 'Son',
@@ -565,7 +516,7 @@
 
 	/*****Load function start*****/
 	</script>
-	
+
 	<!-- jQuery -->
 	<script src="../../vendors/bower_components/jquery/dist/jquery.min.js"></script>
 
@@ -618,6 +569,6 @@
 
 	<!-- Init JavaScript -->
 	<script src="../../dist/js/init.js"></script>
- 	<script src="../../dist/js/dashboard-data.js"></script>
+	<script src="../../dist/js/dashboard-data.js"></script>
 </body>
 </html>

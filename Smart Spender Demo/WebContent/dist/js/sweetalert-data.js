@@ -5,101 +5,29 @@ $(function() {
 	
 	var SweetAlert = function() {};
 
-    //examples 
     SweetAlert.prototype.init = function() {
         
-    //Basic
-    $('#sa-basic').on('click',function(e){
-	    swal({   
-			title: "Here's a message!",   
-            confirmButtonColor: "#0f4fa8",   
-        });
-		return false;
-    });
-
-    //A title with a text under
-    $('#sa-title').on('click',function(e){
-	    swal({   
-			title: "Here's a message!",   
-            text: "Lorem ipsum dolor sit amet",
-			confirmButtonColor: "#0f4fa8",   
-        });
-		return false;
-    });
-
-    //Success Message
-	$('#sa-success').on('click',function(e){
-        swal({   
-			title: "good job!",   
-             type: "success", 
-			text: "Lorem ipsum dolor sit amet",
-			confirmButtonColor: "#09a275",   
-        });
-		return false;
-    });
-
-    //Warning Message
-    $('#sa-warning,.sa-warning').on('click',function(e){
-	    swal({   
-            title: "Are you sure?",   
-            text: "You will not be able to recover this imaginary file!",   
-            type: "warning",   
-            showCancelButton: true,   
-            confirmButtonColor: "#f2b701",   
-            confirmButtonText: "Yes, delete it!",   
-            closeOnConfirm: false 
-        }, function(){   
-            swal("Deleted!", "Your imaginary file has been deleted.", "success"); 
-        });
-		return false;
-    });
-
     //Parameter
 	$('#sa-params').on('click',function(e){
         swal({   
             title: "Are you sure?",   
-            text: "You will not be able to recover this imaginary file!",   
+            text: "You want to access the Inventory Management Module of Smart Spender!",   
             type: "warning",   
             showCancelButton: true,   
             confirmButtonColor: "#f2b701",   
-            confirmButtonText: "Yes, delete it!",   
-            cancelButtonText: "No, cancel plx!",   
+            confirmButtonText: "Yes, Sure",   
+            cancelButtonText: "No, Don't want to",   
             closeOnConfirm: false,   
             closeOnCancel: false 
         }, function(isConfirm){   
             if (isConfirm) {     
-                swal("Deleted!", "Your imaginary file has been deleted.", "success");   
+                swal("Sent!", "Your request for accessing Inventory Management Module has been sent to admin. The result of your request will be shortly notified to you.", "success");   
             } else {     
-                swal("Cancelled", "Your imaginary file is safe :)", "error");   
+                swal("Cancelled", "You cancelled the request for Inventory Management Module.", "error");   
             } 
         });
 		return false;
     });
-
-    //Custom Image
-	$('#sa-image').on('click',function(e){
-		swal({   
-            title: "John!",   
-            text: "Recently joined twitter",   
-            imageUrl: "dist/img/user.png" ,
-			confirmButtonColor: "#b10058",   
-			
-        });
-		return false;
-    });
-
-    //Auto Close Timer
-	$('#sa-close').on('click',function(e){
-        swal({   
-            title: "Auto close alert!",   
-            text: "I will close in 2 seconds.",   
-            timer: 2000,   
-            showConfirmButton: false 
-        });
-		return false;
-    });
-
-
     },
     //init
     $.SweetAlert = new SweetAlert, $.SweetAlert.Constructor = SweetAlert;

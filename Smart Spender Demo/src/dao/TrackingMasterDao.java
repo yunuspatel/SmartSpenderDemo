@@ -24,7 +24,7 @@ public class TrackingMasterDao {
 	public List<TrackingVo> getTrackingDetails(UserVo userVo)
 	{
 		dbOperation.transaction=dbOperation.session.beginTransaction();
-		trackList=dbOperation.session.createQuery("from TrackingVo where userVo.userId='" + userVo.getUserId() + "'").list();
+		trackList=dbOperation.session.createQuery("from TrackingVo where userVo.userId='" + userVo.getUserId() + "' order by trackingId desc").list();
 		return trackList;
 	}
 }

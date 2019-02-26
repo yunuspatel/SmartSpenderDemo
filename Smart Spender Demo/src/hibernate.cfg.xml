@@ -24,6 +24,7 @@
     <mapping class="vo.BudgetVo" />
     <mapping class="vo.NotificationVo" />
     <mapping class="vo.SuperUserVo" />
+    <mapping class="vo.InventoryPermissionVo" />
 
 </session-factory>
 </hibernate-configuration>

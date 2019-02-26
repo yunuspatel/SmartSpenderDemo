@@ -61,6 +61,17 @@ public class UserVo {
 	@Column(name="pre_loader_class",length=150)
 	String preLoaderClass;
 	
+	@Column(name="is_deactivated",length=6)
+	boolean isDeactivated;
+	
+	public boolean isDeactivated() {
+		return isDeactivated;
+	}
+
+	public void setDeactivated(boolean isDeactivated) {
+		this.isDeactivated = isDeactivated;
+	}
+
 	public String getPreLoaderClass() {
 		return preLoaderClass;
 	}
