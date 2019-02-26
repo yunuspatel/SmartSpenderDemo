@@ -900,6 +900,7 @@ public class UserMasterController extends HttpServlet {
 		userVo.setUserDob("");
 		userVo.setStockPermission(false);
 		userVo.setPreLoaderClass("wrapper theme-1-active pimary-color-red");
+		userVo.setDeactivated(false);
 
 		UserMasterDao masterDao = new UserMasterDao();
 		boolean userExisits = masterDao.checkUserExists(userVo);
