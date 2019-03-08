@@ -75,7 +75,7 @@
 			<%session.removeAttribute("userMsg");
 			}
 			if (imageObject != null) {%>
-					location.realod(true);
+					location.reload(true);
 				<%session.removeAttribute("imageChanged");
 			}%>
 	}
@@ -83,7 +83,7 @@
 	function checkPassword()
 	{
 		var userPassword = document.getElementById('userPassword').value;
-		if(${ sessionScope.user.userPassword} == userPassword)
+		if(${ sessionScope.user.userPassword } == userPassword)
 		{
 			return true;
 		}

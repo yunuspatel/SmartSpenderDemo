@@ -30,4 +30,9 @@ public class ProductDao {
 	{
 		dbOperation.delete(productVo);
 	}
+	
+	public void updateProduct(ProductVo productVo)
+	{
+		dbOperation.update(productVo);
+	}
 }

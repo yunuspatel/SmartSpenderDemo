@@ -40,6 +40,28 @@ public class SalesVo {
 	
 	@Column(name="sales_date_time",length=150)
 	String salesDateTime;
+	
+	@Column(name="sales_identification_number",length=50)
+	String salesIdentificationNumber;
+	
+	@Column(name="sales_receipt_image",length=80)
+	String salesReceiptImage;
+
+	public String getSalesIdentificationNumber() {
+		return salesIdentificationNumber;
+	}
+
+	public void setSalesIdentificationNumber(String salesIdentificationNumber) {
+		this.salesIdentificationNumber = salesIdentificationNumber;
+	}
+
+	public String getSalesReceiptImage() {
+		return salesReceiptImage;
+	}
+
+	public void setSalesReceiptImage(String salesReceiptImage) {
+		this.salesReceiptImage = salesReceiptImage;
+	}
 
 	public int getSalesId() {
 		return salesId;

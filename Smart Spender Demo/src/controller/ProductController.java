@@ -45,6 +45,32 @@ public class ProductController extends HttpServlet {
 			addProduct(request, response);
 		} else if (flag.equals("deleteProduct")) {
 			deleteProduct(request, response);
+		} else if(flag.equals("editProduct")) {
+			editProduct(request,response);
+		}
+	}
+
+	private void editProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		HttpSession session=request.getSession();
+		UserVo userVo=(UserVo)session.getAttribute("user");
+		
+		ProductVo productVo=new ProductVo();
+		productVo.setBrandName(request.getParameter("brandName"));
+		productVo.setProductId(Integer.parseInt(request.getParameter("editProductId")));
+		productVo.setProductName(request.getParameter("productName"));
+		productVo.setUnitOfMesaurement(request.getParameter("unitOfMesaurement"));
+		productVo.setUserVo(userVo);
+		
+		
+		session.setAttribute("user", userVo);
+		ProductDao productDao=new ProductDao();
+		try {
+			productDao.updateProduct(productVo);
+			loadProducts(request, response);
+		}catch(Exception exception) {
+			System.out.println("Error in product updation:- " + exception.getMessage());
+			loadProducts(request, response);
 		}
 	}
 
@@ -57,6 +83,7 @@ public class ProductController extends HttpServlet {
 		productVo.setProductId(Integer.parseInt(request.getParameter("value")));
 
 		ProductDao productDao = new ProductDao();
+		session.setAttribute("user", userVo);
 		try {
 			productDao.deleteProduct(productVo);
 			loadProducts(request, response);
@@ -64,7 +91,6 @@ public class ProductController extends HttpServlet {
 			session.setAttribute("userMsg", "Sorry, Error in deleting your product. Maybe it is used with some purchase or sale record.");
 			loadProducts(request, response);
 		}
-		session.setAttribute("user", userVo);
 	}
 
 	private void addProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {

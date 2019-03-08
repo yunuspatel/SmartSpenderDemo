@@ -50,10 +50,8 @@
 		<%Object object = session.getAttribute("userMsg");
 			if (object != null) {%>
 				alert("<%=object%>");
-		<%
-			session.removeAttribute("userMsg");
-			}
-		%>
+		<%session.removeAttribute("userMsg");
+			}%>
 	}
 	
 	function changeThemeClass(div)
@@ -129,7 +127,7 @@
 				</div>
 				<!-- /Title -->
 
-				<!-- Budget Modal Start -->
+				<!-- Product Modal Start -->
 				<div id="responsive-modal" class="modal fade" tabindex="-1"
 					role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
 					style="display: none;">
@@ -184,7 +182,62 @@
 						</div>
 					</div>
 				</div>
-				<!-- Budget Modal End -->
+				<div id="responsive-edit-modal" class="modal fade" tabindex="-1"
+					role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"
+					style="display: none;">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">×</button>
+								<h5 class="modal-title">Edit Product</h5>
+							</div>
+							<form method="post"
+								action="<%=request.getContextPath()%>/ProductController">
+								<input type="hidden" name="flag" value="editProduct">
+								<input type="hidden" name="editProductId" id="editProductId" value="">
+								<div class="modal-body">
+									<div class="row row-lg">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="editProductName" class="control-label mb-10">Product
+													Name:-</label> <input type="text" class="form-control"
+													id="editProductName" name="productName" required=""
+													placeholder="Enter Product Name" autocomplete="off">
+											</div>
+										</div>
+										<div class="col-md-12">
+											<div class="col-md-6">
+												<label for="editBrandName" class="control-label mb-10">Brand
+													Name:-</label><input type="text" class="form-control"
+													id="editBrandName" name="brandName" required=""
+													placeholder="Enter Brand Name" autocomplete="off">
+											</div>
+											<div class="col-md-6">
+												<label for="unitOfMesaurement" class="control-label mb-10">Unit
+													Of Mesaurement:-</label><select class="form-control"
+													id="unitOfMesaurement" name="unitOfMesaurement" required="">
+													<option value="Kg">Kg</option>
+													<option value="Grams">Grams</option>
+													<option value="Pcs">Pcs</option>
+													<option value="litre">Litre</option>
+													<option value="Milli-Litre">Milli-Litre</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-12">&nbsp;</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default"
+										data-dismiss="modal">Close</button>
+									<input type="submit" class="btn btn-danger" value="Edit Product">
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- Product Modal End -->
 
 				<!-- Row -->
 				<div class="row">
@@ -238,10 +291,16 @@
 														items="${ sessionScope.productList }">
 														<tr>
 															<td><%=count++%></td>
-															<td>${ product.productName }</td>
-															<td>${ product.brandName }</td>
+															<td>${ product.productName }<input type="hidden"
+																id="pname${ product.productId }"
+																value="${ product.productName }"></td>
+															<td>${ product.brandName }<input type="hidden"
+																id="bname${ product.productId }"
+																value="${ product.brandName }"></td>
 															<td>${ product.unitOfMesaurement }</td>
-															<td><a
+															<td><a href="#" id="${ product.productId }"
+																class="my-edit-class-product"><i class="fa fa-edit"
+																	aria-hidden="true"></i></a>&nbsp;<a
 																href="<%= request.getContextPath() %>/ProductController?flag=deleteProduct&value=${ product.productId }"><i
 																	class="ti-trash" aria-hidden="true"></i></a></td>
 														</tr>
@@ -256,6 +315,17 @@
 					</div>
 				</div>
 				<!-- /Row -->
+				<script type="text/javascript">
+					$(".my-edit-class-product").on('click', function() {
+						var id = $(this).attr("id");
+						var pname = $('#pname' + id).val();
+						var bname = $('#bname' + id).val();
+						$('#editProductId').val(id);
+						$('#editProductName').val(pname);
+						$('#editBrandName').val(bname);
+						$('#responsive-edit-modal').modal('show');
+					});
+				</script>
 			</div>
 
 			<!-- Footer -->

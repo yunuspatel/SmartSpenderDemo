@@ -37,6 +37,28 @@ public class PurchaseVo {
 	
 	@Column(name="purchase_date_time",length=150)
 	String purchaseDateTime;
+	
+	@Column(name="purchase_identification_number",length=50)
+	String purchaseIdentificationNumber;
+	
+	@Column(name="purchase_receipt_image",length=100)
+	String purchaseReceiptImage;
+
+	public String getPurchaseIdentificationNumber() {
+		return purchaseIdentificationNumber;
+	}
+
+	public void setPurchaseIdentificationNumber(String purchaseIdentificationNumber) {
+		this.purchaseIdentificationNumber = purchaseIdentificationNumber;
+	}
+
+	public String getPurchaseReceiptImage() {
+		return purchaseReceiptImage;
+	}
+
+	public void setPurchaseReceiptImage(String purchaseReceiptImage) {
+		this.purchaseReceiptImage = purchaseReceiptImage;
+	}
 
 	public String getPurchaseDateTime() {
 		return purchaseDateTime;
