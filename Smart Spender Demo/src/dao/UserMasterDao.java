@@ -76,4 +76,16 @@ public class UserMasterDao {
 		list = dbOperation.session.createQuery("from UserVo where userMobile=" + userVo.getUserMobile() + " and userEmail='" + userVo.getUserEmail() + "'").list();
 		return list.get(0);
 	}
+	
+	public List<UserVo> getTotalUsers()
+	{
+		list=dbOperation.session.createQuery("from UserVo").list();
+		return list;
+	}
+	
+	public List<UserVo> getTotalActiveUsers()
+	{
+		list=dbOperation.session.createQuery("from UserVo where isActive='1'").list();
+		return list;
+	}
 }

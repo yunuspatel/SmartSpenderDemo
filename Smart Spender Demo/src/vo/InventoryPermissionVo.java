@@ -27,6 +27,17 @@ public class InventoryPermissionVo {
 	
 	@Column(name="request_status",length=6)
 	boolean requestStatus;
+	
+	@Column(name="admin_action",length=6)
+	boolean adminAction;
+
+	public boolean isAdminAction() {
+		return adminAction;
+	}
+
+	public void setAdminAction(boolean adminAction) {
+		this.adminAction = adminAction;
+	}
 
 	public int getPermissionId() {
 		return permissionId;

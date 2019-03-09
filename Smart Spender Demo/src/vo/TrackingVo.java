@@ -24,7 +24,7 @@ public class TrackingVo {
 	@ManyToOne
 	@JoinColumn(name="user_id",referencedColumnName="user_id")
 	UserVo userVo;
-	
+		
 	@Column(name="login_date_time",length=50)
 	String loginDateTime;
 	

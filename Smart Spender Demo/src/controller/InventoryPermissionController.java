@@ -50,7 +50,8 @@ public class InventoryPermissionController extends HttpServlet {
 		InventoryPermissionVo inventoryPermissionVo=new InventoryPermissionVo();
 		inventoryPermissionVo.setRequestDateTime(new Date().toString());
 		inventoryPermissionVo.setRequestStatus(false);
-		inventoryPermissionVo.setUserVo(userVo);;
+		inventoryPermissionVo.setUserVo(userVo);
+		inventoryPermissionVo.setAdminAction(false);
 		
 		InventoryPermissionDao inventoryPermissionDao=new InventoryPermissionDao();
 		inventoryPermissionDao.addPermission(inventoryPermissionVo);	

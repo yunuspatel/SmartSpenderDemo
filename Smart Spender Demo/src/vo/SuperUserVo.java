@@ -24,6 +24,17 @@ public class SuperUserVo {
 	
 	@Column(name="super_user_password",length=20)
 	String superUserPassword;
+		
+	@Column(name="pre_loader_class",length=150)
+	String preLoaderClass;
+
+	public String getPreLoaderClass() {
+		return preLoaderClass;
+	}
+
+	public void setPreLoaderClass(String preLoaderClass) {
+		this.preLoaderClass = preLoaderClass;
+	}
 
 	public int getSuperUserId() {
 		return superUserId;
