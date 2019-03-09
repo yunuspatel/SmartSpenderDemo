@@ -27,6 +27,11 @@
 <link href="../../vendors/bower_components/morris.js/morris.css"
 	rel="stylesheet" type="text/css" />
 
+<!-- Calendar CSS -->
+<link
+	href="../../vendors/bower_components/fullcalendar/dist/fullcalendar.css"
+	rel="stylesheet" type="text/css" />
+
 <!-- Data table CSS -->
 <link
 	href="../../vendors/bower_components/datatables/media/css/jquery.dataTables.min.css"
@@ -358,6 +363,18 @@
 							</div>
 						</div>
 					</div>
+					<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+						<div class="panel panel-default card-view">
+							<div class="panel-wrapper collapse in">
+								<div class="panel-body">
+									<div class="calendar-wrap">
+										<div id="calendar_small" class="small-calendar"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
 				</div>
 				<!-- /Row -->
 			</div>
@@ -566,6 +583,13 @@
 	<!-- Switchery JavaScript -->
 	<script
 		src="../../vendors/bower_components/switchery/dist/switchery.min.js"></script>
+
+	<!-- Calender JavaScripts -->
+	<script src="../../vendors/bower_components/moment/min/moment.min.js"></script>
+	<script src="../../vendors/jquery-ui.min.js"></script>
+	<script
+		src="../../vendors/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+	<script src="../../dist/js/fullcalendar-data.js"></script>
 
 	<!-- Init JavaScript -->
 	<script src="../../dist/js/init.js"></script>

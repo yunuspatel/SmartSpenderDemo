@@ -1,5 +1,6 @@
 package dao;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import global.DbOperation;
@@ -34,5 +35,17 @@ public class SalesDao {
 	{
 		list=dbOperation.session.createQuery("from SalesVo where userVo.userId='" + userVo.getUserId() + "'").list();
 		return list;
+	}
+	
+	public BigInteger getReferenceNumber(String query)
+	{
+		List list = dbOperation.session.createSQLQuery(query).list();
+		return (BigInteger) list.get(0);
+	}
+	
+	public SalesVo getSalesById(String salesId)
+	{
+		list = dbOperation.session.createQuery("from SalesVo where salesId='" + salesId + "'").list();
+		return list.get(0);
 	}
 }

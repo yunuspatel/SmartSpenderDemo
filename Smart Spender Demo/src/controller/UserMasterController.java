@@ -34,12 +34,20 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import dao.BudgetMasterDao;
 import dao.NotificationDao;
+import dao.ProductDao;
+import dao.PurchaseDao;
+import dao.SalesDao;
+import dao.StockDao;
 import dao.TrackingMasterDao;
 import dao.TransactionMasterDao;
 import dao.UserMasterDao;
 import global.GraphData;
 import vo.BudgetVo;
 import vo.NotificationVo;
+import vo.ProductVo;
+import vo.PurchaseVo;
+import vo.SalesVo;
+import vo.StockVo;
 import vo.TrackingVo;
 import vo.TransactionVo;
 import vo.UserVo;
@@ -282,10 +290,12 @@ public class UserMasterController extends HttpServlet {
 					float mayIncome = Float.parseFloat(graphData.getMayIncome()) + transactionVo.getTransactionAmount();
 					graphData.setMayIncome("" + mayIncome);
 				} else if (tranDate.getMonth() == 5 && tranDate.getYear() == todayDate.getYear()) {
-					float juneIncome = Float.parseFloat(graphData.getJuneIncome()) + transactionVo.getTransactionAmount();
+					float juneIncome = Float.parseFloat(graphData.getJuneIncome())
+							+ transactionVo.getTransactionAmount();
 					graphData.setJuneIncome("" + juneIncome);
 				} else if (tranDate.getMonth() == 6 && tranDate.getYear() == todayDate.getYear()) {
-					float julyIncome = Float.parseFloat(graphData.getJulyIncome()) + transactionVo.getTransactionAmount();
+					float julyIncome = Float.parseFloat(graphData.getJulyIncome())
+							+ transactionVo.getTransactionAmount();
 					graphData.setJulyIncome("" + julyIncome);
 				} else if (tranDate.getMonth() == 7 && tranDate.getYear() == todayDate.getYear()) {
 					float augIncome = Float.parseFloat(graphData.getAugIncome()) + transactionVo.getTransactionAmount();
@@ -309,40 +319,52 @@ public class UserMasterController extends HttpServlet {
 			if (transactionVo.getForTransaction().equals("expense")) {
 				Date tranDate = dateFormat.parse(transactionVo.getTransactionDateTime());
 				if (tranDate.getMonth() == 0 && tranDate.getYear() == todayDate.getYear()) {
-					float janExpense = Float.parseFloat(graphData.getJanExpense()) + transactionVo.getTransactionAmount();
+					float janExpense = Float.parseFloat(graphData.getJanExpense())
+							+ transactionVo.getTransactionAmount();
 					graphData.setJanExpense("" + janExpense);
 				} else if (tranDate.getMonth() == 1 && tranDate.getYear() == todayDate.getYear()) {
-					float febExpense = Float.parseFloat(graphData.getFebExpense()) + transactionVo.getTransactionAmount();
+					float febExpense = Float.parseFloat(graphData.getFebExpense())
+							+ transactionVo.getTransactionAmount();
 					graphData.setFebExpense("" + febExpense);
 				} else if (tranDate.getMonth() == 2 && tranDate.getYear() == todayDate.getYear()) {
-					float marExpense = Float.parseFloat(graphData.getMarExpense()) + transactionVo.getTransactionAmount();
+					float marExpense = Float.parseFloat(graphData.getMarExpense())
+							+ transactionVo.getTransactionAmount();
 					graphData.setMarExpense("" + marExpense);
 				} else if (tranDate.getMonth() == 3 && tranDate.getYear() == todayDate.getYear()) {
-					float aprExpense = Float.parseFloat(graphData.getAprExpense()) + transactionVo.getTransactionAmount();
+					float aprExpense = Float.parseFloat(graphData.getAprExpense())
+							+ transactionVo.getTransactionAmount();
 					graphData.setAprExpense("" + aprExpense);
 				} else if (tranDate.getMonth() == 4 && tranDate.getYear() == todayDate.getYear()) {
-					float mayExpense = Float.parseFloat(graphData.getMayExpense()) + transactionVo.getTransactionAmount();
+					float mayExpense = Float.parseFloat(graphData.getMayExpense())
+							+ transactionVo.getTransactionAmount();
 					graphData.setMayExpense("" + mayExpense);
 				} else if (tranDate.getMonth() == 5 && tranDate.getYear() == todayDate.getYear()) {
-					float juneExpense = Float.parseFloat(graphData.getJuneExpense()) + transactionVo.getTransactionAmount();
+					float juneExpense = Float.parseFloat(graphData.getJuneExpense())
+							+ transactionVo.getTransactionAmount();
 					graphData.setJuneExpense("" + juneExpense);
 				} else if (tranDate.getMonth() == 6 && tranDate.getYear() == todayDate.getYear()) {
-					float julyExpense = Float.parseFloat(graphData.getJulyExpense()) + transactionVo.getTransactionAmount();
+					float julyExpense = Float.parseFloat(graphData.getJulyExpense())
+							+ transactionVo.getTransactionAmount();
 					graphData.setJulyExpense("" + julyExpense);
 				} else if (tranDate.getMonth() == 7 && tranDate.getYear() == todayDate.getYear()) {
-					float augExpense = Float.parseFloat(graphData.getAugExpense()) + transactionVo.getTransactionAmount();
+					float augExpense = Float.parseFloat(graphData.getAugExpense())
+							+ transactionVo.getTransactionAmount();
 					graphData.setAugExpense("" + augExpense);
 				} else if (tranDate.getMonth() == 8 && tranDate.getYear() == todayDate.getYear()) {
-					float sepExpense = Float.parseFloat(graphData.getSepExpense()) + transactionVo.getTransactionAmount();
+					float sepExpense = Float.parseFloat(graphData.getSepExpense())
+							+ transactionVo.getTransactionAmount();
 					graphData.setSepExpense("" + sepExpense);
 				} else if (tranDate.getMonth() == 9 && tranDate.getYear() == todayDate.getYear()) {
-					float octExpense = Float.parseFloat(graphData.getOctExpense()) + transactionVo.getTransactionAmount();
+					float octExpense = Float.parseFloat(graphData.getOctExpense())
+							+ transactionVo.getTransactionAmount();
 					graphData.setOctExpense("" + octExpense);
 				} else if (tranDate.getMonth() == 10 && tranDate.getYear() == todayDate.getYear()) {
-					float novExpense = Float.parseFloat(graphData.getNovExpense()) + transactionVo.getTransactionAmount();
+					float novExpense = Float.parseFloat(graphData.getNovExpense())
+							+ transactionVo.getTransactionAmount();
 					graphData.setNovExpense("" + novExpense);
 				} else if (tranDate.getMonth() == 11 && tranDate.getYear() == todayDate.getYear()) {
-					float decExpense = Float.parseFloat(graphData.getDecExpense()) + transactionVo.getTransactionAmount();
+					float decExpense = Float.parseFloat(graphData.getDecExpense())
+							+ transactionVo.getTransactionAmount();
 					graphData.setDecExpense("" + decExpense);
 				}
 			}
@@ -519,6 +541,196 @@ public class UserMasterController extends HttpServlet {
 
 			Cell cell8 = row2.createCell(7);
 			cell8.setCellValue((String) "" + budgetVo.getBudgetDescription());
+		}
+
+		if (userVo.isStockPermission() == true) {
+			// Product Data Write to file
+			XSSFSheet productSheet = workbook.createSheet("Products");
+			XSSFRow row3;
+
+			ProductDao productDao = new ProductDao();
+			List<ProductVo> productList = productDao.loadProducts(userVo);
+
+			if (true) {
+				row3 = productSheet.createRow(0);
+				Cell cell1 = row3.createCell(0);
+				cell1.setCellValue((String) "Id");
+
+				Cell cell2 = row3.createCell(1);
+				cell2.setCellValue((String) "Product Name");
+
+				Cell cell3 = row3.createCell(2);
+				cell3.setCellValue((String) "Brand Name");
+
+				Cell cell4 = row3.createCell(3);
+				cell4.setCellValue((String) "Unit Of Mesaurement");
+			}
+
+			rowid = 1;
+			for (ProductVo productVo : productList) {
+				row3 = productSheet.createRow(rowid++);
+				Cell cell1 = row3.createCell(0);
+				cell1.setCellValue((String) "" + (rowid - 1));
+
+				Cell cell2 = row3.createCell(1);
+				cell2.setCellValue((String) "" + productVo.getProductName());
+
+				Cell cell3 = row3.createCell(2);
+				cell3.setCellValue((String) "" + productVo.getBrandName());
+
+				Cell cell4 = row3.createCell(3);
+				cell4.setCellValue((String) "" + productVo.getUnitOfMesaurement());
+			}
+
+			// Purchase Data Write to file
+			XSSFSheet purchaseSheet = workbook.createSheet("Purchases");
+			XSSFRow row4;
+
+			PurchaseDao purchaseDao = new PurchaseDao();
+			List<PurchaseVo> purchaseList = purchaseDao.loadPurchases(userVo);
+
+			if (true) {
+				row4 = purchaseSheet.createRow(0);
+				Cell cell1 = row4.createCell(0);
+				cell1.setCellValue((String) "Id");
+
+				Cell cell2 = row4.createCell(1);
+				cell2.setCellValue((String) "Purchase Identification Number");
+
+				Cell cell3 = row4.createCell(2);
+				cell3.setCellValue((String) "Dealer Name");
+
+				Cell cell4 = row4.createCell(3);
+				cell4.setCellValue((String) "Purchase Date & Time");
+
+				Cell cell5 = row4.createCell(4);
+				cell5.setCellValue((String) "Product Name");
+
+				Cell cell6 = row4.createCell(5);
+				cell6.setCellValue((String) "Purchase Price");
+
+				Cell cell7 = row4.createCell(6);
+				cell7.setCellValue((String) "Purchase Quantity");
+			}
+
+			rowid = 1;
+			for (PurchaseVo purchaseVo : purchaseList) {
+				row4 = purchaseSheet.createRow(rowid++);
+				Cell cell1 = row4.createCell(0);
+				cell1.setCellValue((String) "" + (rowid - 1));
+
+				Cell cell2 = row4.createCell(1);
+				cell2.setCellValue((String) "" + purchaseVo.getPurchaseIdentificationNumber());
+
+				Cell cell3 = row4.createCell(2);
+				cell3.setCellValue((String) "" + purchaseVo.getDealerName());
+
+				Cell cell4 = row4.createCell(3);
+				cell4.setCellValue((String) "" + purchaseVo.getPurchaseDateTime());
+
+				Cell cell5 = row4.createCell(4);
+				cell5.setCellValue((String) "" + purchaseVo.getProductVo().getProductName());
+
+				Cell cell6 = row4.createCell(5);
+				cell6.setCellValue((String) "" + purchaseVo.getPurchasePrice());
+
+				Cell cell7 = row4.createCell(6);
+				cell7.setCellValue((String) "" + purchaseVo.getQuantity());
+			}
+
+			// Sales Data Write to file
+			XSSFSheet salesSheet = workbook.createSheet("Sales");
+			XSSFRow row5;
+
+			SalesDao salesDao = new SalesDao();
+			List<SalesVo> salesList = salesDao.loadSales(userVo);
+
+			if (true) {
+				row5 = salesSheet.createRow(0);
+				Cell cell1 = row5.createCell(0);
+				cell1.setCellValue((String) "Id");
+
+				Cell cell2 = row5.createCell(1);
+				cell2.setCellValue((String) "Sales Identification Number");
+
+				Cell cell3 = row5.createCell(2);
+				cell3.setCellValue((String) "Customer Name");
+
+				Cell cell4 = row5.createCell(3);
+				cell4.setCellValue((String) "Sales Date & Time");
+
+				Cell cell5 = row5.createCell(4);
+				cell5.setCellValue((String) "Product Name");
+
+				Cell cell6 = row5.createCell(5);
+				cell6.setCellValue((String) "Sales Price");
+
+				Cell cell7 = row5.createCell(6);
+				cell7.setCellValue((String) "Sales Quantity");
+
+				Cell cell8 = row5.createCell(7);
+				cell8.setCellValue((String) "Sales Discount");
+			}
+
+			rowid = 1;
+			for (SalesVo salesVo : salesList) {
+				row5 = salesSheet.createRow(rowid++);
+				Cell cell1 = row5.createCell(0);
+				cell1.setCellValue((String) "" + (rowid - 1));
+
+				Cell cell2 = row5.createCell(1);
+				cell2.setCellValue((String) "" + salesVo.getSalesIdentificationNumber());
+
+				Cell cell3 = row5.createCell(2);
+				cell3.setCellValue((String) "" + salesVo.getCustomerName());
+
+				Cell cell4 = row5.createCell(3);
+				cell4.setCellValue((String) "" + salesVo.getSalesDateTime());
+
+				Cell cell5 = row5.createCell(4);
+				cell5.setCellValue((String) "" + salesVo.getProductVo().getProductName());
+
+				Cell cell6 = row5.createCell(5);
+				cell6.setCellValue((String) "" + salesVo.getSalesPrice());
+
+				Cell cell7 = row5.createCell(6);
+				cell7.setCellValue((String) "" + salesVo.getSalesQuantity());
+
+				Cell cell8 = row5.createCell(7);
+				cell8.setCellValue((String) "" + salesVo.getDiscountPrice());
+			}
+
+			// Product Data Write to file
+			XSSFSheet stockSheet = workbook.createSheet("Stock");
+			XSSFRow row6;
+
+			StockDao stockDao=new StockDao();
+			List<StockVo> stockList = stockDao.loadStock(userVo);
+
+			if (true) {
+				row6 = stockSheet.createRow(0);
+				Cell cell1 = row6.createCell(0);
+				cell1.setCellValue((String) "Id");
+
+				Cell cell2 = row6.createCell(1);
+				cell2.setCellValue((String) "Product Name");
+
+				Cell cell3 = row6.createCell(2);
+				cell3.setCellValue((String) "Quantity Left");
+			}
+
+			rowid = 1;
+			for (StockVo stockVo : stockList) {
+				row6 = stockSheet.createRow(rowid++);
+				Cell cell1 = row6.createCell(0);
+				cell1.setCellValue((String) "" + (rowid - 1));
+
+				Cell cell2 = row6.createCell(1);
+				cell2.setCellValue((String) "" + stockVo.getProductVo().getProductName());
+
+				Cell cell3 = row6.createCell(2);
+				cell3.setCellValue((String) "" + stockVo.getQuantityLeft());
+			}
 		}
 
 		// File Temporary Path Code
@@ -739,7 +951,12 @@ public class UserMasterController extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
 		} else {
 			userVo = userList.get(0);
-			if (userVo.getIsActive().equals("0")) {
+			if (userVo.isDeactivated() == true) {
+				session.setAttribute("userExists", true);
+				session.setAttribute("userMsg",
+						"This account has been Deactivated by Admin. Please contact admin for more details regarding your account.");
+				response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
+			} else if (userVo.getIsActive().equals("0")) {
 				userVo.setIsActive("1");
 				UserMasterDao masterDao = new UserMasterDao();
 				masterDao.updateUser(userVo);

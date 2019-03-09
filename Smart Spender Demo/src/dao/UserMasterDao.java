@@ -22,7 +22,7 @@ public class UserMasterDao {
 
 	public List<UserVo> loginUser(UserVo userVo) {
 		dbOperation.transaction = dbOperation.session.beginTransaction();
-		list = dbOperation.session.createQuery("from UserVo where userEmail='" + userVo.getUserEmail() + "' and userPassword='" + userVo.getUserPassword() + "' and isDeleted=0 and isDeactivated='0'").list();
+		list = dbOperation.session.createQuery("from UserVo where userEmail='" + userVo.getUserEmail() + "' and userPassword='" + userVo.getUserPassword() + "' and isDeleted='0'").list();
 		if (!list.isEmpty()) {
 			UserVo vo=list.get(0);
 			value = checkIsActive(vo);
