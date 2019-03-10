@@ -28,7 +28,7 @@ public class InventoryPermissionDao {
 	
 	public List<InventoryPermissionVo> getAllPermissionListForDashboard()
 	{
-		list=dbOperation.session.createSQLQuery("select distinct user_id from inventory_permission where request_status='0'").list();
+		list=dbOperation.session.createSQLQuery("select distinct user_id from inventory_permission where request_status='0' and admin_action='0'").list();
 		return list;
 	}
 	
@@ -36,5 +36,16 @@ public class InventoryPermissionDao {
 	{
 		list=dbOperation.session.createQuery("from InventoryPermissionVo where requestStatus='0' and adminAction='0' order by permissionId desc").list();
 		return list;
+	}
+	
+	public List<InventoryPermissionVo> getAllRequestsFromSpecifiedUserId(String userId)
+	{
+		list=dbOperation.session.createQuery("from InventoryPermissionVo where userVo.userId='" + userId + "'").list();
+		return list;
+	}
+	
+	public void updatePermissionRequest(InventoryPermissionVo inventoryPermissionVo)
+	{
+		dbOperation.update(inventoryPermissionVo);
 	}
 }

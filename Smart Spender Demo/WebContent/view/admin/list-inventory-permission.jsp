@@ -156,7 +156,15 @@
 															<td><a style="color: blue"
 																href='<%= request.getContextPath() %>/SuperUserController?flag=loadSpecificUser&userId=${ permission.userVo.userId }'>${ permission.userVo.userName }</a></td>
 															<td>${ permission.requestDateTime }</td>
-															<td></td>
+															<td><a
+																href="<%= request.getContextPath() %>/InventoryPermissionController?flag=acceptRequest&permissionId=${ permission.permissionId }&userId=${ permission.userVo.userId }"
+																id="acceptRequest${ permission.permissionId }"
+																class="btn btn-sm btn-success btn-icon-anim btn-circle"><i
+																	class="icon-check"></i></a>&nbsp; <a
+																href="<%= request.getContextPath() %>/InventoryPermissionController?flag=rejectRequest&permissionId=${ permission.permissionId }&userId=${ permission.userVo.userId }"
+																id="rejectRequest${ permission.permissionId }"
+																class="btn btn-sm btn-info btn-icon-anim btn-circle"><i
+																	class="icon-trash"></i></a></td>
 														</tr>
 													</c:forEach>
 												</tbody>

@@ -48,6 +48,7 @@ import vo.ProductVo;
 import vo.PurchaseVo;
 import vo.SalesVo;
 import vo.StockVo;
+import vo.SuperUserVo;
 import vo.TrackingVo;
 import vo.TransactionVo;
 import vo.UserVo;
@@ -118,7 +119,32 @@ public class UserMasterController extends HttpServlet {
 			}
 		} else if (flag.equals("changeThemeDiv")) {
 			changeThemeDiv(request, response);
+		} else if(flag.equals("deactivateUserByAdmin")) {
+			deactivateUserByAdmin(request,response);
 		}
+	}
+
+	private void deactivateUserByAdmin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// TODO Auto-generated method stub
+		HttpSession session=request.getSession();
+		SuperUserVo superUserVo=(SuperUserVo)session.getAttribute("superUser");
+		
+		int userId = Integer.parseInt(request.getParameter("userId"));
+		UserVo userVo=new UserVo();
+		userVo.setUserId(userId);
+		
+		if(true) {
+			UserMasterDao userMasterDao=new UserMasterDao();
+			List<UserVo> list = userMasterDao.getUserDetails(userVo);
+			userVo=list.get(0);
+		}
+		userVo.setDeactivated(true);
+		
+		UserMasterDao userMasterDao=new UserMasterDao();
+		userMasterDao.updateUser(userVo);
+		
+		session.setAttribute("superUser", superUserVo);
+		response.sendRedirect(request.getContextPath() + "/SuperUserController?flag=listAllUsers");
 	}
 
 	private void changeThemeDiv(HttpServletRequest request, HttpServletResponse response) throws IOException {

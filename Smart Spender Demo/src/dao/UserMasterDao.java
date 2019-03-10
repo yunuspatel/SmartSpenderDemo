@@ -88,4 +88,10 @@ public class UserMasterDao {
 		list=dbOperation.session.createQuery("from UserVo where isActive='1'").list();
 		return list;
 	}
+	
+	public List<UserVo> getUserDetailsForSuperUser(String userId)
+	{
+		list=dbOperation.session.createQuery("from UserVo where userId='" + userId + "'").list();
+		return list;
+	}
 }
