@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import dao.InventoryPermissionDao;
 import dao.NotificationDao;
 import dao.UserMasterDao;
+import global.SmsApiKeys;
 import vo.InventoryPermissionVo;
 import vo.NotificationVo;
 import vo.SuperUserVo;
@@ -28,10 +29,12 @@ import vo.Way2SmsPost;
 public class InventoryPermissionController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private final String apiKey = "J9J5E9UILDG7RNI36ZDEPMZUJ8P4VQZC";
-	private final String secretKey = "1X6EG9LRITX1755Y";
+	/*private final String apiKey = "BD5WGOBHLE6O1886A6PRIPRQQ61OZ6C4";
+	private final String secretKey = "2VLY43W8BRF7Y2TU";
 	private final String useType = "stage";
-	private final String senderId = "SPENDR";
+	private final String senderId = "SPENDR";*/
+	
+	SmsApiKeys apiKeys;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -103,10 +106,11 @@ public class InventoryPermissionController extends HttpServlet {
 			NotificationDao notificationDao=new NotificationDao();
 			notificationDao.addNotification(notificationVo);
 
+			apiKeys=new SmsApiKeys();
 			Way2SmsPost way2SmsPost = new Way2SmsPost();
 			String phone = lastRequest.getUserVo().getUserMobile();
 			String message = "Your Request for Accessing Inventory Management Module of Smart Spender has been rejected by the admin. You can re-request or contact admin for more further inquiry details. Thank you.";
-			way2SmsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
+			way2SmsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message, apiKeys.getSenderId());
 		}
 
 		session.setAttribute("superUser", superUserVo);
@@ -156,10 +160,11 @@ public class InventoryPermissionController extends HttpServlet {
 			NotificationDao notificationDao=new NotificationDao();
 			notificationDao.addNotification(notificationVo);
 
+			apiKeys=new SmsApiKeys();
 			Way2SmsPost way2SmsPost = new Way2SmsPost();
 			String phone = lastRequest.getUserVo().getUserMobile();
 			String message = "Your Request for Accessing Inventory Management Module of Smart Spender has been accepted by the admin. You can re-login to your account for accessing the Inventory Management features. Thank you.";
-			way2SmsPost.sendCampaign(apiKey, secretKey, useType, phone, message, senderId);
+			way2SmsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message, apiKeys.getSenderId());
 		}
 
 		session.setAttribute("superUser", superUserVo);

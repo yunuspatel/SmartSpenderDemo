@@ -132,7 +132,7 @@
 	<div class="wrapper pa-0">
 		<header class="sp-header">
 			<div class="sp-logo-wrap pull-left">
-				<a href="<%= request.getContextPath() %>/view/user/login.html"> <img class="brand-img mr-10"
+				<a href="<%= request.getContextPath() %>/view/user/login.jsp"> <img class="brand-img mr-10"
 					src="../../img/logo1.png" alt="brand" /> <span class="brand-text">Smart
 						Spender</span>
 				</a>
