@@ -62,11 +62,12 @@ import vo.Way2SmsPost;
 public class UserMasterController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-/*	private final String apiKey = "BD5WGOBHLE6O1886A6PRIPRQQ61OZ6C4";
-	private final String secretKey = "2VLY43W8BRF7Y2TU";
-	private final String useType = "stage";
-	private final String senderId = "SPENDR";*/
-	
+	/*
+	 * private final String apiKey = "BD5WGOBHLE6O1886A6PRIPRQQ61OZ6C4"; private
+	 * final String secretKey = "2VLY43W8BRF7Y2TU"; private final String useType =
+	 * "stage"; private final String senderId = "SPENDR";
+	 */
+
 	SmsApiKeys apiKeys;
 
 	/**
@@ -122,30 +123,30 @@ public class UserMasterController extends HttpServlet {
 			}
 		} else if (flag.equals("changeThemeDiv")) {
 			changeThemeDiv(request, response);
-		} else if(flag.equals("deactivateUserByAdmin")) {
-			deactivateUserByAdmin(request,response);
+		} else if (flag.equals("deactivateUserByAdmin")) {
+			deactivateUserByAdmin(request, response);
 		}
 	}
 
 	private void deactivateUserByAdmin(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// TODO Auto-generated method stub
-		HttpSession session=request.getSession();
-		SuperUserVo superUserVo=(SuperUserVo)session.getAttribute("superUser");
-		
+		HttpSession session = request.getSession();
+		SuperUserVo superUserVo = (SuperUserVo) session.getAttribute("superUser");
+
 		int userId = Integer.parseInt(request.getParameter("userId"));
-		UserVo userVo=new UserVo();
+		UserVo userVo = new UserVo();
 		userVo.setUserId(userId);
-		
-		if(true) {
-			UserMasterDao userMasterDao=new UserMasterDao();
+
+		if (true) {
+			UserMasterDao userMasterDao = new UserMasterDao();
 			List<UserVo> list = userMasterDao.getUserDetails(userVo);
-			userVo=list.get(0);
+			userVo = list.get(0);
 		}
 		userVo.setDeactivated(true);
-		
-		UserMasterDao userMasterDao=new UserMasterDao();
+
+		UserMasterDao userMasterDao = new UserMasterDao();
 		userMasterDao.updateUser(userVo);
-		
+
 		session.setAttribute("superUser", superUserVo);
 		response.sendRedirect(request.getContextPath() + "/SuperUserController?flag=listAllUsers");
 	}
@@ -733,7 +734,7 @@ public class UserMasterController extends HttpServlet {
 			XSSFSheet stockSheet = workbook.createSheet("Stock");
 			XSSFRow row6;
 
-			StockDao stockDao=new StockDao();
+			StockDao stockDao = new StockDao();
 			List<StockVo> stockList = stockDao.loadStock(userVo);
 
 			if (true) {
@@ -813,12 +814,13 @@ public class UserMasterController extends HttpServlet {
 		session.setAttribute("otpValue", otp);
 
 		// Send OPT Code
-		apiKeys=new SmsApiKeys();
+		apiKeys = new SmsApiKeys();
 		Way2SmsPost smsPost = new Way2SmsPost();
 		String phone = userVo.getUserMobile();
 		String message = "Your OTP for Smart-Spender Change Password is:- " + otp
 				+ ". Enter OTP to complete your update request.";
-		smsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message, apiKeys.getSenderId());
+		smsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message,
+				apiKeys.getSenderId());
 
 		session.setAttribute("user", userVo);
 		response.sendRedirect(request.getContextPath() + "/view/user/otp-verification.jsp");
@@ -885,12 +887,13 @@ public class UserMasterController extends HttpServlet {
 
 			session.setAttribute("otpValue", otp);
 			// Send OPT Code
-			apiKeys=new SmsApiKeys();
+			apiKeys = new SmsApiKeys();
 			Way2SmsPost smsPost = new Way2SmsPost();
 			String phone = userVo.getUserMobile();
 			String message = "Your OTP for Smart-Spender Mobile Number Updation is:- " + otp
 					+ ". Enter OTP to complete your update request.";
-			smsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message, apiKeys.getSenderId());
+			smsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message,
+					apiKeys.getSenderId());
 
 			response.sendRedirect(request.getContextPath() + "/view/user/otp-verification.jsp");
 		}
@@ -987,7 +990,25 @@ public class UserMasterController extends HttpServlet {
 				session.setAttribute("userMsg",
 						"This account has been Deactivated by Admin. Please contact admin for more details regarding your account.");
 				response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
-			} else if (userVo.getIsActive().equals("0")) {
+			}else if(userVo.isConfirmed() == false) {
+				session.setAttribute("user", userVo);
+
+				Random random = new Random();
+				int otp = random.nextInt(999999);
+
+				session.setAttribute("otpValue", otp);
+
+				// Send OPT Code
+				apiKeys = new SmsApiKeys();
+				Way2SmsPost smsPost = new Way2SmsPost();
+				String phone = userVo.getUserMobile();
+				String message = "Your OTP for Smart-Spender account verification is:- " + otp
+						+ ". Enter OTP to complete your user registration request.";
+				smsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message,
+						apiKeys.getSenderId());
+
+				response.sendRedirect(request.getContextPath() + "/view/user/otp-verification.jsp");
+			}else if (userVo.getIsActive().equals("0")) {
 				userVo.setIsActive("1");
 				UserMasterDao masterDao = new UserMasterDao();
 				masterDao.updateUser(userVo);
@@ -1072,12 +1093,13 @@ public class UserMasterController extends HttpServlet {
 			session.setAttribute("otpValue", otp);
 
 			// Send OPT Code
-			apiKeys=new SmsApiKeys();
+			apiKeys = new SmsApiKeys();
 			Way2SmsPost smsPost = new Way2SmsPost();
 			String phone = userVo.getUserMobile();
 			String message = "Your OTP for Smart-Spender Forgot Password is:- " + otp
 					+ ". Enter OTP to complete your forgot password request.";
-			smsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message, apiKeys.getSenderId());
+			smsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message,
+					apiKeys.getSenderId());
 
 			response.sendRedirect(request.getContextPath() + "/view/user/otp-verification.jsp");
 		} else {
@@ -1132,7 +1154,7 @@ public class UserMasterController extends HttpServlet {
 		userMobile = request.getParameter("userMobile");
 		userEmail = request.getParameter("userEmail");
 		userPassword = request.getParameter("userPassword");
-
+		
 		UserVo userVo = new UserVo();
 		userVo.setIsActive("0");
 		userVo.setIsDeleted("0");
@@ -1167,12 +1189,13 @@ public class UserMasterController extends HttpServlet {
 			session.setAttribute("otpValue", otp);
 
 			// Send OPT Code
-			apiKeys=new SmsApiKeys();
+			apiKeys = new SmsApiKeys();
 			Way2SmsPost smsPost = new Way2SmsPost();
 			String phone = userVo.getUserMobile();
 			String message = "Your OTP for Smart-Spender account verification is:- " + otp
 					+ ". Enter OTP to complete your user registration request.";
-			smsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message, apiKeys.getSenderId());
+			smsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message,
+					apiKeys.getSenderId());
 
 			response.sendRedirect(request.getContextPath() + "/view/user/otp-verification.jsp");
 		} else {

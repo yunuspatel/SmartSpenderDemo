@@ -10,12 +10,15 @@ public class SmsApiKeys {
 	public String getApiKey() {
 		return apiKey;
 	}
+	
 	public String getSecretKey() {
 		return secretKey;
 	}
+	
 	public String getUseType() {
 		return useType;
 	}
+	
 	public String getSenderId() {
 		return senderId;
 	}

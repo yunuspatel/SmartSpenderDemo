@@ -132,6 +132,7 @@ public class SuperUserController extends HttpServlet {
 		}
 
 		userVo.setDeactivated(false);
+		userVo.setIsDeleted("0");
 		UserMasterDao userMasterDao = new UserMasterDao();
 		userMasterDao.updateUser(userVo);
 		session.setAttribute("superUser", superUserVo);

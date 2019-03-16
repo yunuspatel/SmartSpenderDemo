@@ -180,7 +180,54 @@
 											</div>
 										</div>
 									</div>
+									<form
+										action="<%=request.getContextPath()%>/TransactionMasterController"
+										method="post">
+										<input type="hidden" name="flag" value="generateReport">
+										<div class="row row-lg">
+											<div class="col-md-4">
+												<div class="form-group">
+													<label class="control-label mb-10" for="month">Select
+														Month:-</label> <select
+														class="form-control select2 select2-hidden-accessible"
+														tabindex="-1" aria-hidden="true" name="month" id="month">
+														<option value="1">January</option>
+														<option value="2">February</option>
+														<option value="3">March</option>
+														<option value="4">April</option>
+														<option value="5">May</option>
+														<option value="6">June</option>
+														<option value="7">July</option>
+														<option value="8">August</option>
+														<option value="9">September</option>
+														<option value="10">October</option>
+														<option value="11">November</option>
+														<option value="12">December</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<div class="form-group">
+													<label class="control-label mb-10" for="year">Enter
+														Year:-</label> <input type="text" autocomplete="off"
+														class="form-control" id="year" name="year" value=""
+														required="" placeholder="Enter Year (yyyy) Format">
+												</div>
+											</div>
+											<div class="col-md-4">
+												<div class="form-group">
+													<div class="col-md-5">
+														<label class="control-label mb-10" for="btnReport">&nbsp;</label>
+														<input type="submit" id="btnReport" name="btnReport"
+															class="btn  btn-success btn-rounded"
+															value="Generate Report">
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
 									<div class="table-wrap">
+
 										<div class="">
 											<table id="myTable1" class="table table-hover display  pb-30">
 												<thead>

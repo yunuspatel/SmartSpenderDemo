@@ -1,7 +1,11 @@
 package controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.text.DateFormat;
@@ -14,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +29,10 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
 
@@ -91,6 +100,230 @@ public class TransactionMasterController extends HttpServlet {
 			} catch (ParseException e) {
 				System.out.println(e.getMessage());
 			}
+		} else if (flag.equals("generateReport")) {
+			try {
+				generateReport(request, response);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				System.out.println(e.getMessage());
+			}
+		}
+	}
+
+	private void generateReport(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ParseException {
+		// TODO Auto-generated method stub
+		HttpSession session = request.getSession();
+		UserVo userVo = (UserVo) session.getAttribute("user");
+		int month = Integer.parseInt(request.getParameter("month"));
+		String year = request.getParameter("year");
+
+		if (year != null) {
+			String fileName = userVo.getUserName() + "-" + month + "-" + year;
+
+			XSSFWorkbook workbook = new XSSFWorkbook();
+			XSSFSheet income = workbook.createSheet("Income");
+			XSSFSheet expense = workbook.createSheet("Expense");
+			XSSFRow incomeRow, expenseRow;
+			float totalIncome = 0, totalExpense = 0, temp = 0;
+
+			TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
+			List<TransactionVo> transactionList = transactionMasterDao.getAllTransactions(userVo);
+
+			if (true) {
+				incomeRow = income.createRow(0);
+				Cell cell1 = incomeRow.createCell(0);
+				cell1.setCellValue((String) "Id");
+
+				Cell cell3 = incomeRow.createCell(1);
+				cell3.setCellValue((String) "Payee Name");
+
+				Cell cell4 = incomeRow.createCell(2);
+				cell4.setCellValue((String) "Amount");
+
+				Cell cell5 = incomeRow.createCell(3);
+				cell5.setCellValue((String) "Date");
+
+				Cell cell7 = incomeRow.createCell(4);
+				cell7.setCellValue((String) "Category Name");
+
+				Cell cell8 = incomeRow.createCell(5);
+				cell8.setCellValue((String) "Sub-Category Name");
+
+				Cell cell9 = incomeRow.createCell(6);
+				cell9.setCellValue((String) "Payment Method");
+
+				Cell cell10 = incomeRow.createCell(7);
+				cell10.setCellValue((String) "Status");
+
+				Cell cell11 = incomeRow.createCell(8);
+				cell11.setCellValue((String) "Reference Number");
+
+				Cell cell12 = incomeRow.createCell(9);
+				cell12.setCellValue((String) "Extra Description");
+			}
+			if (true) {
+				expenseRow = expense.createRow(0);
+				Cell cell1 = expenseRow.createCell(0);
+				cell1.setCellValue((String) "Id");
+
+				Cell cell3 = expenseRow.createCell(1);
+				cell3.setCellValue((String) "Payee Name");
+
+				Cell cell4 = expenseRow.createCell(2);
+				cell4.setCellValue((String) "Amount");
+
+				Cell cell5 = expenseRow.createCell(3);
+				cell5.setCellValue((String) "Date");
+
+				Cell cell7 = expenseRow.createCell(4);
+				cell7.setCellValue((String) "Category Name");
+
+				Cell cell8 = expenseRow.createCell(5);
+				cell8.setCellValue((String) "Sub-Category Name");
+
+				Cell cell9 = expenseRow.createCell(6);
+				cell9.setCellValue((String) "Payment Method");
+
+				Cell cell10 = expenseRow.createCell(7);
+				cell10.setCellValue((String) "Status");
+
+				Cell cell11 = expenseRow.createCell(8);
+				cell11.setCellValue((String) "Reference Number");
+
+				Cell cell12 = expenseRow.createCell(9);
+				cell12.setCellValue((String) "Extra Description");
+			}
+
+			int incomeRowId = 1, expenseRowId = 1;
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm");
+
+			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy");
+			Date userDate = dateFormat.parse(year);
+			
+			for (TransactionVo transactionVo : transactionList) {
+				Date transactionDate = simpleDateFormat.parse(transactionVo.getTransactionDateTime());
+				if (((transactionDate.getMonth() + 1) == month) && (transactionDate.getYear() == userDate.getYear())) {
+					if (transactionVo.getForTransaction().equals("income")) {
+						incomeRow = income.createRow(incomeRowId++);
+						Cell cell1 = incomeRow.createCell(0);
+						cell1.setCellValue((String) "" + transactionVo.getTransactionIdentificationNumber());
+
+						Cell cell3 = incomeRow.createCell(1);
+						cell3.setCellValue((String) "" + transactionVo.getPayeeName());
+
+						Cell cell4 = incomeRow.createCell(2);
+						cell4.setCellValue((String) "" + transactionVo.getTransactionAmount());
+
+						Cell cell5 = incomeRow.createCell(3);
+						cell5.setCellValue((String) "" + transactionVo.getTransactionDateTime());
+
+						Cell cell7 = incomeRow.createCell(4);
+						cell7.setCellValue((String) "" + transactionVo.getCategoryVo().getCategoryName());
+
+						Cell cell8 = incomeRow.createCell(5);
+						cell8.setCellValue((String) "" + transactionVo.getSubCategoriesVo().getSubCategoryName());
+
+						Cell cell9 = incomeRow.createCell(6);
+						cell9.setCellValue((String) "" + transactionVo.getPaymentMethod());
+
+						Cell cell10 = incomeRow.createCell(7);
+						cell10.setCellValue((String) "" + transactionVo.getStatusOfTransaction());
+
+						Cell cell11 = incomeRow.createCell(8);
+						cell11.setCellValue((String) "" + transactionVo.getTransactionNumber());
+
+						Cell cell12 = incomeRow.createCell(9);
+						cell12.setCellValue((String) "" + transactionVo.getExtraDescription());
+
+						totalIncome += transactionVo.getTransactionAmount();
+					} else {
+						expenseRow = expense.createRow(expenseRowId++);
+						Cell cell1 = expenseRow.createCell(0);
+						cell1.setCellValue((String) "" + transactionVo.getTransactionIdentificationNumber());
+
+						Cell cell3 = expenseRow.createCell(1);
+						cell3.setCellValue((String) "" + transactionVo.getPayeeName());
+
+						Cell cell4 = expenseRow.createCell(2);
+						cell4.setCellValue((String) "" + transactionVo.getTransactionAmount());
+
+						Cell cell5 = expenseRow.createCell(3);
+						cell5.setCellValue((String) "" + transactionVo.getTransactionDateTime());
+
+						Cell cell7 = expenseRow.createCell(4);
+						cell7.setCellValue((String) "" + transactionVo.getCategoryVo().getCategoryName());
+
+						Cell cell8 = expenseRow.createCell(5);
+						cell8.setCellValue((String) "" + transactionVo.getSubCategoriesVo().getSubCategoryName());
+
+						Cell cell9 = expenseRow.createCell(6);
+						cell9.setCellValue((String) "" + transactionVo.getPaymentMethod());
+
+						Cell cell10 = expenseRow.createCell(7);
+						cell10.setCellValue((String) "" + transactionVo.getStatusOfTransaction());
+
+						Cell cell11 = expenseRow.createCell(8);
+						cell11.setCellValue((String) "" + transactionVo.getTransactionNumber());
+
+						Cell cell12 = expenseRow.createCell(9);
+						cell12.setCellValue((String) "" + transactionVo.getExtraDescription());
+
+						totalExpense += transactionVo.getTransactionAmount();
+					}
+				}
+			}
+
+			incomeRow = income.createRow(incomeRowId + 2);
+			Cell incomeCellName = incomeRow.createCell(2);
+			incomeCellName.setCellValue((String) "Total Monthly Income is:-");
+			Cell incomeCellData = incomeRow.createCell(3);
+			incomeCellData.setCellValue((String) "" + totalIncome);
+
+			expenseRow = expense.createRow(expenseRowId + 2);
+			Cell expenseCellName = expenseRow.createCell(2);
+			expenseCellName.setCellValue((String) "Total Monthly Expense is:-");
+			Cell expenseCellData = expenseRow.createCell(3);
+			expenseCellData.setCellValue((String) "" + totalExpense);
+
+			// File Temporary Path Code
+			String relativePath = "img/userExportData";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File file = new File(rootPath);
+			if (!file.exists()) {
+				file.mkdirs();
+			}
+			File dataFile = new File(rootPath + "/" + fileName + ".xlsx");
+			if (dataFile.exists()) {
+				dataFile.delete();
+			}
+			FileOutputStream out = new FileOutputStream(dataFile);
+			workbook.write(out);
+			out.close();
+
+			// Download File Code
+			InputStream fis = new FileInputStream(dataFile);
+			response.setContentType("application/vnd.ms-excel");
+			response.setContentLength((int) dataFile.length());
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + ".xlsx\"");
+
+			ServletOutputStream os = response.getOutputStream();
+			byte[] bufferData = new byte[1024];
+			int read = 0;
+			while ((read = fis.read(bufferData)) != -1) {
+				os.write(bufferData, 0, read);
+			}
+			os.flush();
+			os.close();
+			fis.close();
+
+			session.setAttribute("user", userVo);
+			if (!response.isCommitted()) {
+				response.sendRedirect(request.getContextPath() + "/view/pages/transaction=list.jsp");
+			}
+		} else {
+			session.setAttribute("user", userVo);
+			response.sendRedirect(request.getContextPath() + "/view/pages/transaction=list.jsp");
 		}
 	}
 
@@ -145,34 +378,36 @@ public class TransactionMasterController extends HttpServlet {
 		}
 
 		if (true) {
-			BudgetMasterDao budgetMasterDao = new BudgetMasterDao();
-			List<BudgetVo> budgetList = budgetMasterDao.getAllBudgets(userVo);
+			if (transactionVo.getForTransaction().equals("expense")) {
+				BudgetMasterDao budgetMasterDao = new BudgetMasterDao();
+				List<BudgetVo> budgetList = budgetMasterDao.getAllBudgets(userVo);
 
-			SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-			Date currentTransactionDate = dateFormat.parse(transactionVo.getTransactionDateTime());
-			int currentDate = currentTransactionDate.getDate();
-			int currentMonth = currentTransactionDate.getMonth();
-			int currentYear = currentTransactionDate.getYear();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+				Date currentTransactionDate = dateFormat.parse(transactionVo.getTransactionDateTime());
+				int currentDate = currentTransactionDate.getDate();
+				int currentMonth = currentTransactionDate.getMonth();
+				int currentYear = currentTransactionDate.getYear();
 
-			for (BudgetVo budgetVo : budgetList) {
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-				Date budgetStartDate = format.parse(budgetVo.getBudgetStartDate());
-				Date budgetEndDate = format.parse(budgetVo.getBudgetEndDate());
+				for (BudgetVo budgetVo : budgetList) {
+					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+					Date budgetStartDate = format.parse(budgetVo.getBudgetStartDate());
+					Date budgetEndDate = format.parse(budgetVo.getBudgetEndDate());
 
-				int startDate = budgetStartDate.getDate();
-				int startMonth = budgetStartDate.getMonth();
-				int startYear = budgetStartDate.getYear();
-				int endDate = budgetEndDate.getDate();
-				int endMonth = budgetEndDate.getMonth();
-				int endYear = budgetEndDate.getYear();
+					int startDate = budgetStartDate.getDate();
+					int startMonth = budgetStartDate.getMonth();
+					int startYear = budgetStartDate.getYear();
+					int endDate = budgetEndDate.getDate();
+					int endMonth = budgetEndDate.getMonth();
+					int endYear = budgetEndDate.getYear();
 
-				if ((currentYear >= startYear) && (currentYear <= endYear)) {
-					if ((currentMonth >= startMonth) && (currentMonth <= endMonth)) {
-						if ((currentDate >= startDate) && (currentDate <= endDate)) {
-							budgetVo.setBudgetAmountLeft(
-									budgetVo.getBudgetAmountLeft() + transactionVo.getTransactionAmount());
-							BudgetMasterDao budgetMasterDao2 = new BudgetMasterDao();
-							budgetMasterDao2.updateBudget(budgetVo);
+					if ((currentYear >= startYear) && (currentYear <= endYear)) {
+						if ((currentMonth >= startMonth) && (currentMonth <= endMonth)) {
+							if ((currentDate >= startDate) && (currentDate <= endDate)) {
+								budgetVo.setBudgetAmountLeft(
+										budgetVo.getBudgetAmountLeft() + transactionVo.getTransactionAmount());
+								BudgetMasterDao budgetMasterDao2 = new BudgetMasterDao();
+								budgetMasterDao2.updateBudget(budgetVo);
+							}
 						}
 					}
 				}
@@ -445,7 +680,8 @@ public class TransactionMasterController extends HttpServlet {
 											+ ". If their's a problem review your transactions from Transaction List page.");
 									notificationVo.setNotificationType("budgetAmountAlert");
 									notificationVo.setRead(false);
-									notificationVo.setNotificationUrl("NotificationController?flag=loadBudget&value=" + budgetVo.getBudgetId());
+									notificationVo.setNotificationUrl(
+											"NotificationController?flag=loadBudget&value=" + budgetVo.getBudgetId());
 									notificationVo.setUserVo(userVo);
 
 									NotificationDao notificationDao = new NotificationDao();
@@ -821,10 +1057,10 @@ public class TransactionMasterController extends HttpServlet {
 				int endDate = budgetEndDate.getDate();
 				int endMonth = budgetEndDate.getMonth();
 				int endYear = budgetEndDate.getYear();
-				
-				System.out.println("Current dd-mm-yyyy "+currentDate+"-"+currentMonth+"-"+currentYear);
-				System.out.println("Budget start:- "+startDate+"-"+startMonth+"-"+startYear);
-				System.out.println("End date:- "+endDate+"-"+endMonth+"-"+endYear);
+
+				System.out.println("Current dd-mm-yyyy " + currentDate + "-" + currentMonth + "-" + currentYear);
+				System.out.println("Budget start:- " + startDate + "-" + startMonth + "-" + startYear);
+				System.out.println("End date:- " + endDate + "-" + endMonth + "-" + endYear);
 
 				if ((currentYear >= startYear) && (currentYear <= endYear)) {
 					if ((currentMonth >= startMonth) && (currentMonth <= endMonth)) {
@@ -843,7 +1079,8 @@ public class TransactionMasterController extends HttpServlet {
 										+ ". If their's a problem review your transactions from Transaction List page.");
 								notificationVo.setNotificationType("budgetAmountAlert");
 								notificationVo.setRead(false);
-								notificationVo.setNotificationUrl("NotificationController?flag=loadBudget&value=" + budgetVo.getBudgetId());
+								notificationVo.setNotificationUrl(
+										"NotificationController?flag=loadBudget&value=" + budgetVo.getBudgetId());
 								notificationVo.setUserVo(userVo);
 
 								NotificationDao notificationDao = new NotificationDao();

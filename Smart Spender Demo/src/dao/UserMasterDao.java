@@ -45,7 +45,8 @@ public class UserMasterDao {
 
 	public List<UserVo> getUserDetails(UserVo userVo) {
 		dbOperation.transaction = dbOperation.session.beginTransaction();
-		list = dbOperation.session.createQuery("from UserVo where userId=" + userVo.getUserId() + " and isDeleted=0").list();
+		//list = dbOperation.session.createQuery("from UserVo where userId=" + userVo.getUserId() + " and isDeleted=0").list();
+		list = dbOperation.session.createQuery("from UserVo where userId=" + userVo.getUserId() + "").list();
 		return list;
 	}
 
