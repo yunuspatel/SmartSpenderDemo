@@ -1,6 +1,9 @@
 package controller;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,11 +32,12 @@ import vo.Way2SmsPost;
 public class InventoryPermissionController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	/*private final String apiKey = "BD5WGOBHLE6O1886A6PRIPRQQ61OZ6C4";
-	private final String secretKey = "2VLY43W8BRF7Y2TU";
-	private final String useType = "stage";
-	private final String senderId = "SPENDR";*/
-	
+	/*
+	 * private final String apiKey = "BD5WGOBHLE6O1886A6PRIPRQQ61OZ6C4"; private
+	 * final String secretKey = "2VLY43W8BRF7Y2TU"; private final String useType =
+	 * "stage"; private final String senderId = "SPENDR";
+	 */
+
 	SmsApiKeys apiKeys;
 
 	/**
@@ -54,12 +58,25 @@ public class InventoryPermissionController extends HttpServlet {
 
 		String flag = request.getParameter("flag");
 
-		if (flag.equals("requestPermission")) {
-			requestPermission(request, response);
-		} else if (flag.equals("acceptRequest")) {
-			acceptRequest(request, response);
-		} else if (flag.equals("rejectRequest")) {
-			rejectRequest(request, response);
+		try {
+			if (flag.equals("requestPermission")) {
+				requestPermission(request, response);
+			} else if (flag.equals("acceptRequest")) {
+				acceptRequest(request, response);
+			} else if (flag.equals("rejectRequest")) {
+				rejectRequest(request, response);
+			}
+		} catch (Exception exception) {
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 	}
 
@@ -102,15 +119,16 @@ public class InventoryPermissionController extends HttpServlet {
 			notificationVo.setNotificationUrl("view/user/user-logout.jsp");
 			notificationVo.setRead(false);
 			notificationVo.setUserVo(lastRequest.getUserVo());
-			
-			NotificationDao notificationDao=new NotificationDao();
+
+			NotificationDao notificationDao = new NotificationDao();
 			notificationDao.addNotification(notificationVo);
 
-			apiKeys=new SmsApiKeys();
+			apiKeys = new SmsApiKeys();
 			Way2SmsPost way2SmsPost = new Way2SmsPost();
 			String phone = lastRequest.getUserVo().getUserMobile();
 			String message = "Your Request for Accessing Inventory Management Module of Smart Spender has been rejected by the admin. You can re-request or contact admin for more further inquiry details. Thank you.";
-			way2SmsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message, apiKeys.getSenderId());
+			way2SmsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message,
+					apiKeys.getSenderId());
 		}
 
 		session.setAttribute("superUser", superUserVo);
@@ -156,15 +174,16 @@ public class InventoryPermissionController extends HttpServlet {
 			notificationVo.setNotificationUrl("view/user/user-logout.jsp");
 			notificationVo.setRead(false);
 			notificationVo.setUserVo(lastRequest.getUserVo());
-			
-			NotificationDao notificationDao=new NotificationDao();
+
+			NotificationDao notificationDao = new NotificationDao();
 			notificationDao.addNotification(notificationVo);
 
-			apiKeys=new SmsApiKeys();
+			apiKeys = new SmsApiKeys();
 			Way2SmsPost way2SmsPost = new Way2SmsPost();
 			String phone = lastRequest.getUserVo().getUserMobile();
 			String message = "Your Request for Accessing Inventory Management Module of Smart Spender has been accepted by the admin. You can re-login to your account for accessing the Inventory Management features. Thank you.";
-			way2SmsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message, apiKeys.getSenderId());
+			way2SmsPost.sendCampaign(apiKeys.getApiKey(), apiKeys.getSecretKey(), apiKeys.getUseType(), phone, message,
+					apiKeys.getSenderId());
 		}
 
 		session.setAttribute("superUser", superUserVo);

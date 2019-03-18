@@ -1,7 +1,9 @@
 package controller;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -54,16 +56,30 @@ public class PurchaseController extends HttpServlet {
 		// TODO Auto-generated method stub
 
 		String flag = request.getParameter("flag");
-		if (flag.equals("loadPurchases")) {
-			loadPurchases(request, response);
-		} else if (flag.equals("addPurchase")) {
-			addPurchase(request, response);
-		} else if (flag.equals("deletePurchase")) {
-			deletePurchase(request, response);
-		} else if (flag.equals("uploadReceiptImage")) {
-			uploadReceiptImage(request, response);
-		} else if (flag.equals("editPurchase")) {
-			editPurchase(request, response);
+
+		try {
+			if (flag.equals("loadPurchases")) {
+				loadPurchases(request, response);
+			} else if (flag.equals("addPurchase")) {
+				addPurchase(request, response);
+			} else if (flag.equals("deletePurchase")) {
+				deletePurchase(request, response);
+			} else if (flag.equals("uploadReceiptImage")) {
+				uploadReceiptImage(request, response);
+			} else if (flag.equals("editPurchase")) {
+				editPurchase(request, response);
+			}
+		} catch (Exception exception) {
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 	}
 
@@ -104,28 +120,37 @@ public class PurchaseController extends HttpServlet {
 			}
 		} else {
 			stockList = stockDao.checkProductExists(purchaseVo.getProductVo(), userVo);
-			if(stockList.isEmpty()) {
+			if (stockList.isEmpty()) {
 				StockVo newStockVo = new StockVo();
 				newStockVo.setProductVo(purchaseVo.getProductVo());
 				newStockVo.setQuantityLeft(purchaseVo.getQuantity());
 				newStockVo.setUserVo(userVo);
 				stockDao.addStock(newStockVo);
 				stockVo.setQuantityLeft(stockVo.getQuantityLeft() - oldProductQuantity);
-			}else {
+			} else {
 				StockVo newStockVo = stockList.get(0);
 				newStockVo.setQuantityLeft(newStockVo.getQuantityLeft() + purchaseVo.getQuantity());
-				stockDao.updateStock(newStockVo);				
+				stockDao.updateStock(newStockVo);
 				stockVo.setQuantityLeft(stockVo.getQuantityLeft() - oldProductQuantity);
 			}
 		}
 
 		try {
-			PurchaseDao purchaseDao2=new PurchaseDao();
+			PurchaseDao purchaseDao2 = new PurchaseDao();
 			purchaseDao2.updatePurchase(purchaseVo);
-			StockDao stockDao2=new StockDao();
+			StockDao stockDao2 = new StockDao();
 			stockDao2.updateStock(stockVo);
 		} catch (Exception exception) {
-			System.out.println("Error in purchase record updation:-" + exception.getMessage());
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 		session.setAttribute("user", userVo);
 		loadPurchases(request, response);
@@ -189,10 +214,28 @@ public class PurchaseController extends HttpServlet {
 				}
 
 			}
-		} catch (FileUploadException e) {
-			System.out.println("Exception in uploading file. FIleUpload");
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
+		} catch (FileUploadException exception) {
+			String relativePathLog = "logs/error-log.txt";
+			String rootPathLog = getServletContext().getRealPath(relativePathLog);
+			File logFile = new File(rootPathLog);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
+		} catch (Exception exception) {
+			String relativePathLog = "logs/error-log.txt";
+			String rootPathLog = getServletContext().getRealPath(relativePathLog);
+			File logFile = new File(rootPathLog);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 		if (!response.isCommitted()) {
 			loadPurchases(request, response);
@@ -219,7 +262,16 @@ public class PurchaseController extends HttpServlet {
 			purchaseDao.deletePurchase(purchaseVo);
 			stockDao.updateStock(stockVo);
 		} catch (Exception exception) {
-			System.out.println("Error in deleting purchase:- " + exception.getMessage());
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 		session.setAttribute("user", userVo);
 		loadPurchases(request, response);
@@ -257,7 +309,16 @@ public class PurchaseController extends HttpServlet {
 			PurchaseDao purchaseDao = new PurchaseDao();
 			purchaseDao.addPurchase(purchaseVo);
 		} catch (Exception exception) {
-			System.out.println("Error in adding purchase:- " + exception.getMessage());
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 
 		StockDao stockDao = new StockDao();

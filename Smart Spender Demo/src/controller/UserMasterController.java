@@ -3,6 +3,7 @@ package controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -89,42 +90,71 @@ public class UserMasterController extends HttpServlet {
 
 		String flag = request.getParameter("flag");
 
-		if (flag.equals("signup")) {
-			registerUser(request, response);
-		} else if (flag.equals("login")) {
-			try {
-				loginUser(request, response);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.getMessage();
+		try {
+			if (flag.equals("signup")) {
+				registerUser(request, response);
+			} else if (flag.equals("login")) {
+				try {
+					loginUser(request, response);
+				} catch (ParseException exception) {
+					String relativePath = "logs/error-log.txt";
+					String rootPath = getServletContext().getRealPath(relativePath);
+					File logFile = new File(rootPath);
+					if (!logFile.exists()) {
+						logFile.mkdirs();
+					}
+					FileWriter fileWriter = new FileWriter(logFile, true);
+					PrintWriter printWriter = new PrintWriter(fileWriter);
+					printWriter.write(exception.getMessage() + "/n");
+					printWriter.close();
+				}
+			} else if (flag.equals("verifyOtp")) {
+				verifyOtp(request, response);
+			} else if (flag.equals("forgot-password")) {
+				forgotPassword(request, response);
+			} else if (flag.equals("change-password")) {
+				changePassword(request, response);
+			} else if (flag.equals("uploadProfileImage")) {
+				uploadProfileImage(request, response);
+			} else if (flag.equals("userUpdate")) {
+				userUpdate(request, response);
+			} else if (flag.equals("deleteUser")) {
+				deleteUser(request, response);
+			} else if (flag.equals("changePassword")) {
+				changeNewPassword(request, response);
+			} else if (flag.equals("exportData")) {
+				exportData(request, response);
+			} else if (flag.equals("loadDashboard")) {
+				try {
+					loadDashboard(request, response);
+				} catch (ParseException exception) {
+					String relativePath = "logs/error-log.txt";
+					String rootPath = getServletContext().getRealPath(relativePath);
+					File logFile = new File(rootPath);
+					if (!logFile.exists()) {
+						logFile.mkdirs();
+					}
+					FileWriter fileWriter = new FileWriter(logFile, true);
+					PrintWriter printWriter = new PrintWriter(fileWriter);
+					printWriter.write(exception.getMessage() + "/n");
+					printWriter.close();
+				}
+			} else if (flag.equals("changeThemeDiv")) {
+				changeThemeDiv(request, response);
+			} else if (flag.equals("deactivateUserByAdmin")) {
+				deactivateUserByAdmin(request, response);
 			}
-		} else if (flag.equals("verifyOtp")) {
-			verifyOtp(request, response);
-		} else if (flag.equals("forgot-password")) {
-			forgotPassword(request, response);
-		} else if (flag.equals("change-password")) {
-			changePassword(request, response);
-		} else if (flag.equals("uploadProfileImage")) {
-			uploadProfileImage(request, response);
-		} else if (flag.equals("userUpdate")) {
-			userUpdate(request, response);
-		} else if (flag.equals("deleteUser")) {
-			deleteUser(request, response);
-		} else if (flag.equals("changePassword")) {
-			changeNewPassword(request, response);
-		} else if (flag.equals("exportData")) {
-			exportData(request, response);
-		} else if (flag.equals("loadDashboard")) {
-			try {
-				loadDashboard(request, response);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.getMessage();
+		} catch (Exception exception) {
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
 			}
-		} else if (flag.equals("changeThemeDiv")) {
-			changeThemeDiv(request, response);
-		} else if (flag.equals("deactivateUserByAdmin")) {
-			deactivateUserByAdmin(request, response);
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 	}
 
@@ -990,7 +1020,7 @@ public class UserMasterController extends HttpServlet {
 				session.setAttribute("userMsg",
 						"This account has been Deactivated by Admin. Please contact admin for more details regarding your account.");
 				response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
-			}else if(userVo.isConfirmed() == false) {
+			} else if (userVo.isConfirmed() == false) {
 				session.setAttribute("user", userVo);
 
 				Random random = new Random();
@@ -1008,7 +1038,7 @@ public class UserMasterController extends HttpServlet {
 						apiKeys.getSenderId());
 
 				response.sendRedirect(request.getContextPath() + "/view/user/otp-verification.jsp");
-			}else if (userVo.getIsActive().equals("0")) {
+			} else if (userVo.getIsActive().equals("0")) {
 				userVo.setIsActive("1");
 				UserMasterDao masterDao = new UserMasterDao();
 				masterDao.updateUser(userVo);
@@ -1154,7 +1184,7 @@ public class UserMasterController extends HttpServlet {
 		userMobile = request.getParameter("userMobile");
 		userEmail = request.getParameter("userEmail");
 		userPassword = request.getParameter("userPassword");
-		
+
 		UserVo userVo = new UserVo();
 		userVo.setIsActive("0");
 		userVo.setIsDeleted("0");

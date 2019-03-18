@@ -1,6 +1,9 @@
 package controller;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,22 +59,35 @@ public class SuperUserController extends HttpServlet {
 
 		String flag = request.getParameter("flag");
 
-		if (flag.equals("loginSuperUser")) {
-			loginSuperUser(request, response);
-		} else if (flag.equals("loadSuperUserDashboard")) {
-			loadSuperUserDashboard(request, response);
-		} else if (flag.equals("changeThemeDiv")) {
-			changeThemeDiv(request, response);
-		} else if (flag.equals("loadAllInventoryPermissions")) {
-			loadAllInventoryPermissions(request, response);
-		} else if (flag.equals("listAllUsers")) {
-			listAllUsers(request, response);
-		} else if (flag.equals("loadSpecificUser")) {
-			loadSpecificUser(request, response);
-		} else if (flag.equals("reactivateUserAccount")) {
-			reactivateUserAccount(request, response);
-		} else if (flag.equals("revokeStockPermission")) {
-			revokeStockPermission(request, response);
+		try {
+			if (flag.equals("loginSuperUser")) {
+				loginSuperUser(request, response);
+			} else if (flag.equals("loadSuperUserDashboard")) {
+				loadSuperUserDashboard(request, response);
+			} else if (flag.equals("changeThemeDiv")) {
+				changeThemeDiv(request, response);
+			} else if (flag.equals("loadAllInventoryPermissions")) {
+				loadAllInventoryPermissions(request, response);
+			} else if (flag.equals("listAllUsers")) {
+				listAllUsers(request, response);
+			} else if (flag.equals("loadSpecificUser")) {
+				loadSpecificUser(request, response);
+			} else if (flag.equals("reactivateUserAccount")) {
+				reactivateUserAccount(request, response);
+			} else if (flag.equals("revokeStockPermission")) {
+				revokeStockPermission(request, response);
+			}
+		} catch (Exception exception) {
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 	}
 

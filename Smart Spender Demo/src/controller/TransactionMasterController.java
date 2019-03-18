@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -72,41 +73,89 @@ public class TransactionMasterController extends HttpServlet {
 			throws ServletException, IOException {
 		String flag = request.getParameter("flag");
 
-		if (flag.equals("addIncomeTransaction")) {
-			addIncomeTransaction(request, response);
-		} else if (flag.equals("addExpenseTransaction")) {
-			try {
-				addExpenseTransaction(request, response);
-			} catch (ParseException e) {
-				System.out.println(e.getMessage());
+		try {
+			if (flag.equals("addIncomeTransaction")) {
+				addIncomeTransaction(request, response);
+			} else if (flag.equals("addExpenseTransaction")) {
+				try {
+					addExpenseTransaction(request, response);
+				} catch (ParseException exception) {
+					String relativePath = "logs/error-log.txt";
+					String rootPath = getServletContext().getRealPath(relativePath);
+					File logFile = new File(rootPath);
+					if (!logFile.exists()) {
+						logFile.mkdirs();
+					}
+					FileWriter fileWriter = new FileWriter(logFile, true);
+					PrintWriter printWriter = new PrintWriter(fileWriter);
+					printWriter.write(exception.getMessage() + "/n");
+					printWriter.close();
+				}
+			} else if (flag.equals("loadIncomeTransaction")) {
+				loadIncomeTransaction(request, response);
+			} else if (flag.equals("loadExpenseTransaction")) {
+				loadExpenseTransaction(request, response);
+			} else if (flag.equals("uploadReceiptImage")) {
+				uploadReceiptImage(request, response);
+			} else if (flag.equals("loadTransactionDetails")) {
+				loadTransactionDetails(request, response);
+			} else if (flag.equals("editTransaction")) {
+				try {
+					editTransaction(request, response);
+				} catch (ParseException exception) {
+					String relativePath = "logs/error-log.txt";
+					String rootPath = getServletContext().getRealPath(relativePath);
+					File logFile = new File(rootPath);
+					if (!logFile.exists()) {
+						logFile.mkdirs();
+					}
+					FileWriter fileWriter = new FileWriter(logFile, true);
+					PrintWriter printWriter = new PrintWriter(fileWriter);
+					printWriter.write(exception.getMessage() + "/n");
+					printWriter.close();
+				}
+			} else if (flag.equals("deleteTransaction")) {
+				try {
+					deleteTransaction(request, response);
+				} catch (ParseException exception) {
+					String relativePath = "logs/error-log.txt";
+					String rootPath = getServletContext().getRealPath(relativePath);
+					File logFile = new File(rootPath);
+					if (!logFile.exists()) {
+						logFile.mkdirs();
+					}
+					FileWriter fileWriter = new FileWriter(logFile, true);
+					PrintWriter printWriter = new PrintWriter(fileWriter);
+					printWriter.write(exception.getMessage() + "/n");
+					printWriter.close();
+				}
+			} else if (flag.equals("generateReport")) {
+				try {
+					generateReport(request, response);
+				} catch (ParseException exception) {
+					String relativePath = "logs/error-log.txt";
+					String rootPath = getServletContext().getRealPath(relativePath);
+					File logFile = new File(rootPath);
+					if (!logFile.exists()) {
+						logFile.mkdirs();
+					}
+					FileWriter fileWriter = new FileWriter(logFile, true);
+					PrintWriter printWriter = new PrintWriter(fileWriter);
+					printWriter.write(exception.getMessage() + "/n");
+					printWriter.close();
+				}
 			}
-		} else if (flag.equals("loadIncomeTransaction")) {
-			loadIncomeTransaction(request, response);
-		} else if (flag.equals("loadExpenseTransaction")) {
-			loadExpenseTransaction(request, response);
-		} else if (flag.equals("uploadReceiptImage")) {
-			uploadReceiptImage(request, response);
-		} else if (flag.equals("loadTransactionDetails")) {
-			loadTransactionDetails(request, response);
-		} else if (flag.equals("editTransaction")) {
-			try {
-				editTransaction(request, response);
-			} catch (ParseException e) {
-				System.out.println(e.getMessage());
+		} catch (Exception exception) {
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
 			}
-		} else if (flag.equals("deleteTransaction")) {
-			try {
-				deleteTransaction(request, response);
-			} catch (ParseException e) {
-				System.out.println(e.getMessage());
-			}
-		} else if (flag.equals("generateReport")) {
-			try {
-				generateReport(request, response);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				System.out.println(e.getMessage());
-			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 	}
 
@@ -198,9 +247,9 @@ public class TransactionMasterController extends HttpServlet {
 			int incomeRowId = 1, expenseRowId = 1;
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm");
 
-			SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
 			Date userDate = dateFormat.parse(year);
-			
+
 			for (TransactionVo transactionVo : transactionList) {
 				Date transactionDate = simpleDateFormat.parse(transactionVo.getTransactionDateTime());
 				if (((transactionDate.getMonth() + 1) == month) && (transactionDate.getYear() == userDate.getYear())) {
@@ -803,10 +852,28 @@ public class TransactionMasterController extends HttpServlet {
 				}
 
 			}
-		} catch (FileUploadException e) {
-			System.out.println("Exception in uploading file. FIleUpload");
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
+		} catch (FileUploadException exception) {
+			String relativePathLog = "logs/error-log.txt";
+			String rootPathLog = getServletContext().getRealPath(relativePathLog);
+			File logFile = new File(rootPathLog);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
+		} catch (Exception exception) {
+			String relativePathLog = "logs/error-log.txt";
+			String rootPathLog = getServletContext().getRealPath(relativePathLog);
+			File logFile = new File(rootPathLog);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 		if (!response.isCommitted()) {
 			response.sendRedirect(request.getContextPath() + "/TransactionMasterController?flag=loadIncomeTransaction");
@@ -1058,9 +1125,12 @@ public class TransactionMasterController extends HttpServlet {
 				int endMonth = budgetEndDate.getMonth();
 				int endYear = budgetEndDate.getYear();
 
-				System.out.println("Current dd-mm-yyyy " + currentDate + "-" + currentMonth + "-" + currentYear);
-				System.out.println("Budget start:- " + startDate + "-" + startMonth + "-" + startYear);
-				System.out.println("End date:- " + endDate + "-" + endMonth + "-" + endYear);
+				/*
+				 * System.out.println("Current dd-mm-yyyy " + currentDate + "-" + currentMonth +
+				 * "-" + currentYear); System.out.println("Budget start:- " + startDate + "-" +
+				 * startMonth + "-" + startYear); System.out.println("End date:- " + endDate +
+				 * "-" + endMonth + "-" + endYear);
+				 */
 
 				if ((currentYear >= startYear) && (currentYear <= endYear)) {
 					if ((currentMonth >= startMonth) && (currentMonth <= endMonth)) {

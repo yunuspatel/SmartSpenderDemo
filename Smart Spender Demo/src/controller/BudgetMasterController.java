@@ -1,6 +1,11 @@
 package controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,16 +50,29 @@ public class BudgetMasterController extends HttpServlet {
 
 		String flag = request.getParameter("flag");
 
-		if (flag.equals("loadAllBudgets")) {
-			loadAllBudgets(request, response);
-		} else if (flag.equals("addBudget")) {
-			addBudget(request, response);
-		} else if (flag.equals("loadSpecificBudget")) {
-			loadSpecificBudget(request, response);
-		} else if (flag.equals("deleteBudget")) {
-			deleteBudget(request, response);
-		} else if (flag.equals("editBudget")) {
-			editBudget(request, response);
+		try {
+			if (flag.equals("loadAllBudgets")) {
+				loadAllBudgets(request, response);
+			} else if (flag.equals("addBudget")) {
+				addBudget(request, response);
+			} else if (flag.equals("loadSpecificBudget")) {
+				loadSpecificBudget(request, response);
+			} else if (flag.equals("deleteBudget")) {
+				deleteBudget(request, response);
+			} else if (flag.equals("editBudget")) {
+				editBudget(request, response);
+			}
+		} catch (Exception exception) {
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 	}
 
@@ -82,7 +100,7 @@ public class BudgetMasterController extends HttpServlet {
 				difference = newAmount - oldAmount;
 				budgetVo.setBudgetAmountLeft(budgetVo.getBudgetAmountLeft() + difference);
 			}
-			
+
 			BudgetMasterDao budgetMasterDao = new BudgetMasterDao();
 			budgetMasterDao.updateBudget(budgetVo);
 

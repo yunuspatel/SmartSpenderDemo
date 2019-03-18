@@ -1,5 +1,7 @@
 package controller;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
@@ -47,22 +49,35 @@ public class CategoryController extends HttpServlet {
 
 		String flag = request.getParameter("flag");
 
-		if (flag.equals("insertCategory")) {
-			String forCategory = request.getParameter("forCategory");
+		try {
+			if (flag.equals("insertCategory")) {
+				String forCategory = request.getParameter("forCategory");
 
-			if (forCategory.equals("income")) {
-				addIncomeCategory(request, response);
-			} else if (forCategory.equals("expense")) {
-				addExpenseCategory(request, response);
+				if (forCategory.equals("income")) {
+					addIncomeCategory(request, response);
+				} else if (forCategory.equals("expense")) {
+					addExpenseCategory(request, response);
+				}
+			} else if (flag.equals("getSubCategory")) {
+				getSubCategories(request, response);
+			} else if (flag.equals("editIncCategory")) {
+				editIncCategory(request, response);
+			} else if (flag.equals("deleteCategory")) {
+				deleteCategory(request, response);
+			} else if (flag.equals("editExpCategory")) {
+				editExpCategory(request, response);
 			}
-		} else if (flag.equals("getSubCategory")) {
-			getSubCategories(request, response);
-		} else if (flag.equals("editIncCategory")) {
-			editIncCategory(request, response);
-		} else if (flag.equals("deleteCategory")) {
-			deleteCategory(request, response);
-		} else if (flag.equals("editExpCategory")) {
-			editExpCategory(request, response);
+		} catch (Exception exception) {
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 	}
 
@@ -120,7 +135,7 @@ public class CategoryController extends HttpServlet {
 		} catch (Exception exception) {
 			session.setAttribute("userMsg", "Cannot delete as categories are used for transaction.");
 		}
-	
+
 		session.removeAttribute("incomeList");
 		session.removeAttribute("expenseList");
 		response.sendRedirect(request.getContextPath() + "/view/pages/categories.jsp");
@@ -164,12 +179,12 @@ public class CategoryController extends HttpServlet {
 
 	private void getSubCategories(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		HttpSession session=request.getSession();
+		HttpSession session = request.getSession();
 		String value = request.getParameter("value");
 		String category = request.getParameter("forCategory");
-		CategoryMasterDao categoryMasterDao = (CategoryMasterDao)session.getAttribute("categoryDao");
-		if (categoryMasterDao==null) {
-			categoryMasterDao=new CategoryMasterDao();
+		CategoryMasterDao categoryMasterDao = (CategoryMasterDao) session.getAttribute("categoryDao");
+		if (categoryMasterDao == null) {
+			categoryMasterDao = new CategoryMasterDao();
 		}
 		UserVo userVo = (UserVo) session.getAttribute("user");
 
@@ -181,7 +196,7 @@ public class CategoryController extends HttpServlet {
 
 		out.println("<subcategory>");
 		for (SubCategoriesVo subCategoriesVo : subCategoriesVos) {
-			
+
 			out.println("<subcategoryname>" + subCategoriesVo.getSubCategoryName() + "</subcategoryname>");
 		}
 		out.println("</subcategory>");

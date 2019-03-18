@@ -1,6 +1,9 @@
 package controller;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,28 +45,41 @@ public class NotificationController extends HttpServlet {
 
 		String flag = request.getParameter("flag");
 
-		if (flag.equals("clearAll")) {
-			clearAll(request, response);
-		} else if (flag.equals("displayAll")) {
-			displayAll(request, response);
-		} else if (flag.equals("loadNotification")) {
-			loadNotification(request, response);
-		} else if(flag.equals("loadBudget")) {
-			loadBudget(request,response);
+		try {
+			if (flag.equals("clearAll")) {
+				clearAll(request, response);
+			} else if (flag.equals("displayAll")) {
+				displayAll(request, response);
+			} else if (flag.equals("loadNotification")) {
+				loadNotification(request, response);
+			} else if (flag.equals("loadBudget")) {
+				loadBudget(request, response);
+			}
+		} catch (Exception exception) {
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 	}
 
 	private void loadBudget(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// TODO Auto-generated method stub
 		int budgetId = Integer.parseInt(request.getParameter("value"));
-		BudgetVo budgetVo=new BudgetVo();
+		BudgetVo budgetVo = new BudgetVo();
 		budgetVo.setBudgetId(budgetId);
-		
-		BudgetMasterDao budgetMasterDao=new BudgetMasterDao();
+
+		BudgetMasterDao budgetMasterDao = new BudgetMasterDao();
 		List<BudgetVo> budgetList = budgetMasterDao.loadBudgetById(budgetVo);
-		
+
 		budgetVo = budgetList.get(0);
-		HttpSession session=request.getSession();
+		HttpSession session = request.getSession();
 		session.setAttribute("budgetDetail", budgetVo);
 		response.sendRedirect(request.getContextPath() + "/view/pages/budget-detail.jsp");
 	}

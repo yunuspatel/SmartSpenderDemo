@@ -1,6 +1,9 @@
 package controller;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -39,37 +42,58 @@ public class ProductController extends HttpServlet {
 
 		String flag = request.getParameter("flag");
 
-		if (flag.equals("loadProducts")) {
-			loadProducts(request, response);
-		} else if (flag.equals("addProduct")) {
-			addProduct(request, response);
-		} else if (flag.equals("deleteProduct")) {
-			deleteProduct(request, response);
-		} else if(flag.equals("editProduct")) {
-			editProduct(request,response);
+		try {
+			if (flag.equals("loadProducts")) {
+				loadProducts(request, response);
+			} else if (flag.equals("addProduct")) {
+				addProduct(request, response);
+			} else if (flag.equals("deleteProduct")) {
+				deleteProduct(request, response);
+			} else if (flag.equals("editProduct")) {
+				editProduct(request, response);
+			}
+		} catch (Exception exception) {
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 	}
 
 	private void editProduct(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// TODO Auto-generated method stub
-		HttpSession session=request.getSession();
-		UserVo userVo=(UserVo)session.getAttribute("user");
-		
-		ProductVo productVo=new ProductVo();
+		HttpSession session = request.getSession();
+		UserVo userVo = (UserVo) session.getAttribute("user");
+
+		ProductVo productVo = new ProductVo();
 		productVo.setBrandName(request.getParameter("brandName"));
 		productVo.setProductId(Integer.parseInt(request.getParameter("editProductId")));
 		productVo.setProductName(request.getParameter("productName"));
 		productVo.setUnitOfMesaurement(request.getParameter("unitOfMesaurement"));
 		productVo.setUserVo(userVo);
-		
-		
+
 		session.setAttribute("user", userVo);
-		ProductDao productDao=new ProductDao();
+		ProductDao productDao = new ProductDao();
 		try {
 			productDao.updateProduct(productVo);
 			loadProducts(request, response);
-		}catch(Exception exception) {
-			System.out.println("Error in product updation:- " + exception.getMessage());
+		} catch (Exception exception) {
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 			loadProducts(request, response);
 		}
 	}
@@ -88,7 +112,8 @@ public class ProductController extends HttpServlet {
 			productDao.deleteProduct(productVo);
 			loadProducts(request, response);
 		} catch (Exception exception) {
-			session.setAttribute("userMsg", "Sorry, Error in deleting your product. Maybe it is used with some purchase or sale record.");
+			session.setAttribute("userMsg",
+					"Sorry, Error in deleting your product. Maybe it is used with some purchase or sale record.");
 			loadProducts(request, response);
 		}
 	}

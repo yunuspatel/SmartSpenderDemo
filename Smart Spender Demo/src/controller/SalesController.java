@@ -1,7 +1,9 @@
 package controller;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,16 +55,29 @@ public class SalesController extends HttpServlet {
 
 		String flag = request.getParameter("flag");
 
-		if (flag.equals("loadSales")) {
-			loadSales(request, response);
-		} else if (flag.equals("addSales")) {
-			addSales(request, response);
-		} else if (flag.equals("uploadReceiptImage")) {
-			uploadReceiptImage(request, response);
-		} else if (flag.equals("deleteSales")) {
-			deleteSales(request, response);
-		} else if (flag.equals("editSales")) {
-			editSales(request, response);
+		try {
+			if (flag.equals("loadSales")) {
+				loadSales(request, response);
+			} else if (flag.equals("addSales")) {
+				addSales(request, response);
+			} else if (flag.equals("uploadReceiptImage")) {
+				uploadReceiptImage(request, response);
+			} else if (flag.equals("deleteSales")) {
+				deleteSales(request, response);
+			} else if (flag.equals("editSales")) {
+				editSales(request, response);
+			}
+		} catch (Exception exception) {
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 	}
 
@@ -119,24 +134,35 @@ public class SalesController extends HttpServlet {
 					}
 				}
 			} else {
-				StockDao stockDao=new StockDao();
+				StockDao stockDao = new StockDao();
 				List<StockVo> stockList = stockDao.checkProductExists(salesVo.getProductVo(), userVo);
 				StockVo newStockVo = stockList.get(0);
-				
-				if(newStockVo.getQuantityLeft() >= salesVo.getSalesQuantity()) {
+
+				if (newStockVo.getQuantityLeft() >= salesVo.getSalesQuantity()) {
 					newStockVo.setQuantityLeft(newStockVo.getQuantityLeft() - salesVo.getSalesQuantity());
 					stockDao.updateStock(newStockVo);
-					StockDao stockDao2=new StockDao();
+					StockDao stockDao2 = new StockDao();
 					stockVo.setQuantityLeft(stockVo.getQuantityLeft() + oldSalesQuantity);
 					stockDao2.updateStock(stockVo);
-					SalesDao salesDao=new SalesDao();
+					SalesDao salesDao = new SalesDao();
 					salesDao.updateSales(salesVo);
-				}else {
-					session.setAttribute("userMsg", "There are only " + newStockVo.getQuantityLeft() + " quantity left for the " + newStockVo.getProductVo().getProductName() + " product in stock. Cannot update sales record due to insufficient stock quantity.");
+				} else {
+					session.setAttribute("userMsg", "There are only " + newStockVo.getQuantityLeft()
+							+ " quantity left for the " + newStockVo.getProductVo().getProductName()
+							+ " product in stock. Cannot update sales record due to insufficient stock quantity.");
 				}
 			}
 		} catch (Exception exception) {
-			System.out.println("Error in sales record updation:-" + exception.getMessage());
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 
 		session.setAttribute("user", userVo);
@@ -163,7 +189,16 @@ public class SalesController extends HttpServlet {
 			StockDao stockDao2 = new StockDao();
 			stockDao2.updateStock(stockVo);
 		} catch (Exception exception) {
-			System.out.println("Error in sales record deletion:-" + exception.getMessage());
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 
 		session.setAttribute("user", userVo);
@@ -226,10 +261,28 @@ public class SalesController extends HttpServlet {
 				}
 
 			}
-		} catch (FileUploadException e) {
-			System.out.println("Exception in uploading file. FileUpload");
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
+		} catch (FileUploadException exception) {
+			String relativePathLog = "logs/error-log.txt";
+			String rootPathLog = getServletContext().getRealPath(relativePathLog);
+			File logFile = new File(rootPathLog);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
+		} catch (Exception exception) {
+			String relativePathLog = "logs/error-log.txt";
+			String rootPathLog = getServletContext().getRealPath(relativePathLog);
+			File logFile = new File(rootPathLog);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 		if (!response.isCommitted()) {
 			loadSales(request, response);
@@ -283,7 +336,16 @@ public class SalesController extends HttpServlet {
 				response.sendRedirect(request.getContextPath() + "/view/pages/sales.jsp");
 			}
 		} catch (Exception exception) {
-			System.out.println("Error in sales recording adding:-" + exception.getMessage());
+			String relativePath = "logs/error-log.txt";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile, true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage() + "/n");
+			printWriter.close();
 		}
 
 		session.setAttribute("user", userVo);
