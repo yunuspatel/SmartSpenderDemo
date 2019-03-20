@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
@@ -43,6 +44,7 @@ import dao.TrackingMasterDao;
 import dao.TransactionMasterDao;
 import dao.UserMasterDao;
 import global.GraphData;
+import global.MD5Encryption;
 import global.SmsApiKeys;
 import vo.BudgetVo;
 import vo.NotificationVo;
@@ -1000,10 +1002,14 @@ public class UserMasterController extends HttpServlet {
 		// TODO Auto-generated method stub
 		String userEmail = request.getParameter("userEmail");
 		String userPassword = request.getParameter("userPassword");
+		
+		ServletContext servletContext=getServletContext();
+		MD5Encryption md5Encryption = new MD5Encryption();
+		String hashPassword = md5Encryption.getEncrptedString(userPassword, servletContext);
 
 		UserVo userVo = new UserVo();
 		userVo.setUserEmail(userEmail);
-		userVo.setUserPassword(userPassword);
+		userVo.setUserPassword(hashPassword);
 
 		UserMasterDao userMasterDao = new UserMasterDao();
 		List<UserVo> userList = userMasterDao.loginUser(userVo);
@@ -1184,6 +1190,10 @@ public class UserMasterController extends HttpServlet {
 		userMobile = request.getParameter("userMobile");
 		userEmail = request.getParameter("userEmail");
 		userPassword = request.getParameter("userPassword");
+		
+		ServletContext servletContext=getServletContext();
+		MD5Encryption md5Encryption = new MD5Encryption();
+		String hashPassword = md5Encryption.getEncrptedString(userPassword, servletContext);
 
 		UserVo userVo = new UserVo();
 		userVo.setIsActive("0");
@@ -1192,7 +1202,7 @@ public class UserMasterController extends HttpServlet {
 		userVo.setUserEmail(userEmail);
 		userVo.setUserMobile(userMobile);
 		userVo.setUserName(userName);
-		userVo.setUserPassword(userPassword);
+		userVo.setUserPassword(hashPassword);
 		userVo.setConfirmed(false);
 		userVo.setUserCity("");
 		userVo.setUserPinCode("");

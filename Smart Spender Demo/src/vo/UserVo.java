@@ -19,7 +19,7 @@ public class UserVo {
 	@Column(name="user_name",length=25,nullable=false)
 	String userName;
 	
-	@Column(name="user_password",length=20,nullable=false)
+	@Column(name="user_password",length=255,nullable=false)
 	String userPassword;
 	
 	@Column(name="user_email",length=30,nullable=false)
