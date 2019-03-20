@@ -47,15 +47,16 @@ public class StockController extends HttpServlet {
 				loadStock(request, response);
 			}
 		} catch (Exception exception) {
-			String relativePath = "logs/error-log.txt";
-			String rootPath = getServletContext().getRealPath(relativePath);
-			File logFile = new File(rootPath);
+			String relativePathLog = "logs";
+			String rootPathLog = getServletContext().getRealPath(relativePathLog);
+			File logFile = new File(rootPathLog);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
 		}
 	}

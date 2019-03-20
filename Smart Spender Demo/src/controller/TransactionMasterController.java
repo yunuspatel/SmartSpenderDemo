@@ -80,15 +80,16 @@ public class TransactionMasterController extends HttpServlet {
 				try {
 					addExpenseTransaction(request, response);
 				} catch (ParseException exception) {
-					String relativePath = "logs/error-log.txt";
-					String rootPath = getServletContext().getRealPath(relativePath);
-					File logFile = new File(rootPath);
+					String relativePathLog = "logs";
+					String rootPathLog = getServletContext().getRealPath(relativePathLog);
+					File logFile = new File(rootPathLog);
 					if (!logFile.exists()) {
 						logFile.mkdirs();
 					}
-					FileWriter fileWriter = new FileWriter(logFile, true);
+					FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 					PrintWriter printWriter = new PrintWriter(fileWriter);
-					printWriter.write(exception.getMessage() + "/n");
+					printWriter.write(exception.getMessage());
+					printWriter.write(System.lineSeparator());
 					printWriter.close();
 				}
 			} else if (flag.equals("loadIncomeTransaction")) {
@@ -103,58 +104,62 @@ public class TransactionMasterController extends HttpServlet {
 				try {
 					editTransaction(request, response);
 				} catch (ParseException exception) {
-					String relativePath = "logs/error-log.txt";
-					String rootPath = getServletContext().getRealPath(relativePath);
-					File logFile = new File(rootPath);
+					String relativePathLog = "logs";
+					String rootPathLog = getServletContext().getRealPath(relativePathLog);
+					File logFile = new File(rootPathLog);
 					if (!logFile.exists()) {
 						logFile.mkdirs();
 					}
-					FileWriter fileWriter = new FileWriter(logFile, true);
+					FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 					PrintWriter printWriter = new PrintWriter(fileWriter);
-					printWriter.write(exception.getMessage() + "/n");
+					printWriter.write(exception.getMessage());
+					printWriter.write(System.lineSeparator());
 					printWriter.close();
 				}
 			} else if (flag.equals("deleteTransaction")) {
 				try {
 					deleteTransaction(request, response);
 				} catch (ParseException exception) {
-					String relativePath = "logs/error-log.txt";
-					String rootPath = getServletContext().getRealPath(relativePath);
-					File logFile = new File(rootPath);
+					String relativePathLog = "logs";
+					String rootPathLog = getServletContext().getRealPath(relativePathLog);
+					File logFile = new File(rootPathLog);
 					if (!logFile.exists()) {
 						logFile.mkdirs();
 					}
-					FileWriter fileWriter = new FileWriter(logFile, true);
+					FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 					PrintWriter printWriter = new PrintWriter(fileWriter);
-					printWriter.write(exception.getMessage() + "/n");
+					printWriter.write(exception.getMessage());
+					printWriter.write(System.lineSeparator());
 					printWriter.close();
 				}
 			} else if (flag.equals("generateReport")) {
 				try {
 					generateReport(request, response);
 				} catch (ParseException exception) {
-					String relativePath = "logs/error-log.txt";
-					String rootPath = getServletContext().getRealPath(relativePath);
-					File logFile = new File(rootPath);
+					String relativePathLog = "logs";
+					String rootPathLog = getServletContext().getRealPath(relativePathLog);
+					File logFile = new File(rootPathLog);
 					if (!logFile.exists()) {
 						logFile.mkdirs();
 					}
-					FileWriter fileWriter = new FileWriter(logFile, true);
+					FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 					PrintWriter printWriter = new PrintWriter(fileWriter);
-					printWriter.write(exception.getMessage() + "/n");
+					printWriter.write(exception.getMessage());
+					printWriter.write(System.lineSeparator());
 					printWriter.close();
 				}
 			}
 		} catch (Exception exception) {
-			String relativePath = "logs/error-log.txt";
-			String rootPath = getServletContext().getRealPath(relativePath);
-			File logFile = new File(rootPath);
+			String relativePathLog = "logs";
+			String rootPathLog = getServletContext().getRealPath(relativePathLog);
+			File logFile = new File(rootPathLog);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
 		}
 	}
@@ -853,26 +858,28 @@ public class TransactionMasterController extends HttpServlet {
 
 			}
 		} catch (FileUploadException exception) {
-			String relativePathLog = "logs/error-log.txt";
+			String relativePathLog = "logs";
 			String rootPathLog = getServletContext().getRealPath(relativePathLog);
 			File logFile = new File(rootPathLog);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
 		} catch (Exception exception) {
-			String relativePathLog = "logs/error-log.txt";
+			String relativePathLog = "logs";
 			String rootPathLog = getServletContext().getRealPath(relativePathLog);
 			File logFile = new File(rootPathLog);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
 		}
 		if (!response.isCommitted()) {

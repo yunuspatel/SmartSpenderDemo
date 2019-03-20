@@ -68,15 +68,16 @@ public class CategoryController extends HttpServlet {
 				editExpCategory(request, response);
 			}
 		} catch (Exception exception) {
-			String relativePath = "logs/error-log.txt";
+			String relativePath = "logs";
 			String rootPath = getServletContext().getRealPath(relativePath);
 			File logFile = new File(rootPath);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
 		}
 	}
@@ -133,6 +134,17 @@ public class CategoryController extends HttpServlet {
 		try {
 			categoryMasterDao.deleteCategory(categoryVo);
 		} catch (Exception exception) {
+			String relativePath = "logs";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
+			printWriter.close();
 			session.setAttribute("userMsg", "Cannot delete as categories are used for transaction.");
 		}
 

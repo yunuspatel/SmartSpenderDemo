@@ -53,15 +53,16 @@ public class ProductController extends HttpServlet {
 				editProduct(request, response);
 			}
 		} catch (Exception exception) {
-			String relativePath = "logs/error-log.txt";
+			String relativePath = "logs";
 			String rootPath = getServletContext().getRealPath(relativePath);
 			File logFile = new File(rootPath);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
 		}
 	}
@@ -84,17 +85,17 @@ public class ProductController extends HttpServlet {
 			productDao.updateProduct(productVo);
 			loadProducts(request, response);
 		} catch (Exception exception) {
-			String relativePath = "logs/error-log.txt";
+			String relativePath = "logs";
 			String rootPath = getServletContext().getRealPath(relativePath);
 			File logFile = new File(rootPath);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
-			loadProducts(request, response);
 		}
 	}
 
@@ -112,6 +113,17 @@ public class ProductController extends HttpServlet {
 			productDao.deleteProduct(productVo);
 			loadProducts(request, response);
 		} catch (Exception exception) {
+			String relativePath = "logs";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File logFile = new File(rootPath);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
+			printWriter.close();
 			session.setAttribute("userMsg",
 					"Sorry, Error in deleting your product. Maybe it is used with some purchase or sale record.");
 			loadProducts(request, response);

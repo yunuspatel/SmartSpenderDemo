@@ -70,15 +70,16 @@ public class PurchaseController extends HttpServlet {
 				editPurchase(request, response);
 			}
 		} catch (Exception exception) {
-			String relativePath = "logs/error-log.txt";
+			String relativePath = "logs";
 			String rootPath = getServletContext().getRealPath(relativePath);
 			File logFile = new File(rootPath);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
 		}
 	}
@@ -141,15 +142,16 @@ public class PurchaseController extends HttpServlet {
 			StockDao stockDao2 = new StockDao();
 			stockDao2.updateStock(stockVo);
 		} catch (Exception exception) {
-			String relativePath = "logs/error-log.txt";
+			String relativePath = "logs";
 			String rootPath = getServletContext().getRealPath(relativePath);
 			File logFile = new File(rootPath);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
 		}
 		session.setAttribute("user", userVo);
@@ -215,26 +217,28 @@ public class PurchaseController extends HttpServlet {
 
 			}
 		} catch (FileUploadException exception) {
-			String relativePathLog = "logs/error-log.txt";
+			String relativePathLog = "logs";
 			String rootPathLog = getServletContext().getRealPath(relativePathLog);
 			File logFile = new File(rootPathLog);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
 		} catch (Exception exception) {
-			String relativePathLog = "logs/error-log.txt";
+			String relativePathLog = "logs";
 			String rootPathLog = getServletContext().getRealPath(relativePathLog);
 			File logFile = new File(rootPathLog);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
 		}
 		if (!response.isCommitted()) {
@@ -262,15 +266,16 @@ public class PurchaseController extends HttpServlet {
 			purchaseDao.deletePurchase(purchaseVo);
 			stockDao.updateStock(stockVo);
 		} catch (Exception exception) {
-			String relativePath = "logs/error-log.txt";
-			String rootPath = getServletContext().getRealPath(relativePath);
-			File logFile = new File(rootPath);
+			String relativePathLog = "logs";
+			String rootPathLog = getServletContext().getRealPath(relativePathLog);
+			File logFile = new File(rootPathLog);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
 		}
 		session.setAttribute("user", userVo);
@@ -309,15 +314,16 @@ public class PurchaseController extends HttpServlet {
 			PurchaseDao purchaseDao = new PurchaseDao();
 			purchaseDao.addPurchase(purchaseVo);
 		} catch (Exception exception) {
-			String relativePath = "logs/error-log.txt";
-			String rootPath = getServletContext().getRealPath(relativePath);
-			File logFile = new File(rootPath);
+			String relativePathLog = "logs";
+			String rootPathLog = getServletContext().getRealPath(relativePathLog);
+			File logFile = new File(rootPathLog);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
 		}
 

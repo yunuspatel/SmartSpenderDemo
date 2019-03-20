@@ -99,15 +99,16 @@ public class UserMasterController extends HttpServlet {
 				try {
 					loginUser(request, response);
 				} catch (ParseException exception) {
-					String relativePath = "logs/error-log.txt";
-					String rootPath = getServletContext().getRealPath(relativePath);
-					File logFile = new File(rootPath);
+					String relativePathLog = "logs";
+					String rootPathLog = getServletContext().getRealPath(relativePathLog);
+					File logFile = new File(rootPathLog);
 					if (!logFile.exists()) {
 						logFile.mkdirs();
 					}
-					FileWriter fileWriter = new FileWriter(logFile, true);
+					FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 					PrintWriter printWriter = new PrintWriter(fileWriter);
-					printWriter.write(exception.getMessage() + "/n");
+					printWriter.write(exception.getMessage());
+					printWriter.write(System.lineSeparator());
 					printWriter.close();
 				}
 			} else if (flag.equals("verifyOtp")) {
@@ -130,15 +131,16 @@ public class UserMasterController extends HttpServlet {
 				try {
 					loadDashboard(request, response);
 				} catch (ParseException exception) {
-					String relativePath = "logs/error-log.txt";
-					String rootPath = getServletContext().getRealPath(relativePath);
-					File logFile = new File(rootPath);
+					String relativePathLog = "logs";
+					String rootPathLog = getServletContext().getRealPath(relativePathLog);
+					File logFile = new File(rootPathLog);
 					if (!logFile.exists()) {
 						logFile.mkdirs();
 					}
-					FileWriter fileWriter = new FileWriter(logFile, true);
+					FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 					PrintWriter printWriter = new PrintWriter(fileWriter);
-					printWriter.write(exception.getMessage() + "/n");
+					printWriter.write(exception.getMessage());
+					printWriter.write(System.lineSeparator());
 					printWriter.close();
 				}
 			} else if (flag.equals("changeThemeDiv")) {
@@ -147,15 +149,16 @@ public class UserMasterController extends HttpServlet {
 				deactivateUserByAdmin(request, response);
 			}
 		} catch (Exception exception) {
-			String relativePath = "logs/error-log.txt";
-			String rootPath = getServletContext().getRealPath(relativePath);
-			File logFile = new File(rootPath);
+			String relativePathLog = "logs";
+			String rootPathLog = getServletContext().getRealPath(relativePathLog);
+			File logFile = new File(rootPathLog);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
 		}
 	}
@@ -988,9 +991,31 @@ public class UserMasterController extends HttpServlet {
 					session.setAttribute("userMsg", "Can only upload jpeg files");
 				}
 			}
-		} catch (FileUploadException e) {
+		} catch (FileUploadException exception) {
+			String relativePathLog = "logs";
+			String rootPathLog = getServletContext().getRealPath(relativePathLog);
+			File logFile = new File(rootPathLog);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
+			printWriter.close();
 			out.write("Exception in uploading file. FIleUpload");
-		} catch (Exception e) {
+		} catch (Exception exception) {
+			String relativePathLog = "logs";
+			String rootPathLog = getServletContext().getRealPath(relativePathLog);
+			File logFile = new File(rootPathLog);
+			if (!logFile.exists()) {
+				logFile.mkdirs();
+			}
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
+			printWriter.close();
 			out.write("Exception in uploading file.");
 		}
 		session.setAttribute("user", userVo);

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,6 +20,7 @@ import dao.InventoryPermissionDao;
 import dao.NotificationDao;
 import dao.SuperUserDao;
 import dao.UserMasterDao;
+import global.MD5Encryption;
 import global.SmsApiKeys;
 import vo.InventoryPermissionVo;
 import vo.NotificationVo;
@@ -78,15 +80,16 @@ public class SuperUserController extends HttpServlet {
 				revokeStockPermission(request, response);
 			}
 		} catch (Exception exception) {
-			String relativePath = "logs/error-log.txt";
-			String rootPath = getServletContext().getRealPath(relativePath);
-			File logFile = new File(rootPath);
+			String relativePathLog = "logs";
+			String rootPathLog = getServletContext().getRealPath(relativePathLog);
+			File logFile = new File(rootPathLog);
 			if (!logFile.exists()) {
 				logFile.mkdirs();
 			}
-			FileWriter fileWriter = new FileWriter(logFile, true);
+			FileWriter fileWriter = new FileWriter(logFile + "/error-log.txt", true);
 			PrintWriter printWriter = new PrintWriter(fileWriter);
-			printWriter.write(exception.getMessage() + "/n");
+			printWriter.write(exception.getMessage());
+			printWriter.write(System.lineSeparator());
 			printWriter.close();
 		}
 	}
@@ -267,10 +270,14 @@ public class SuperUserController extends HttpServlet {
 
 		String userEmail = request.getParameter("userEmail");
 		String userPassword = request.getParameter("userPassword");
+		
+		ServletContext servletContext=getServletContext();
+		MD5Encryption md5Encryption = new MD5Encryption();
+		String hashPassword = md5Encryption.getEncrptedString(userPassword, servletContext);
 
 		SuperUserVo superUserVo = new SuperUserVo();
 		superUserVo.setSuperUserEmail(userEmail);
-		superUserVo.setSuperUserPassword(userPassword);
+		superUserVo.setSuperUserPassword(hashPassword);
 
 		SuperUserDao superUserDao = new SuperUserDao();
 		List<SuperUserVo> list = superUserDao.loginSuperUser(superUserVo);

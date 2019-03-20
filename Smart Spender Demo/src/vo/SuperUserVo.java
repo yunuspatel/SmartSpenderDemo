@@ -22,7 +22,7 @@ public class SuperUserVo {
 	@Column(name="super_user_email",length=50)
 	String superUserEmail;
 	
-	@Column(name="super_user_password",length=20)
+	@Column(name="super_user_password",length=255)
 	String superUserPassword;
 		
 	@Column(name="pre_loader_class",length=150)
