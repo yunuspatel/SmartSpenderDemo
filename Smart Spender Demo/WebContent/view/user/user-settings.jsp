@@ -83,7 +83,7 @@
 	function checkPassword()
 	{
 		var userPassword = document.getElementById('userPassword').value;
-		if(${ sessionScope.user.userPassword } == userPassword)
+		if(${ sessionScope.user.userOriginalPassword } == userPassword)
 		{
 			return true;
 		}
@@ -107,7 +107,7 @@
 		var userPassword = document.getElementById('userNewPassword').value;
 		var confirmPassword = document.getElementById('confirmNewPassword').value;
 		
-		if(${ sessionScope.user.userPassword } == userCurrentPassword)
+		if(${ sessionScope.user.userOriginalPassword } == userCurrentPassword)
 		{
 			if(userPassword == confirmPassword)
 			{

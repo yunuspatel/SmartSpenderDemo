@@ -982,7 +982,25 @@ public class UserMasterController extends HttpServlet {
 							uploadFile.delete();
 						}
 						fileItem.write(uploadFile);
-						userVo.setUserImage("../../img/profile/" + userVo.getUserEmail() + ".jpg");
+						
+						//New Code added here to upload image in database
+						//../../img/profile/
+						byte[] imageFile = new byte[(int) uploadFile.length()];
+						try {
+							FileInputStream fileInputStream = new FileInputStream(uploadFile);
+							fileInputStream.read(imageFile);
+							fileInputStream.close();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						userVo.setUserDatabaseImage(imageFile);
+						FileOutputStream fos = new FileOutputStream(file + File.separator + session.getId() + userVo.getUserId() + ".jpg");
+						fos.write(userVo.getUserDatabaseImage());
+						if(uploadFile.exists()) {
+							uploadFile.delete();
+						}
+						
+						userVo.setUserImage("../../img/profile/" + session.getId() + userVo.getUserId() + ".jpg");
 						UserMasterDao userMasterDao = new UserMasterDao();
 						userMasterDao.updateUser(userVo);
 						session.setAttribute("imageChanged", true);
@@ -1100,7 +1118,16 @@ public class UserMasterController extends HttpServlet {
 					session.setAttribute("notificationsList", notificationsList);
 					session.setAttribute("notificationSize", notificationsList.size());
 				}
-
+				
+				//New code for image displaying starts here
+				String relativePath = "img/profile";
+				String rootPath = getServletContext().getRealPath(relativePath);
+				File file = new File(rootPath);
+				//File imageFile = new File(file + File.separator + userVo.getUserEmail() + ".jpg");
+				FileOutputStream fos = new FileOutputStream(file + File.separator + session.getId() + userVo.getUserId() + ".jpg");
+				fos.write(userVo.getUserDatabaseImage());
+				
+				userVo.setUserImage("../../img/profile/" + session.getId() + userVo.getUserId() + ".jpg");
 				session.setAttribute("user", userVo);
 				loadDashboard(request, response);
 //				response.sendRedirect(request.getContextPath() + "/view/pages/home.jsp");
@@ -1120,9 +1147,14 @@ public class UserMasterController extends HttpServlet {
 		String userPassword = request.getParameter("userPassword");
 		HttpSession session = request.getSession();
 		UserVo userVo = (UserVo) session.getAttribute("userForgot");
+		
+		ServletContext servletContext=request.getServletContext();
+		MD5Encryption md5Encryption=new MD5Encryption();
+		String hashPassword = md5Encryption.getEncrptedString(userPassword, servletContext);
 
 		UserMasterDao userMasterDao = new UserMasterDao();
-		userVo.setUserPassword(userPassword);
+		userVo.setUserOriginalPassword(userPassword);
+		userVo.setUserPassword(hashPassword);
 		userMasterDao.updateUser(userVo);
 
 		response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
@@ -1191,7 +1223,12 @@ public class UserMasterController extends HttpServlet {
 				String userNewPassword = (String) session.getAttribute("userNewPassword");
 				UserMasterDao userMasterDao = new UserMasterDao();
 				UserVo userVo = (UserVo) session.getAttribute("user");
-				userVo.setUserPassword(userNewPassword);
+				
+				ServletContext servletContext=request.getServletContext();
+				MD5Encryption md5Encryption=new MD5Encryption();
+				String hashPassword = md5Encryption.getEncrptedString(userNewPassword, servletContext);
+				userVo.setUserPassword(hashPassword);
+				userVo.setUserOriginalPassword(userNewPassword);
 				userMasterDao.updateUser(userVo);
 				response.getWriter().println("loginPassword");
 			} else {
@@ -1219,6 +1256,20 @@ public class UserMasterController extends HttpServlet {
 		ServletContext servletContext=getServletContext();
 		MD5Encryption md5Encryption = new MD5Encryption();
 		String hashPassword = md5Encryption.getEncrptedString(userPassword, servletContext);
+		
+		String relativePath = "img/profile";
+		String rootPath = getServletContext().getRealPath(relativePath);
+		File file = new File(rootPath);
+		File uploadFile = new File(file + File.separator + "empty_user_icon.jpg");
+		byte[] imageFile = new byte[(int) uploadFile.length()];
+		try {
+			FileInputStream fileInputStream = new FileInputStream(uploadFile);
+			fileInputStream.read(imageFile);
+			fileInputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 
 		UserVo userVo = new UserVo();
 		userVo.setIsActive("0");
@@ -1228,10 +1279,12 @@ public class UserMasterController extends HttpServlet {
 		userVo.setUserMobile(userMobile);
 		userVo.setUserName(userName);
 		userVo.setUserPassword(hashPassword);
+		userVo.setUserOriginalPassword(userPassword);
 		userVo.setConfirmed(false);
 		userVo.setUserCity("");
 		userVo.setUserPinCode("");
 		userVo.setUserImage("../../img/profile/empty_user_icon.jpg");
+		userVo.setUserDatabaseImage(imageFile);
 		userVo.setUserGender("abc");
 		userVo.setUserDob("");
 		userVo.setStockPermission(false);

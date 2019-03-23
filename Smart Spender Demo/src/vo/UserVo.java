@@ -19,8 +19,11 @@ public class UserVo {
 	@Column(name="user_name",length=25,nullable=false)
 	String userName;
 	
-	@Column(name="user_password",length=255,nullable=false)
+	@Column(name="user_password",length=50,nullable=false)
 	String userPassword;
+	
+	@Column(name="user_original_password",length=50,nullable=false)
+	String userOriginalPassword;
 	
 	@Column(name="user_email",length=30,nullable=false)
 	String userEmail;
@@ -46,8 +49,19 @@ public class UserVo {
 	@Column(name="user_pincode",length=10)
 	String userPinCode;
 	
-	@Column(name="user_image",length=50)
+	@Column(name="user_image",length=350)
 	String userImage;
+	
+	public String getUserOriginalPassword() {
+		return userOriginalPassword;
+	}
+
+	public void setUserOriginalPassword(String userOriginalPassword) {
+		this.userOriginalPassword = userOriginalPassword;
+	}
+
+	@Column(name="user_database_image",nullable=false,columnDefinition="longblob")
+	byte[] userDatabaseImage;
 	
 	@Column(name="user_gender",length=7)
 	String userGender;
@@ -64,6 +78,14 @@ public class UserVo {
 	@Column(name="is_deactivated",length=6)
 	boolean isDeactivated;
 	
+	public byte[] getUserDatabaseImage() {
+		return userDatabaseImage;
+	}
+
+	public void setUserDatabaseImage(byte[] userDatabaseImage) {
+		this.userDatabaseImage = userDatabaseImage;
+	}
+
 	public boolean isDeactivated() {
 		return isDeactivated;
 	}

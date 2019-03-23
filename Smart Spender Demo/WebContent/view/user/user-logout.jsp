@@ -1,3 +1,4 @@
+<%@page import="java.io.File"%>
 <%@page import="java.util.List"%>
 <%@page import="dao.UserMasterDao"%>
 <%@page import="vo.UserVo"%>
@@ -33,6 +34,11 @@
 			UserMasterDao masterDao=new UserMasterDao();
 			masterDao.updateUser(userVo);
 		}
+		String relativePath = "img/profile";
+		String rootPath = getServletContext().getRealPath(relativePath);
+		File file = new File(rootPath);
+		File profileImageFile = new File(file + File.separator + session.getId() + userVo.getUserId() + ".jpg");
+		profileImageFile.delete();
 		session.invalidate();
 		response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
 	%>

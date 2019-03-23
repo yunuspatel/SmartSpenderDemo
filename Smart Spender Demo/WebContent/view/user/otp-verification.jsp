@@ -12,7 +12,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Sign Up-Smart Spender</title>
+<title>OTP Verification-Smart Spender</title>
 
 <!-- Favicon -->
 <link rel="shortcut icon" href="../../img/logo2.png">
