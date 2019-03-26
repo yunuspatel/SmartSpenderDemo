@@ -65,8 +65,19 @@ public class TransactionVo {
 	@Column(name="receipt_image",length=80)
 	String transactionReceiptImage;
 	
+	@Column(name="receipt_database_image",nullable=false,columnDefinition="longblob")
+	byte[] transactionReceiptDatabaseImage;
+	
 	@Column(name="is_deleted",length=6)
 	boolean isDeleted;
+
+	public byte[] getTransactionReceiptDatabaseImage() {
+		return transactionReceiptDatabaseImage;
+	}
+
+	public void setTransactionReceiptDatabaseImage(byte[] transactionReceiptDatabaseImage) {
+		this.transactionReceiptDatabaseImage = transactionReceiptDatabaseImage;
+	}
 
 	public boolean isDeleted() {
 		return isDeleted;

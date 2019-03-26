@@ -1,3 +1,5 @@
+<%@page import="vo.TransactionVo"%>
+<%@page import="dao.TransactionMasterDao"%>
 <%@page import="java.io.File"%>
 <%@page import="java.util.List"%>
 <%@page import="dao.UserMasterDao"%>
@@ -39,6 +41,19 @@
 		File file = new File(rootPath);
 		File profileImageFile = new File(file + File.separator + session.getId() + userVo.getUserId() + ".jpg");
 		profileImageFile.delete();
+		
+		TransactionMasterDao transactionMasterDao=new TransactionMasterDao();
+		List<TransactionVo> transactionList = transactionMasterDao.getAllTransactions(userVo);
+		relativePath = "img/transactionImages";
+		rootPath = getServletContext().getRealPath(relativePath);
+		File transactionFile = new File(rootPath);
+		for(TransactionVo transactionVo : transactionList){
+			File transactionImage = new File(transactionFile + File.separator + transactionVo.getTransactionIdentificationNumber() + ".jpg");
+			if(transactionImage.exists()){
+				transactionImage.delete();
+			}
+		}
+		
 		session.invalidate();
 		response.sendRedirect(request.getContextPath() + "/view/user/login.jsp");
 	%>

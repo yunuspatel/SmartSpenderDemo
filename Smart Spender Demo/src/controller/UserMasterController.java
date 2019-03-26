@@ -999,6 +999,7 @@ public class UserMasterController extends HttpServlet {
 						if(uploadFile.exists()) {
 							uploadFile.delete();
 						}
+						fos.close();
 						
 						userVo.setUserImage("../../img/profile/" + session.getId() + userVo.getUserId() + ".jpg");
 						UserMasterDao userMasterDao = new UserMasterDao();
@@ -1126,6 +1127,7 @@ public class UserMasterController extends HttpServlet {
 				//File imageFile = new File(file + File.separator + userVo.getUserEmail() + ".jpg");
 				FileOutputStream fos = new FileOutputStream(file + File.separator + session.getId() + userVo.getUserId() + ".jpg");
 				fos.write(userVo.getUserDatabaseImage());
+				fos.close();
 				
 				userVo.setUserImage("../../img/profile/" + session.getId() + userVo.getUserId() + ".jpg");
 				session.setAttribute("user", userVo);

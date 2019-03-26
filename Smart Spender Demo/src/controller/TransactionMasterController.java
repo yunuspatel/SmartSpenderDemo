@@ -834,7 +834,6 @@ public class TransactionMasterController extends HttpServlet {
 			List<CategoryVo> categoryList = categoryMasterDao.getCategoryList(forTransaction, userVo);
 			session.setAttribute("forTransaction", forTransaction);
 			session.setAttribute("categoryData", categoryList);
-
 		}
 		if (forTransaction != null) {
 			SubCategoryDao subCategoryDao = new SubCategoryDao();
@@ -842,6 +841,13 @@ public class TransactionMasterController extends HttpServlet {
 					.getSubCategoryBasedOnName(transactionVo.getCategoryVo(), transactionVo.getUserVo());
 			session.setAttribute("subCategoryList", subCategoryList);
 		}
+
+		String relativePath = "img/transactionImages";
+		String rootPath = getServletContext().getRealPath(relativePath);
+		File file = new File(rootPath);
+		FileOutputStream fos = new FileOutputStream(file + File.separator + transactionIdentificationNumber + ".jpg");
+		fos.write(transactionVo.getTransactionReceiptDatabaseImage());
+		fos.close();
 
 		session.setAttribute("user", userVo);
 		session.setAttribute("transactionDetails", transactionVo);
@@ -903,6 +909,24 @@ public class TransactionMasterController extends HttpServlet {
 							uploadFile.delete();
 						}
 						fileItem.write(uploadFile);
+
+						// New Code added here to upload image in database
+						byte[] imageFile = new byte[(int) uploadFile.length()];
+						try {
+							FileInputStream fileInputStream = new FileInputStream(uploadFile);
+							fileInputStream.read(imageFile);
+							fileInputStream.close();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						transactionVo.setTransactionReceiptDatabaseImage(imageFile);
+						FileOutputStream fos = new FileOutputStream(
+								file + File.separator + transactionVo.getTransactionIdentificationNumber() + ".jpg");
+						fos.write(transactionVo.getTransactionReceiptDatabaseImage());
+						if (uploadFile.exists()) {
+							uploadFile.delete();
+						}
+						fos.close();
 						transactionVo.setTransactionReceiptImage("../../img/transactionImages/"
 								+ transactionVo.getTransactionIdentificationNumber() + ".jpg");
 						TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
@@ -915,7 +939,6 @@ public class TransactionMasterController extends HttpServlet {
 				} else {
 					session.setAttribute("userMsg", "Can only upload jpeg files");
 				}
-
 			}
 		} catch (FileUploadException exception) {
 			String relativePathLog = "logs";
@@ -1140,8 +1163,25 @@ public class TransactionMasterController extends HttpServlet {
 			}
 		}
 
-		transactionVo.setTransactionReceiptImage("");
 		transactionVo.setIsDeleted(false);
+
+		String relativePath = "img/transactionImages";
+		String rootPath = getServletContext().getRealPath(relativePath);
+		File file = new File(rootPath);
+		File uploadFile = new File(file + File.separator + "no-image.png");
+		byte[] imageFile = new byte[(int) uploadFile.length()];
+		try {
+			FileInputStream fileInputStream = new FileInputStream(uploadFile);
+			fileInputStream.read(imageFile);
+			fileInputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		transactionVo.setTransactionReceiptDatabaseImage(imageFile);
+		transactionVo.setTransactionReceiptImage("../../img/transactionImages/no-image.png");
+		if(uploadFile.exists()) {
+			uploadFile.delete();
+		}
 
 		TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
 		transactionMasterDao.addTransaction(transactionVo);
@@ -1401,8 +1441,25 @@ public class TransactionMasterController extends HttpServlet {
 			}
 		}
 
-		transactionVo.setTransactionReceiptImage("");
 		transactionVo.setIsDeleted(false);
+
+		String relativePath = "img/transactionImages";
+		String rootPath = getServletContext().getRealPath(relativePath);
+		File file = new File(rootPath);
+		File uploadFile = new File(file + File.separator + "no-image.png");
+		byte[] imageFile = new byte[(int) uploadFile.length()];
+		try {
+			FileInputStream fileInputStream = new FileInputStream(uploadFile);
+			fileInputStream.read(imageFile);
+			fileInputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		transactionVo.setTransactionReceiptDatabaseImage(imageFile);
+		transactionVo.setTransactionReceiptImage("../../img/transactionImages/no-image.png");
+		if (uploadFile.exists()) {
+			uploadFile.delete();
+		}
 
 		TransactionMasterDao transactionMasterDao = new TransactionMasterDao();
 		transactionMasterDao.addTransaction(transactionVo);
