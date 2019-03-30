@@ -2,8 +2,8 @@ package global;
 
 public class SmsApiKeys {
 
-	private final String apiKey = "BD5WGOBHLE6O1886A6PRIPRQQ61OZ6C4";
-	private final String secretKey = "2VLY43W8BRF7Y2TU";
+	private final String apiKey = "RDRSVY7Q0LJ5A7T8HCPEJOESUU4GLO0W";
+	private final String secretKey = "7B175Y9O7IS0QRVN";
 	private final String useType = "stage";
 	private final String senderId = "SPENDR";
 	

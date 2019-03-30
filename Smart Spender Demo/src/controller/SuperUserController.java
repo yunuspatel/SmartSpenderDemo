@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -169,6 +170,16 @@ public class SuperUserController extends HttpServlet {
 			UserMasterDao userMasterDao = new UserMasterDao();
 			List<UserVo> list = userMasterDao.getUserDetailsForSuperUser(userId);
 			userVo = list.get(0);
+			
+			//New code for image displaying starts here
+			String relativePath = "img/profile";
+			String rootPath = getServletContext().getRealPath(relativePath);
+			File file = new File(rootPath);
+			FileOutputStream fos = new FileOutputStream(file + File.separator + userVo.getUserEmail() + ".jpg");
+			fos.write(userVo.getUserDatabaseImage());
+			fos.close();
+			
+			userVo.setUserImage("../../img/profile/" + userVo.getUserEmail() + ".jpg");
 		}
 
 		session.setAttribute("userDetailsForAdmin", userVo);
